@@ -1,0 +1,38 @@
+{
+	"schemaVersion": 1,
+	"id": "luafy",
+	"version": "${version}",
+	"name": "Luafy",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/luafy/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"dev.diamond.luafy.Luafy"
+		],
+		"client": [
+			"dev.diamond.luafy.LuafyClient"
+		]
+	},
+	"mixins": [
+		"luafy.mixins.json",
+		{
+			"config": "luafy.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.18.4",
+		"minecraft": "~1.21.11",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
