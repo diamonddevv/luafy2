@@ -3,9 +3,9 @@
 	"id": "luafy",
 	"version": "${version}",
 	"name": "Luafy",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Lua Scripting in Datapacks",
 	"authors": [
-		"Me!"
+		"DiamondDev"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
