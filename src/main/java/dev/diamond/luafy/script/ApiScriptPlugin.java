@@ -1,10 +1,13 @@
 package dev.diamond.luafy.script;
 
+import dev.diamond.luafy.Autodocumentable;
 import dev.diamond.luafy.script.api.AbstractScriptApi;
 
 import java.util.function.Function;
 
-public class ApiScriptPlugin<T extends AbstractScriptApi> extends ScriptPlugin {
+public class ApiScriptPlugin<T extends AbstractScriptApi> extends ScriptPlugin implements Autodocumentable {
+    public static final String TAB = "    ";
+
     private final Function<LuaScript,T> constructor;
 
     public ApiScriptPlugin(Function<LuaScript, T> constructor) {
@@ -12,7 +15,7 @@ public class ApiScriptPlugin<T extends AbstractScriptApi> extends ScriptPlugin {
         this.constructor = constructor;
     }
 
-    public String autodoc() {
+    public String generateAutodoc() {
         LuaScript autodocScript = new LuaScript("return");
         T plugin = this.constructor.apply(autodocScript);
 
@@ -34,6 +37,18 @@ public class ApiScriptPlugin<T extends AbstractScriptApi> extends ScriptPlugin {
             }
             doc.append("): ");
             doc.append(function.returnType());
+            doc.append("\n");
+
+            doc.append(TAB);
+            doc.append(function.funcDesc());
+            doc.append("\n");
+            for (var arg : function.args()) {
+                doc.append(TAB + "- ");
+                doc.append(arg.argName());
+                doc.append(" : ");
+                doc.append(arg.argDesc());
+                doc.append("\n");
+            }
             doc.append("\n");
         }
 

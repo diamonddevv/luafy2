@@ -40,17 +40,35 @@ public class LuafyCommand {
                                   argument("id", IdentifierArgumentType.identifier()).suggests(new LuafyCommand.ScriptIdsSuggestionProvider()).executes(LuafyCommand::execute)
                           )
                   ).then(
-                          literal("autodoc").then(
-                                  argument("id", IdentifierArgumentType.identifier()).suggests(new ApiPluginIdSuggestionProvider()).executes(LuafyCommand::autodoc)
-                          )
+                          literal("autodoc")
+                                  .then(
+                                          literal("api").then(
+                                                  argument("id", IdentifierArgumentType.identifier()).suggests(new ApiPluginIdSuggestionProvider()).executes(LuafyCommand::autodocApi)
+                                          )
+                                  ).then(
+                                          literal("event").then(
+                                                  argument("id", IdentifierArgumentType.identifier()).suggests(new EventIdSuggestionProvider()).executes(LuafyCommand::autodocEvent)
+                                          )
+                                  )
                   )
         );
     }
 
-    private static int autodoc(CommandContext<ServerCommandSource> ctx) {
+    private static int autodocEvent(CommandContext<ServerCommandSource> ctx) {
         Identifier id = IdentifierArgumentType.getIdentifier(ctx, "id");
-        if (LuafyRegistries.SCRIPT_PLUGINS.containsId(id) && LuafyRegistries.SCRIPT_PLUGINS.get(id) instanceof ApiScriptPlugin<?> plugin) {
-            ctx.getSource().sendFeedback(() -> Text.literal(plugin.autodoc()), false);
+        if (false && LuafyRegistries.SCRIPT_PLUGINS.get(id) instanceof Autodocumentable autodocumentable) {
+            ctx.getSource().sendFeedback(() -> Text.literal(autodocumentable.generateAutodoc()), false);
+            return 1;
+        } else {
+            ctx.getSource().sendFeedback(() -> Text.literal("Event " + id + " does not exist").formatted(Formatting.RED), false);
+            return 0;
+        }
+    }
+
+    private static int autodocApi(CommandContext<ServerCommandSource> ctx) {
+        Identifier id = IdentifierArgumentType.getIdentifier(ctx, "id");
+        if (LuafyRegistries.SCRIPT_PLUGINS.containsId(id) && LuafyRegistries.SCRIPT_PLUGINS.get(id) instanceof Autodocumentable autodocumentable) {
+            ctx.getSource().sendFeedback(() -> Text.literal(autodocumentable.generateAutodoc()), false);
             return 1;
         } else {
             ctx.getSource().sendFeedback(() -> Text.literal("Api Script Plugin " + id + " does not exist").formatted(Formatting.RED), false);
@@ -115,6 +133,17 @@ public class LuafyCommand {
                     builder.suggest(id.toString());
                 }
             }
+
+            // Lock the suggestions after we've modified them.
+            return builder.buildFuture();
+        }
+    }
+
+    private static class EventIdSuggestionProvider implements SuggestionProvider<ServerCommandSource> {
+        @Override
+        public CompletableFuture<Suggestions> getSuggestions(CommandContext<ServerCommandSource> ctx, SuggestionsBuilder builder) throws CommandSyntaxException {
+
+
 
             // Lock the suggestions after we've modified them.
             return builder.buildFuture();
