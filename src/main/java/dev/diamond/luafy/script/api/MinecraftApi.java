@@ -2,6 +2,7 @@ package dev.diamond.luafy.script.api;
 
 import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import dev.diamond.luafy.script.ArgtypeStrings;
 import dev.diamond.luafy.script.LuaScript;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -20,7 +21,9 @@ public class MinecraftApi extends AbstractScriptApi {
             String s = args.arg1().tojstring();
             script.getSource().sendMessage(Text.literal(s));
             return LuaValue.NIL;
-        });
+        }, "Prints a line to the server chat.", args -> {
+            args.add("message", ArgtypeStrings.STRING, "Message to be printed.");
+        }, ArgtypeStrings.NIL);
 
         builder.add("command", args -> {
             String s = args.arg1().tojstring();
@@ -28,7 +31,9 @@ public class MinecraftApi extends AbstractScriptApi {
             var cmd = parseCommand(s, source);
             int result = executeCommand(cmd, source);
             return LuaValue.valueOf(result);
-        });
+        }, "Executes the given command from the server command source. Returns the result of the command.", args -> {
+            args.add("command", ArgtypeStrings.STRING, "Command to be executed.");
+        }, ArgtypeStrings.INTEGER);
     }
 
     public static ParseResults<ServerCommandSource> parseCommand(String command, ServerCommandSource source) {

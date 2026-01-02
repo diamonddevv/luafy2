@@ -1,6 +1,8 @@
 package dev.diamond.luafy.script;
 
 import dev.diamond.luafy.Luafy;
+import dev.diamond.luafy.registry.LuafyRegistries;
+import dev.diamond.luafy.script.api.LuafyApi;
 import dev.diamond.luafy.script.api.MinecraftApi;
 import net.minecraft.server.command.ServerCommandSource;
 import org.apache.logging.log4j.core.jmx.Server;
@@ -58,26 +60,15 @@ public class LuaScript {
         return src;
     }
 
+    public Globals getGlobals() {
+        return globals;
+    }
 
 
     private void requireLibraries() {
-
-        // luaj
-        globals.load(new JseBaseLib());
-        globals.load(new PackageLib());
-        globals.load(new Bit32Lib());
-        globals.load(new TableLib());
-        globals.load(new JseStringLib());
-        globals.load(new CoroutineLib());
-        globals.load(new JseMathLib());
-        globals.load(new JseIoLib());
-        globals.load(new JseOsLib());
-        globals.load(new LuajavaLib());
-        LuaC.install(globals);
-        LoadState.install(globals);
-
-        // luafy
-        globals.load(new MinecraftApi(this));
+        for (ScriptPlugin plugin : LuafyRegistries.SCRIPT_PLUGINS) {
+            plugin.apply(this);
+        }
     }
 
 

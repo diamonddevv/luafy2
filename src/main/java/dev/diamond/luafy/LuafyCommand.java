@@ -7,17 +7,17 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import dev.diamond.luafy.registry.LuafyRegistries;
+import dev.diamond.luafy.script.ApiScriptPlugin;
 import dev.diamond.luafy.script.LuaScript;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.IdentifierArgumentType;
-import net.minecraft.command.suggestion.SuggestionProviders;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
-import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
 import static net.minecraft.server.command.CommandManager.argument;
@@ -39,10 +39,24 @@ public class LuafyCommand {
                           literal("execute").then(
                                   argument("id", IdentifierArgumentType.identifier()).suggests(new LuafyCommand.ScriptIdsSuggestionProvider()).executes(LuafyCommand::execute)
                           )
+                  ).then(
+                          literal("autodoc").then(
+                                  argument("id", IdentifierArgumentType.identifier()).suggests(new ApiPluginIdSuggestionProvider()).executes(LuafyCommand::autodoc)
+                          )
                   )
         );
     }
 
+    private static int autodoc(CommandContext<ServerCommandSource> ctx) {
+        Identifier id = IdentifierArgumentType.getIdentifier(ctx, "id");
+        if (LuafyRegistries.SCRIPT_PLUGINS.containsId(id) && LuafyRegistries.SCRIPT_PLUGINS.get(id) instanceof ApiScriptPlugin<?> plugin) {
+            ctx.getSource().sendFeedback(() -> Text.literal(plugin.autodoc()), false);
+            return 1;
+        } else {
+            ctx.getSource().sendFeedback(() -> Text.literal("Api Script Plugin " + id + " does not exist").formatted(Formatting.RED), false);
+            return 0;
+        }
+    }
 
 
     private static int execute(CommandContext<ServerCommandSource> ctx) {
@@ -85,6 +99,21 @@ public class LuafyCommand {
 
             for (String id : Luafy.SCRIPT_MANAGER.getScriptIdStrings()) {
                 builder.suggest(id);
+            }
+
+            // Lock the suggestions after we've modified them.
+            return builder.buildFuture();
+        }
+    }
+
+    private static class ApiPluginIdSuggestionProvider implements SuggestionProvider<ServerCommandSource> {
+        @Override
+        public CompletableFuture<Suggestions> getSuggestions(CommandContext<ServerCommandSource> ctx, SuggestionsBuilder builder) throws CommandSyntaxException {
+
+            for (Identifier id : LuafyRegistries.SCRIPT_PLUGINS.getIds()) {
+                if (LuafyRegistries.SCRIPT_PLUGINS.get(id) instanceof ApiScriptPlugin<?>) {
+                    builder.suggest(id.toString());
+                }
             }
 
             // Lock the suggestions after we've modified them.
