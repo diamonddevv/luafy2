@@ -3,6 +3,7 @@ package dev.diamond.luafy.registry;
 import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.script.event.ScriptEvent;
 import dev.diamond.luafy.script.ScriptPlugin;
+import dev.diamond.luafy.script.object.AbstractScriptObject;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -10,10 +11,12 @@ import net.minecraft.registry.RegistryKey;
 public class LuafyRegistries {
 
     public static RegistryKey<Registry<ScriptPlugin>> SCRIPT_PLUGINS_KEY;
-    public static RegistryKey<Registry<ScriptEvent>> SCRIPT_EVENTS_KEY;
+    public static RegistryKey<Registry<ScriptEvent<?>>> SCRIPT_EVENTS_KEY;
+    public static RegistryKey<Registry<AbstractScriptObject<?>>> SCRIPT_OBJECTS_KEY;
 
     public static Registry<ScriptPlugin> SCRIPT_PLUGINS;
-    public static Registry<ScriptEvent> SCRIPT_EVENTS;
+    public static Registry<ScriptEvent<?>> SCRIPT_EVENTS;
+    public static Registry<AbstractScriptObject<?>> SCRIPT_OBJECTS;
 
     private static <T> Registry<T> create(RegistryKey<Registry<T>> key) {
         return FabricRegistryBuilder.createSimple(key).buildAndRegister();
@@ -28,5 +31,8 @@ public class LuafyRegistries {
 
         SCRIPT_EVENTS_KEY = of("script_events");
         SCRIPT_EVENTS = create(SCRIPT_EVENTS_KEY);
+
+        SCRIPT_OBJECTS_KEY = of("script_objects");
+        SCRIPT_OBJECTS = create(SCRIPT_OBJECTS_KEY);
     }
 }

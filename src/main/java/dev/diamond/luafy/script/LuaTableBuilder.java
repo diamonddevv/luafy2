@@ -18,9 +18,11 @@ public class LuaTableBuilder {
 
 
     public void add(String key, int i) { addInternal(key, LuaValue.valueOf(i)); }
+    public void add(String key, long l) { addInternal(key, LuaValue.valueOf(l)); }
     public void add(String key, String s) { addInternal(key, LuaValue.valueOf(s)); }
     public void add(String key, boolean bl) { addInternal(key, LuaValue.valueOf(bl)); }
     public void add(String key, float f) { addInternal(key, LuaValue.valueOf(f)); }
+    public void add(String key, double d) { addInternal(key, LuaValue.valueOf(d)); }
     public void add(String key, LuaTable tbl) { addInternal(key, tbl); }
 
 

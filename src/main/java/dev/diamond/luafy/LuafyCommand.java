@@ -49,9 +49,24 @@ public class LuafyCommand {
                                           literal("event").then(
                                                   argument("id", IdentifierArgumentType.identifier()).suggests(new EventIdSuggestionProvider()).executes(LuafyCommand::autodocEvent)
                                           )
+                                  ).then(
+                                          literal("object").then(
+                                                  argument("id", IdentifierArgumentType.identifier()).suggests(new ObjectIdSuggestionProvider()).executes(LuafyCommand::autodocObject)
+                                          )
                                   )
                   )
         );
+    }
+
+    private static int autodocObject(CommandContext<ServerCommandSource> ctx) {
+        Identifier id = IdentifierArgumentType.getIdentifier(ctx, "id");
+        if (LuafyRegistries.SCRIPT_OBJECTS.containsId(id) && LuafyRegistries.SCRIPT_OBJECTS.get(id) instanceof Autodocumentable autodocumentable) {
+            ctx.getSource().sendFeedback(() -> Text.literal(autodocumentable.generateAutodoc()), false);
+            return 1;
+        } else {
+            ctx.getSource().sendFeedback(() -> Text.literal("Object " + id + " does not exist").formatted(Formatting.RED), false);
+            return 0;
+        }
     }
 
     private static int autodocEvent(CommandContext<ServerCommandSource> ctx) {
@@ -144,6 +159,19 @@ public class LuafyCommand {
         public CompletableFuture<Suggestions> getSuggestions(CommandContext<ServerCommandSource> ctx, SuggestionsBuilder builder) throws CommandSyntaxException {
 
             for (Identifier id : LuafyRegistries.SCRIPT_EVENTS.getIds()) {
+                builder.suggest(id.toString());
+            }
+
+            // Lock the suggestions after we've modified them.
+            return builder.buildFuture();
+        }
+    }
+
+    private static class ObjectIdSuggestionProvider implements SuggestionProvider<ServerCommandSource> {
+        @Override
+        public CompletableFuture<Suggestions> getSuggestions(CommandContext<ServerCommandSource> ctx, SuggestionsBuilder builder) throws CommandSyntaxException {
+
+            for (Identifier id : LuafyRegistries.SCRIPT_OBJECTS.getIds()) {
                 builder.suggest(id.toString());
             }
 

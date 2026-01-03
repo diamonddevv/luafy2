@@ -2,6 +2,7 @@ package dev.diamond.luafy;
 
 import dev.diamond.luafy.registry.LuafyRegistries;
 import dev.diamond.luafy.registry.ScriptEvents;
+import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.registry.ScriptPlugins;
 import dev.diamond.luafy.script.ScriptEventResourceLoader;
 import dev.diamond.luafy.script.ScriptManager;
@@ -43,6 +44,7 @@ public class Luafy implements ModInitializer {
 		ResourceManagerHelperImpl.get(ResourceType.SERVER_DATA).registerReloadListener(SCRIPT_EVENT_RESOURCE_LOADER);
 
 		ScriptPlugins.registerAll();
+		ScriptObjects.registerAll();
 		ScriptEvents.registerAll();
 		ScriptEvents.applyEvents();
 	}
