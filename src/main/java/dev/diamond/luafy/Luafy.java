@@ -1,7 +1,9 @@
 package dev.diamond.luafy;
 
 import dev.diamond.luafy.registry.LuafyRegistries;
+import dev.diamond.luafy.registry.ScriptEvents;
 import dev.diamond.luafy.registry.ScriptPlugins;
+import dev.diamond.luafy.script.ScriptEventResourceLoader;
 import dev.diamond.luafy.script.ScriptManager;
 import dev.diamond.luafy.script.ScriptResourceLoader;
 import net.fabricmc.api.ModInitializer;
@@ -24,7 +26,7 @@ public class Luafy implements ModInitializer {
 
 	public static final ScriptManager SCRIPT_MANAGER = new ScriptManager();
 	public static final ScriptResourceLoader SCRIPT_RESOURCE_LOADER = new ScriptResourceLoader();
-
+	public static final ScriptEventResourceLoader SCRIPT_EVENT_RESOURCE_LOADER = new ScriptEventResourceLoader();
 
 	@Override
 	public void onInitialize() {
@@ -38,9 +40,11 @@ public class Luafy implements ModInitializer {
 		LuafyRegistries.register();
 		CommandRegistrationCallback.EVENT.register(LuafyCommand::register);
 		ResourceManagerHelperImpl.get(ResourceType.SERVER_DATA).registerReloadListener(SCRIPT_RESOURCE_LOADER);
+		ResourceManagerHelperImpl.get(ResourceType.SERVER_DATA).registerReloadListener(SCRIPT_EVENT_RESOURCE_LOADER);
 
 		ScriptPlugins.registerAll();
-
+		ScriptEvents.registerAll();
+		ScriptEvents.applyEvents();
 	}
 
 	public static Identifier id(String path) {

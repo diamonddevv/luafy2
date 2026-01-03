@@ -1,5 +1,7 @@
 package dev.diamond.luafy.script;
 
+import dev.diamond.luafy.registry.LuafyRegistries;
+import dev.diamond.luafy.script.event.ScriptEvent;
 import net.minecraft.util.Identifier;
 
 import java.util.Collection;
@@ -35,4 +37,9 @@ public class ScriptManager {
         return scripts.keySet().stream().map(Identifier::toString).collect(Collectors.toSet());
     }
 
+    public void clearScriptEventsCaches() {
+        for (ScriptEvent event : LuafyRegistries.SCRIPT_EVENTS) {
+            event.clear();
+        }
+    }
 }

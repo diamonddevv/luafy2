@@ -56,7 +56,7 @@ public class LuafyCommand {
 
     private static int autodocEvent(CommandContext<ServerCommandSource> ctx) {
         Identifier id = IdentifierArgumentType.getIdentifier(ctx, "id");
-        if (false && LuafyRegistries.SCRIPT_PLUGINS.get(id) instanceof Autodocumentable autodocumentable) {
+        if (LuafyRegistries.SCRIPT_EVENTS.containsId(id) && LuafyRegistries.SCRIPT_EVENTS.get(id) instanceof Autodocumentable autodocumentable) {
             ctx.getSource().sendFeedback(() -> Text.literal(autodocumentable.generateAutodoc()), false);
             return 1;
         } else {
@@ -143,7 +143,9 @@ public class LuafyCommand {
         @Override
         public CompletableFuture<Suggestions> getSuggestions(CommandContext<ServerCommandSource> ctx, SuggestionsBuilder builder) throws CommandSyntaxException {
 
-
+            for (Identifier id : LuafyRegistries.SCRIPT_EVENTS.getIds()) {
+                builder.suggest(id.toString());
+            }
 
             // Lock the suggestions after we've modified them.
             return builder.buildFuture();

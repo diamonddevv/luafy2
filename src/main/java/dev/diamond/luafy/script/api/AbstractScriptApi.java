@@ -79,7 +79,7 @@ public abstract class AbstractScriptApi extends TwoArgFunction {
     public record ArgDocInfo(String argName, String argType, String argDesc) { }
 
     public static class ArglistBuilder {
-        private final ArrayList<ArgDocInfo> args;
+        public final ArrayList<ArgDocInfo> args;
 
         public ArglistBuilder() {
             this.args = new ArrayList<>();

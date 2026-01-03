@@ -2,25 +2,16 @@ package dev.diamond.luafy.script;
 
 import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.registry.LuafyRegistries;
-import dev.diamond.luafy.script.api.LuafyApi;
-import dev.diamond.luafy.script.api.MinecraftApi;
 import net.minecraft.server.command.ServerCommandSource;
-import org.apache.logging.log4j.core.jmx.Server;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.luaj.vm2.Globals;
-import org.luaj.vm2.LoadState;
 import org.luaj.vm2.LuaError;
+import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.compiler.LuaC;
-import org.luaj.vm2.lib.Bit32Lib;
-import org.luaj.vm2.lib.CoroutineLib;
-import org.luaj.vm2.lib.PackageLib;
-import org.luaj.vm2.lib.TableLib;
-import org.luaj.vm2.lib.jse.*;
 
 public class LuaScript {
 
+    private final String CONTEXT_KEY = "ctx";
 
     private final Globals globals;
     private LuaValue script;
@@ -40,14 +31,19 @@ public class LuaScript {
         }
     }
 
-
     public Result execute(@NotNull ServerCommandSource src) {
+        return this.execute(src, LuaTable.tableOf());
+    }
+
+
+    public Result execute(@NotNull ServerCommandSource src, LuaTable ctx) {
         if (!compilationError.isBlank()) {
             return new Result(LuaValue.NIL, compilationError);
         }
 
         try {
             this.src = src;
+            this.globals.set(CONTEXT_KEY, ctx);
             return new Result(this.script.call(), "");
         } catch (LuaError err) {
             String error = "[LUA: INTERPRETATION] :: " + err.getMessage();
