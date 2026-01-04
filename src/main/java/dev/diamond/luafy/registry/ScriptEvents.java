@@ -1,8 +1,11 @@
 package dev.diamond.luafy.registry;
 
 import dev.diamond.luafy.Luafy;
+import dev.diamond.luafy.script.LuaTableBuilder;
 import dev.diamond.luafy.script.event.ScriptEvent;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.registry.Registry;
 
 public class ScriptEvents {
@@ -13,8 +16,15 @@ public class ScriptEvents {
 
     });
 
+    public static ScriptEvent<LivingEntity> LIVING_ENTITY_DIED = new ScriptEvent<>("Executes after a living entity is killed.", b -> {
+        b.add("pos", ScriptObjects.VEC3D.getArgTypeString(), "The position of the killed entity.");
+    }, (src, ctx) -> {
+        ctx.add("pos", LuaTableBuilder.provide(b -> ScriptObjects.VEC3D.toTable(src.getEntityPos(), b)));
+    });
+
     public static void registerAll() {
         Registry.register(LuafyRegistries.SCRIPT_EVENTS, Luafy.id("tick"), TICK);
+        Registry.register(LuafyRegistries.SCRIPT_EVENTS, Luafy.id("living_entity_died"), LIVING_ENTITY_DIED);
     }
 
 
@@ -23,6 +33,11 @@ public class ScriptEvents {
         // tick
         ServerTickEvents.START_SERVER_TICK.register(server -> {
             TICK.trigger(server.getCommandSource(), null);
+        });
+
+        // entity
+        ServerLivingEntityEvents.AFTER_DEATH.register((e, src) -> {
+            LIVING_ENTITY_DIED.trigger(e.getEntityWorld().getServer().getCommandSource(), e);
         });
 
     }

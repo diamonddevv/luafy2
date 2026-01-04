@@ -26,7 +26,7 @@ public class Vec3dScriptObject extends AbstractScriptObject<Vec3d> {
         builder.add("y", obj.y);
         builder.add("z", obj.z);
 
-        builder.add(MetamethodNames.TO_STRING, args -> LuaString.valueOf(String.format("[%s, %s, %s]", obj.x, obj.y, obj.z)));
+        builder.add(MetamethodNames.TO_STRING, args -> LuaString.valueOf(Vec3dScriptObject.toString(obj)));
     }
 
     @Override
@@ -37,5 +37,9 @@ public class Vec3dScriptObject extends AbstractScriptObject<Vec3d> {
     @Override
     public String getArgTypeString() {
         return "vec3d";
+    }
+
+    private static String toString(Vec3d obj) {
+        return String.format("[%s, %s, %s]", obj.x, obj.y, obj.z);
     }
 }

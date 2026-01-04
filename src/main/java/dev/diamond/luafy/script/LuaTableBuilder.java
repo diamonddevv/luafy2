@@ -6,6 +6,7 @@ import org.luaj.vm2.Varargs;
 import org.luaj.vm2.lib.VarArgFunction;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class LuaTableBuilder {
@@ -47,4 +48,11 @@ public class LuaTableBuilder {
     public static LuaTable ofArrayStrings(ArrayList<String> strings)    { return ofArray((LuaValue[]) strings   .stream().map(LuaValue::valueOf).toArray()); }
     public static LuaTable ofArrayBools(ArrayList<Boolean> bools)       { return ofArray((LuaValue[]) bools     .stream().map(LuaValue::valueOf).toArray()); }
     public static LuaTable ofArrayFloats(ArrayList<Float> floats)       { return ofArray((LuaValue[]) floats    .stream().map(LuaValue::valueOf).toArray()); }
+
+
+    public static LuaTable provide(Consumer<LuaTableBuilder> table) {
+        var b = new LuaTableBuilder();
+        table.accept(b);
+        return b.build();
+    }
 }
