@@ -51,7 +51,7 @@ public abstract class AbstractScriptObject<T> implements Autodocumentable {
         }
 
         s.append("\nFunctions:\n");
-        if (!docs.propertyDocs.isEmpty()) {
+        if (!docs.functionDocs.isEmpty()) {
             for (var f : docs.functionDocs) {
                 s.append(f.generateAutodoc());
                 s.append("\n");
