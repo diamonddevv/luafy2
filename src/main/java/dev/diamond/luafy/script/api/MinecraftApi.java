@@ -2,7 +2,8 @@ package dev.diamond.luafy.script.api;
 
 import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import dev.diamond.luafy.script.ArgtypeStrings;
+import dev.diamond.luafy.autodoc.ArgtypeStrings;
+import dev.diamond.luafy.autodoc.FunctionListBuilder;
 import dev.diamond.luafy.script.LuaScript;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;

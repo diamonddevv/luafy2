@@ -1,4 +1,4 @@
-package dev.diamond.luafy.script;
+package dev.diamond.luafy.autodoc;
 
 public class ArgtypeStrings {
     public static final String NIL = "nil";

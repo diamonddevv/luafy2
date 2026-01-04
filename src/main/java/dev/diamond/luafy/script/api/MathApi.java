@@ -1,7 +1,8 @@
 package dev.diamond.luafy.script.api;
 
+import dev.diamond.luafy.autodoc.FunctionListBuilder;
 import dev.diamond.luafy.registry.ScriptObjects;
-import dev.diamond.luafy.script.ArgtypeStrings;
+import dev.diamond.luafy.autodoc.ArgtypeStrings;
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.script.LuaTableBuilder;
 import net.minecraft.util.math.Vec3d;
