@@ -42,7 +42,7 @@ public class LuaScript {
         }
 
         try {
-            this.src = src;
+            this.src = src.withSilent();
             this.globals.set(CONTEXT_KEY, ctx);
             return new Result(this.script.call(), "");
         } catch (LuaError err) {

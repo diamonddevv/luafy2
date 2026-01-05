@@ -17,14 +17,14 @@ public class ScriptEvents {
     });
 
     public static ScriptEvent<LivingEntity> LIVING_ENTITY_DIED = new ScriptEvent<>("Executes after a living entity is killed.", b -> {
-        b.add("pos", ScriptObjects.VEC3D.getArgTypeString(), "The position of the killed entity.");
+
     }, (src, ctx) -> {
-        ctx.add("pos", LuaTableBuilder.provide(b -> ScriptObjects.VEC3D.toTable(src.getEntityPos(), b)));
+
     });
 
     public static void registerAll() {
         Registry.register(LuafyRegistries.SCRIPT_EVENTS, Luafy.id("tick"), TICK);
-        Registry.register(LuafyRegistries.SCRIPT_EVENTS, Luafy.id("living_entity_died"), LIVING_ENTITY_DIED);
+        //Registry.register(LuafyRegistries.SCRIPT_EVENTS, Luafy.id("living_entity_died"), LIVING_ENTITY_DIED);
     }
 
 
@@ -35,10 +35,10 @@ public class ScriptEvents {
             TICK.trigger(server.getCommandSource(), null);
         });
 
-        // entity
-        ServerLivingEntityEvents.AFTER_DEATH.register((e, src) -> {
-            LIVING_ENTITY_DIED.trigger(e.getEntityWorld().getServer().getCommandSource(), e);
-        });
+//        // entity
+//        ServerLivingEntityEvents.AFTER_DEATH.register((e, src) -> {
+//            LIVING_ENTITY_DIED.trigger(e.getEntityWorld().getServer().getCommandSource(), e);
+//        });
 
     }
 

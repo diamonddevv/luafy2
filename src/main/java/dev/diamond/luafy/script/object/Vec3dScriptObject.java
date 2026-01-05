@@ -27,6 +27,8 @@ public class Vec3dScriptObject extends AbstractScriptObject<Vec3d> {
         builder.add("z", obj.z);
 
         builder.add(MetamethodNames.TO_STRING, args -> LuaString.valueOf(Vec3dScriptObject.toString(obj)));
+
+        makeReadonly(builder);
     }
 
     @Override

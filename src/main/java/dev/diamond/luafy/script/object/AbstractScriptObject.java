@@ -1,12 +1,15 @@
 package dev.diamond.luafy.script.object;
 
+import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.autodoc.ArglistBuilder;
 import dev.diamond.luafy.autodoc.Autodocumentable;
 import dev.diamond.luafy.autodoc.FunctionDocInfo;
 import dev.diamond.luafy.registry.LuafyRegistries;
 import dev.diamond.luafy.script.LuaTableBuilder;
+import dev.diamond.luafy.script.MetamethodNames;
 import net.minecraft.server.command.ServerCommandSource;
 import org.luaj.vm2.LuaTable;
+import org.luaj.vm2.LuaValue;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -26,6 +29,13 @@ public abstract class AbstractScriptObject<T> implements Autodocumentable {
     public abstract void toTable(T obj, LuaTableBuilder builder);
     public abstract T toThing(LuaTable table, ServerCommandSource src);
     public abstract String getArgTypeString();
+
+    public static void makeReadonly(LuaTableBuilder builder) {
+        builder.add(MetamethodNames.NEW_INDEX, args -> {
+            Luafy.LOGGER.error("Tried to write to a readonly object!");
+            return LuaValue.NIL;
+        });
+    }
 
     @Override
     public String generateAutodoc() {

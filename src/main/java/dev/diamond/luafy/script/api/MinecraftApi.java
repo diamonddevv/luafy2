@@ -1,11 +1,17 @@
 package dev.diamond.luafy.script.api;
 
 import com.mojang.brigadier.ParseResults;
+import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import dev.diamond.luafy.autodoc.ArgtypeStrings;
 import dev.diamond.luafy.autodoc.FunctionListBuilder;
+import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.script.LuaScript;
+import dev.diamond.luafy.script.LuaTableBuilder;
+import net.minecraft.command.EntitySelector;
+import net.minecraft.command.EntitySelectorReader;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import org.luaj.vm2.LuaValue;
 
@@ -20,9 +26,13 @@ public class MinecraftApi extends AbstractScriptApi {
     public void addFunctions(FunctionListBuilder builder) {
         builder.add("say", args -> {
             String s = args.arg1().tojstring();
-            script.getSource().sendMessage(Text.literal(s));
+
+            for (ServerPlayerEntity spe : script.getSource().getServer().getPlayerManager().getPlayerList()) {
+                spe.sendMessageToClient(Text.literal(s), false);
+            }
+
             return LuaValue.NIL;
-        }, "Prints a line to the server chat.", args -> {
+        }, "Prints an unformatted line to the server chat, visible to all players. (similar to /tellraw)", args -> {
             args.add("message", ArgtypeStrings.STRING, "Message to be printed.");
         }, ArgtypeStrings.NIL);
 
@@ -35,6 +45,21 @@ public class MinecraftApi extends AbstractScriptApi {
         }, "Executes the given command from the server command source. Returns the result of the command.", args -> {
             args.add("command", ArgtypeStrings.STRING, "Command to be executed.");
         }, ArgtypeStrings.INTEGER);
+
+        builder.add("getPlayerFromSelector", args -> {
+            String selector = args.arg1().tojstring();
+            EntitySelectorReader reader = new EntitySelectorReader(new StringReader(selector), true);
+            reader.setIncludesNonPlayers(false);
+            EntitySelector s = reader.build();
+            try {
+                ServerPlayerEntity player = s.getPlayer(script.getSource());
+                return LuaTableBuilder.provide(b -> ScriptObjects.PLAYER.toTable(player, b));
+            } catch (CommandSyntaxException e) {
+                throw new RuntimeException(e);
+            }
+        }, "Uses an entity selector to find a player.", args -> {
+            args.add("selector", ArgtypeStrings.STRING, "Entity selector");
+        }, ScriptObjects.PLAYER.getArgTypeString());
     }
 
     public static ParseResults<ServerCommandSource> parseCommand(String command, ServerCommandSource source) {
