@@ -45,6 +45,9 @@ public class LuaTableBuilder {
             }
         });
     }
+    public void addMetatag(LuaString key, LuaValue value) {
+        this.metatable.set(key, value);
+    }
 
 
     public LuaTable build() {

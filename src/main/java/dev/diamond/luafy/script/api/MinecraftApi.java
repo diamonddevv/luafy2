@@ -50,7 +50,7 @@ public class MinecraftApi extends AbstractScriptApi {
             args.add("command", ArgtypeStrings.STRING, "Command to be executed.");
         }, ArgtypeStrings.INTEGER);
 
-        builder.add("getPlayerFromSelector", args -> {
+        builder.add("get_player_from_selector", args -> {
             String selector = MetamethodImpl.tostring(args.arg1());
             EntitySelectorReader reader = new EntitySelectorReader(new StringReader(selector), true);
             reader.setIncludesNonPlayers(false);

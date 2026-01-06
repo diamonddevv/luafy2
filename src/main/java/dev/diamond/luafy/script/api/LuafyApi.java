@@ -1,5 +1,6 @@
 package dev.diamond.luafy.script.api;
 
+import dev.diamond.luafy.HelloWorldSupplier;
 import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.autodoc.FunctionListBuilder;
 import dev.diamond.luafy.script.LuaScript;
@@ -25,5 +26,12 @@ public class LuafyApi extends AbstractScriptApi {
         }, "Executes the script with the given identifier. Returns the value returned from this script.", args -> {
             args.add("script", ArgtypeStrings.STRING, "Identifier of script to be executed.");
         }, ArgtypeStrings.VALUE);
+
+
+        builder.add("provide_hello_world", args -> {
+            return LuaValue.valueOf(HelloWorldSupplier.supply(System.currentTimeMillis()));
+        }, "Returns a random hello world, as the mod does when Minecraft boots.", args -> {
+
+        }, ArgtypeStrings.STRING);
     }
 }
