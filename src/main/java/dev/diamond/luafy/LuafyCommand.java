@@ -31,7 +31,7 @@ public class LuafyCommand {
                                 CommandRegistryAccess access, CommandManager.RegistrationEnvironment environment)
     {
         dispatcher.register(
-          literal("luafy").requires(CommandManager.requirePermissionLevel(CommandManager.ADMINS_CHECK))
+          literal("luafy").requires(CommandManager.requirePermissionLevel(CommandManager.GAMEMASTERS_CHECK))
                   .then(
                           literal("eval").then(
                                   argument("src", StringArgumentType.string()).executes(LuafyCommand::eval)
