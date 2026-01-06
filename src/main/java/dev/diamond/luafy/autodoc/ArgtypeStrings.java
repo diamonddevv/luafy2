@@ -7,4 +7,6 @@ public class ArgtypeStrings {
     public static final String STRING = "string";
     public static final String VALUE = "value";
     public static final String INTEGER = "int";
+    public static final String TABLE = "table";
+    public static final String LIST = "list";
 }

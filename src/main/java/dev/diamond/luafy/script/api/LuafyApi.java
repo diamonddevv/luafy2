@@ -7,6 +7,7 @@ import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.autodoc.ArgtypeStrings;
 import dev.diamond.luafy.lua.MetamethodImpl;
 import net.minecraft.util.Identifier;
+import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaValue;
 
 public class LuafyApi extends AbstractScriptApi {
@@ -30,8 +31,10 @@ public class LuafyApi extends AbstractScriptApi {
 
         builder.add("provide_hello_world", args -> {
             return LuaValue.valueOf(HelloWorldSupplier.supply(System.currentTimeMillis()));
-        }, "Returns a random hello world, as the mod does when Minecraft boots.", args -> {
+        }, "Returns a random hello world, as the mod does when Minecraft boots.", args -> {}, ArgtypeStrings.STRING);
 
-        }, ArgtypeStrings.STRING);
+        builder.add("get_luaj_version", args -> {
+            return LuaString.valueOf(Luafy.LUAJ_VER);
+        }, "Returns the version of LuaJ used by the mod.", args -> {}, ArgtypeStrings.STRING);
     }
 }

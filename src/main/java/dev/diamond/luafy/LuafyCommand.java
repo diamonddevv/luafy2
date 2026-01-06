@@ -37,6 +37,10 @@ public class LuafyCommand {
                                   argument("src", StringArgumentType.string()).executes(LuafyCommand::eval)
                           )
                   ).then(
+                          literal("value").then(
+                                  argument("src", StringArgumentType.string()).executes(LuafyCommand::value)
+                          )
+                  ).then(
                           literal("execute").then(
                                   argument("id", IdentifierArgumentType.identifier()).suggests(new LuafyCommand.ScriptIdsSuggestionProvider()).executes(LuafyCommand::execute)
                           )
@@ -103,6 +107,11 @@ public class LuafyCommand {
         }
     }
 
+    private static int value(CommandContext<ServerCommandSource> ctx) {
+        String src = StringArgumentType.getString(ctx, "src");
+        return execScript(ctx, new LuaScript("minecraft.get_player_from_selector(\"@s\").tell(" + src + ")"), "");
+    }
+
 
     private static int eval(CommandContext<ServerCommandSource> ctx) {
         String src = StringArgumentType.getString(ctx, "src");
@@ -114,7 +123,7 @@ public class LuafyCommand {
         LuaScript.Result result = script.execute(ctx.getSource());
 
         if (result.success()) {
-            ctx.getSource().sendFeedback(() -> Text.literal(successString), true);
+            if (!successString.isEmpty()) ctx.getSource().sendFeedback(() -> Text.literal(successString), true);
 
             if (result.getResult().isint()) {
                 return result.getResult().toint();

@@ -7,6 +7,8 @@ import org.luaj.vm2.Varargs;
 import org.luaj.vm2.lib.VarArgFunction;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -55,14 +57,18 @@ public class LuaTableBuilder {
         return this.table;
     }
 
-    private static LuaTable ofArray(LuaValue[] values) {
-        return LuaTable.listOf(values);
+    private static <T extends LuaValue> LuaTable ofArray(List<T> values) {
+        LuaValue[] arr = new LuaValue[values.size()];
+        for (int i = 0; i < values.size(); i++) {
+            arr[i] = values.get(i);
+        }
+        return LuaTable.listOf(arr);
     }
 
-    public static LuaTable ofArrayInts(ArrayList<Integer> ints)         { return ofArray((LuaValue[]) ints      .stream().map(LuaValue::valueOf).toArray()); }
-    public static LuaTable ofArrayStrings(ArrayList<String> strings)    { return ofArray((LuaValue[]) strings   .stream().map(LuaValue::valueOf).toArray()); }
-    public static LuaTable ofArrayBools(ArrayList<Boolean> bools)       { return ofArray((LuaValue[]) bools     .stream().map(LuaValue::valueOf).toArray()); }
-    public static LuaTable ofArrayFloats(ArrayList<Float> floats)       { return ofArray((LuaValue[]) floats    .stream().map(LuaValue::valueOf).toArray()); }
+    public static LuaTable ofArrayInts(Collection<Integer> ints)         { return ofArray(ints      .stream().map(LuaValue::valueOf).toList()); }
+    public static LuaTable ofArrayStrings(Collection<String> strings)    { return ofArray(strings   .stream().map(LuaValue::valueOf).toList()); }
+    public static LuaTable ofArrayBools(Collection<Boolean> bools)       { return ofArray(bools     .stream().map(LuaValue::valueOf).toList()); }
+    public static LuaTable ofArrayFloats(Collection<Float> floats)       { return ofArray(floats    .stream().map(LuaValue::valueOf).toList()); }
 
 
     public static LuaTable provide(Consumer<LuaTableBuilder> table) {

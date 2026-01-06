@@ -9,11 +9,13 @@ import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.lua.MetamethodImpl;
+import net.minecraft.SharedConstants;
 import net.minecraft.command.EntitySelector;
 import net.minecraft.command.EntitySelectorReader;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaValue;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -25,6 +27,10 @@ public class MinecraftApi extends AbstractScriptApi {
 
     @Override
     public void addFunctions(FunctionListBuilder builder) {
+        builder.add("get_version", args -> {
+            return LuaString.valueOf(SharedConstants.getGameVersion().name());
+        }, "Returns the current Minecraft version string.", args -> {}, ArgtypeStrings.STRING);
+
         builder.add("say", args -> {
             String s = MetamethodImpl.tostring(args.arg1());
 
