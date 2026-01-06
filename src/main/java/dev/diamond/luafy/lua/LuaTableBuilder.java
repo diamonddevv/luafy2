@@ -1,5 +1,6 @@
-package dev.diamond.luafy.script;
+package dev.diamond.luafy.lua;
 
+import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
@@ -11,9 +12,11 @@ import java.util.function.Function;
 
 public class LuaTableBuilder {
     private final LuaTable table;
+    private final LuaTable metatable;
 
     public LuaTableBuilder() {
         this.table = LuaTable.tableOf();
+        this.metatable = LuaTable.tableOf();
     }
 
     private void addInternal(String key, LuaValue value) {
@@ -34,9 +37,18 @@ public class LuaTableBuilder {
             return function.apply(args);
         }
     }); }
+    public void addMetamethod(LuaString key, Function<Varargs, LuaValue> function) {
+        this.metatable.set(key, new VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                return function.apply(args);
+            }
+        });
+    }
 
 
     public LuaTable build() {
+        this.table.setmetatable(this.metatable);
         return this.table;
     }
 

@@ -4,7 +4,7 @@ import dev.diamond.luafy.autodoc.FunctionListBuilder;
 import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.autodoc.ArgtypeStrings;
 import dev.diamond.luafy.script.LuaScript;
-import dev.diamond.luafy.script.LuaTableBuilder;
+import dev.diamond.luafy.lua.LuaTableBuilder;
 import net.minecraft.util.math.Vec3d;
 
 public class MathApi extends AbstractScriptApi {

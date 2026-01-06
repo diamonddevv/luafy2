@@ -7,7 +7,8 @@ import dev.diamond.luafy.autodoc.ArgtypeStrings;
 import dev.diamond.luafy.autodoc.FunctionListBuilder;
 import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.script.LuaScript;
-import dev.diamond.luafy.script.LuaTableBuilder;
+import dev.diamond.luafy.lua.LuaTableBuilder;
+import dev.diamond.luafy.lua.MetamethodImpl;
 import net.minecraft.command.EntitySelector;
 import net.minecraft.command.EntitySelectorReader;
 import net.minecraft.server.command.ServerCommandSource;
@@ -25,19 +26,22 @@ public class MinecraftApi extends AbstractScriptApi {
     @Override
     public void addFunctions(FunctionListBuilder builder) {
         builder.add("say", args -> {
-            String s = args.arg1().tojstring();
+            String s = MetamethodImpl.tostring(args.arg1());
 
             for (ServerPlayerEntity spe : script.getSource().getServer().getPlayerManager().getPlayerList()) {
                 spe.sendMessageToClient(Text.literal(s), false);
             }
 
+            script.getGlobals().STDOUT.print(s);
+            script.getGlobals().STDOUT.print('\n');
+
             return LuaValue.NIL;
-        }, "Prints an unformatted line to the server chat, visible to all players. (similar to /tellraw)", args -> {
+        }, "Prints an unformatted line to the server chat, visible to all players. (similar to /tellraw). Also prints to the console.", args -> {
             args.add("message", ArgtypeStrings.STRING, "Message to be printed.");
         }, ArgtypeStrings.NIL);
 
         builder.add("command", args -> {
-            String s = args.arg1().tojstring();
+            String s = MetamethodImpl.tostring(args.arg1());
             var source = script.getSource().getServer().getCommandSource();
             var cmd = parseCommand(s, source);
             int result = executeCommand(cmd, source);
@@ -47,7 +51,7 @@ public class MinecraftApi extends AbstractScriptApi {
         }, ArgtypeStrings.INTEGER);
 
         builder.add("getPlayerFromSelector", args -> {
-            String selector = args.arg1().tojstring();
+            String selector = MetamethodImpl.tostring(args.arg1());
             EntitySelectorReader reader = new EntitySelectorReader(new StringReader(selector), true);
             reader.setIncludesNonPlayers(false);
             EntitySelector s = reader.build();

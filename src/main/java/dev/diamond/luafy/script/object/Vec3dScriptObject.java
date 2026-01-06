@@ -1,8 +1,8 @@
 package dev.diamond.luafy.script.object;
 
 import dev.diamond.luafy.autodoc.ArgtypeStrings;
-import dev.diamond.luafy.script.LuaTableBuilder;
-import dev.diamond.luafy.script.MetamethodNames;
+import dev.diamond.luafy.lua.LuaTableBuilder;
+import dev.diamond.luafy.lua.MetamethodNames;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.math.Vec3d;
 import org.luaj.vm2.LuaString;
@@ -26,7 +26,7 @@ public class Vec3dScriptObject extends AbstractScriptObject<Vec3d> {
         builder.add("y", obj.y);
         builder.add("z", obj.z);
 
-        builder.add(MetamethodNames.TO_STRING, args -> LuaString.valueOf(Vec3dScriptObject.toString(obj)));
+        builder.addMetamethod(MetamethodNames.TO_STRING, args -> LuaString.valueOf(Vec3dScriptObject.toString(obj)));
 
         makeReadonly(builder);
     }

@@ -5,7 +5,7 @@ import dev.diamond.luafy.autodoc.ArglistBuilder;
 import dev.diamond.luafy.autodoc.Autodocumentable;
 import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.registry.LuafyRegistries;
-import dev.diamond.luafy.script.LuaTableBuilder;
+import dev.diamond.luafy.lua.LuaTableBuilder;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;

@@ -2,7 +2,7 @@ package dev.diamond.luafy.script.object;
 
 import dev.diamond.luafy.autodoc.ArgtypeStrings;
 import dev.diamond.luafy.registry.ScriptObjects;
-import dev.diamond.luafy.script.LuaTableBuilder;
+import dev.diamond.luafy.lua.LuaTableBuilder;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.luaj.vm2.LuaTable;

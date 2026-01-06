@@ -1,9 +1,7 @@
 package dev.diamond.luafy.registry;
 
 import dev.diamond.luafy.Luafy;
-import dev.diamond.luafy.script.LuaTableBuilder;
 import dev.diamond.luafy.script.event.ScriptEvent;
-import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.registry.Registry;
