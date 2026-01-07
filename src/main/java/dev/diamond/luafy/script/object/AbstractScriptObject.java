@@ -2,20 +2,19 @@ package dev.diamond.luafy.script.object;
 
 import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.autodoc.ArglistBuilder;
-import dev.diamond.luafy.autodoc.Autodocumentable;
+import dev.diamond.luafy.autodoc.SimpleAutodocumentable;
 import dev.diamond.luafy.autodoc.FunctionDocInfo;
 import dev.diamond.luafy.registry.LuafyRegistries;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.lua.MetamethodNames;
 import net.minecraft.server.command.ServerCommandSource;
-import org.luaj.vm2.Lua;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-public abstract class AbstractScriptObject<T> implements Autodocumentable {
+public abstract class AbstractScriptObject<T> implements SimpleAutodocumentable {
     private final String desc;
     private final ScriptObjectDocBuilder docs;
 
@@ -39,7 +38,7 @@ public abstract class AbstractScriptObject<T> implements Autodocumentable {
     }
 
     @Override
-    public String generateAutodoc() {
+    public String generateAutodocString() {
         StringBuilder s = new StringBuilder();
 
         var id = LuafyRegistries.SCRIPT_OBJECTS.getId(this);
@@ -64,7 +63,7 @@ public abstract class AbstractScriptObject<T> implements Autodocumentable {
         s.append("\nFunctions:\n");
         if (!docs.functionDocs.isEmpty()) {
             for (var f : docs.functionDocs) {
-                s.append(f.generateAutodoc());
+                s.append(f.generateAutodocString());
                 s.append("\n");
             }
         } else {
@@ -74,6 +73,18 @@ public abstract class AbstractScriptObject<T> implements Autodocumentable {
         s.append("\n");
 
         return s.toString();
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public ArrayList<ScriptObjectDocProperty> getProperties() {
+        return docs.propertyDocs;
+    }
+
+    public ArrayList<FunctionDocInfo> getFunctions() {
+        return docs.functionDocs;
     }
 
     public static class ScriptObjectDocBuilder {
@@ -96,5 +107,5 @@ public abstract class AbstractScriptObject<T> implements Autodocumentable {
         }
     }
 
-    private record ScriptObjectDocProperty(String name, String type, String desc) {}
+    public record ScriptObjectDocProperty(String name, String type, String desc) {}
 }

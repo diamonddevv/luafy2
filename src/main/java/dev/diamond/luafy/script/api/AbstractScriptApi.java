@@ -7,7 +7,7 @@ import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.TwoArgFunction;
 
 public abstract class AbstractScriptApi extends TwoArgFunction {
-    private final String name;
+    public final String name;
     protected final LuaScript script;
 
     public AbstractScriptApi(String name, LuaScript script) {

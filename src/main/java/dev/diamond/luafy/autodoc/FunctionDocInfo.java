@@ -3,10 +3,10 @@ package dev.diamond.luafy.autodoc;
 import java.util.ArrayList;
 
 public record FunctionDocInfo(String funcName, String funcDesc, ArrayList<ArgDocInfo> args,
-                              String returnType) implements Autodocumentable {
+                              String returnType) implements SimpleAutodocumentable {
 
     @Override
-    public String generateAutodoc() {
+    public String generateAutodocString() {
         StringBuilder s = new StringBuilder();
 
         s.append(funcName());

@@ -7,7 +7,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import dev.diamond.luafy.autodoc.Autodocumentable;
+import dev.diamond.luafy.autodoc.SimpleAutodocumentable;
+import dev.diamond.luafy.autodoc.generator.AbstractAutodocGenerator;
 import dev.diamond.luafy.registry.LuafyRegistries;
 import dev.diamond.luafy.script.ApiScriptPlugin;
 import dev.diamond.luafy.script.LuaScript;
@@ -47,26 +48,53 @@ public class LuafyCommand {
                   ).then(
                           literal("autodoc")
                                   .then(
-                                          literal("api").then(
-                                                  argument("id", IdentifierArgumentType.identifier()).suggests(new ApiPluginIdSuggestionProvider()).executes(LuafyCommand::autodocApi)
+                                          literal("generate").then(
+                                                  argument("generator", IdentifierArgumentType.identifier()).suggests(new LuafyCommand.AutodocGeneratorIdsSuggestionProvider())
+                                                          .then(
+                                                                  argument("outputFileName", StringArgumentType.string()).executes(LuafyCommand::generateAutodoc)
+                                                          )
                                           )
                                   ).then(
-                                          literal("event").then(
-                                                  argument("id", IdentifierArgumentType.identifier()).suggests(new EventIdSuggestionProvider()).executes(LuafyCommand::autodocEvent)
-                                          )
-                                  ).then(
-                                          literal("object").then(
-                                                  argument("id", IdentifierArgumentType.identifier()).suggests(new ObjectIdSuggestionProvider()).executes(LuafyCommand::autodocObject)
-                                          )
+                                          literal("display")
+                                                  .then(
+                                                          literal("api").then(
+                                                                  argument("id", IdentifierArgumentType.identifier()).suggests(new ApiPluginIdSuggestionProvider()).executes(LuafyCommand::autodocApi)
+                                                          )
+                                                  ).then(
+                                                          literal("event").then(
+                                                                  argument("id", IdentifierArgumentType.identifier()).suggests(new EventIdSuggestionProvider()).executes(LuafyCommand::autodocEvent)
+                                                          )
+                                                  ).then(
+                                                          literal("object").then(
+                                                                  argument("id", IdentifierArgumentType.identifier()).suggests(new ObjectIdSuggestionProvider()).executes(LuafyCommand::autodocObject)
+                                                          )
+                                                  )
                                   )
                   )
         );
     }
 
+    private static int generateAutodoc(CommandContext<ServerCommandSource> ctx) {
+        Identifier id = IdentifierArgumentType.getIdentifier(ctx, "generator");
+        String outputFileName = StringArgumentType.getString(ctx, "outputFileName");
+        if (LuafyRegistries.AUTODOC_GENERATORS.containsId(id)) {
+            AbstractAutodocGenerator generator = LuafyRegistries.AUTODOC_GENERATORS.get(id);
+            assert generator != null;
+            long startTime = System.currentTimeMillis();
+            String filepath = generator.buildOutput(outputFileName);
+            long delta = System.currentTimeMillis() - startTime;
+            ctx.getSource().sendFeedback(() -> Text.literal("Autodoc generated at [" + filepath + "] (took " + delta + "ms)"), false);
+            return 1;
+        } else {
+            ctx.getSource().sendFeedback(() -> Text.literal("Autodoc generator " + id + " does not exist").formatted(Formatting.RED), false);
+            return 0;
+        }
+    }
+
     private static int autodocObject(CommandContext<ServerCommandSource> ctx) {
         Identifier id = IdentifierArgumentType.getIdentifier(ctx, "id");
-        if (LuafyRegistries.SCRIPT_OBJECTS.containsId(id) && LuafyRegistries.SCRIPT_OBJECTS.get(id) instanceof Autodocumentable autodocumentable) {
-            ctx.getSource().sendFeedback(() -> Text.literal(autodocumentable.generateAutodoc()), false);
+        if (LuafyRegistries.SCRIPT_OBJECTS.containsId(id) && LuafyRegistries.SCRIPT_OBJECTS.get(id) instanceof SimpleAutodocumentable autodocumentable) {
+            ctx.getSource().sendFeedback(() -> Text.literal(autodocumentable.generateAutodocString()), false);
             return 1;
         } else {
             ctx.getSource().sendFeedback(() -> Text.literal("Object " + id + " does not exist").formatted(Formatting.RED), false);
@@ -76,8 +104,8 @@ public class LuafyCommand {
 
     private static int autodocEvent(CommandContext<ServerCommandSource> ctx) {
         Identifier id = IdentifierArgumentType.getIdentifier(ctx, "id");
-        if (LuafyRegistries.SCRIPT_EVENTS.containsId(id) && LuafyRegistries.SCRIPT_EVENTS.get(id) instanceof Autodocumentable autodocumentable) {
-            ctx.getSource().sendFeedback(() -> Text.literal(autodocumentable.generateAutodoc()), false);
+        if (LuafyRegistries.SCRIPT_EVENTS.containsId(id) && LuafyRegistries.SCRIPT_EVENTS.get(id) instanceof SimpleAutodocumentable autodocumentable) {
+            ctx.getSource().sendFeedback(() -> Text.literal(autodocumentable.generateAutodocString()), false);
             return 1;
         } else {
             ctx.getSource().sendFeedback(() -> Text.literal("Event " + id + " does not exist").formatted(Formatting.RED), false);
@@ -87,8 +115,8 @@ public class LuafyCommand {
 
     private static int autodocApi(CommandContext<ServerCommandSource> ctx) {
         Identifier id = IdentifierArgumentType.getIdentifier(ctx, "id");
-        if (LuafyRegistries.SCRIPT_PLUGINS.containsId(id) && LuafyRegistries.SCRIPT_PLUGINS.get(id) instanceof Autodocumentable autodocumentable) {
-            ctx.getSource().sendFeedback(() -> Text.literal(autodocumentable.generateAutodoc()), false);
+        if (LuafyRegistries.SCRIPT_PLUGINS.containsId(id) && LuafyRegistries.SCRIPT_PLUGINS.get(id) instanceof SimpleAutodocumentable autodocumentable) {
+            ctx.getSource().sendFeedback(() -> Text.literal(autodocumentable.generateAutodocString()), false);
             return 1;
         } else {
             ctx.getSource().sendFeedback(() -> Text.literal("Api Script Plugin " + id + " does not exist").formatted(Formatting.RED), false);
@@ -182,6 +210,19 @@ public class LuafyCommand {
         public CompletableFuture<Suggestions> getSuggestions(CommandContext<ServerCommandSource> ctx, SuggestionsBuilder builder) throws CommandSyntaxException {
 
             for (Identifier id : LuafyRegistries.SCRIPT_OBJECTS.getIds()) {
+                builder.suggest(id.toString());
+            }
+
+            // Lock the suggestions after we've modified them.
+            return builder.buildFuture();
+        }
+    }
+
+    private static class AutodocGeneratorIdsSuggestionProvider implements SuggestionProvider<ServerCommandSource> {
+        @Override
+        public CompletableFuture<Suggestions> getSuggestions(CommandContext<ServerCommandSource> ctx, SuggestionsBuilder builder) throws CommandSyntaxException {
+
+            for (Identifier id : LuafyRegistries.AUTODOC_GENERATORS.getIds()) {
                 builder.suggest(id.toString());
             }
 

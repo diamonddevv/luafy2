@@ -5,8 +5,11 @@ public class ArgtypeStrings {
     public static final String BOOLEAN = "boolean";
     public static final String NUMBER = "number";
     public static final String STRING = "string";
-    public static final String VALUE = "value";
-    public static final String INTEGER = "int";
+    public static final String VALUE = "any";
+    public static final String INTEGER = "integer";
     public static final String TABLE = "table";
-    public static final String LIST = "list";
+
+    public static String array(String argtype) {
+        return argtype + "[]";
+    }
 }

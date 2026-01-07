@@ -13,7 +13,6 @@ import org.luaj.vm2.LuaBoolean;
 import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaValue;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 public class FabricApi extends AbstractScriptApi {
@@ -52,6 +51,6 @@ public class FabricApi extends AbstractScriptApi {
             return LuaTableBuilder.ofArrayStrings(FabricLoader.getInstance().getAllMods().stream().map(
                     mod -> mod.getMetadata().getId()
             ).toList());
-        }, "Returns a list of all the mods that are installed.", args -> {}, ArgtypeStrings.LIST);
+        }, "Returns a list of all the mods that are installed.", args -> {}, ArgtypeStrings.array(ArgtypeStrings.STRING));
     }
 }

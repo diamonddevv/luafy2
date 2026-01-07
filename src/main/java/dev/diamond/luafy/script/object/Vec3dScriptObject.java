@@ -14,9 +14,9 @@ public class Vec3dScriptObject extends AbstractScriptObject<Vec3d> {
 
     public Vec3dScriptObject() {
         super("Mathematical 3D Vector", doc -> {
-            doc.addProperty("x", ArgtypeStrings.NUMBER, "X component");
-            doc.addProperty("y", ArgtypeStrings.NUMBER, "Y component");
-            doc.addProperty("z", ArgtypeStrings.NUMBER, "Z component");
+            doc.addProperty("x", ArgtypeStrings.NUMBER, "x component");
+            doc.addProperty("y", ArgtypeStrings.NUMBER, "y component");
+            doc.addProperty("z", ArgtypeStrings.NUMBER, "z component");
         });
     }
 

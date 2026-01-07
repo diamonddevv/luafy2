@@ -1,9 +1,6 @@
 package dev.diamond.luafy;
 
-import dev.diamond.luafy.registry.LuafyRegistries;
-import dev.diamond.luafy.registry.ScriptEvents;
-import dev.diamond.luafy.registry.ScriptObjects;
-import dev.diamond.luafy.registry.ScriptPlugins;
+import dev.diamond.luafy.registry.*;
 import dev.diamond.luafy.script.ScriptEventResourceLoader;
 import dev.diamond.luafy.script.ScriptManager;
 import dev.diamond.luafy.script.ScriptResourceLoader;
@@ -47,6 +44,14 @@ public class Luafy implements ModInitializer {
 		ScriptObjects.registerAll();
 		ScriptEvents.registerAll();
 		ScriptEvents.applyEvents();
+		AutodocGenerators.registerAll();
+
+
+		// generate LuaLS autodoc
+		long time = System.currentTimeMillis();
+		Luafy.LOGGER.info("Generating Lua Language Server autodoc..");
+		String path = AutodocGenerators.LUA_LS.buildOutput("autodoc");
+		Luafy.LOGGER.info("Generated at {}. (took {}ms)", path, System.currentTimeMillis() - time);
 	}
 
 	public static Identifier id(String path) {

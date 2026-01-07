@@ -2,7 +2,7 @@ package dev.diamond.luafy.script.event;
 
 import dev.diamond.luafy.autodoc.ArgDocInfo;
 import dev.diamond.luafy.autodoc.ArglistBuilder;
-import dev.diamond.luafy.autodoc.Autodocumentable;
+import dev.diamond.luafy.autodoc.SimpleAutodocumentable;
 import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.registry.LuafyRegistries;
 import dev.diamond.luafy.lua.LuaTableBuilder;
@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class ScriptEvent<T> implements Autodocumentable {
+public class ScriptEvent<T> implements SimpleAutodocumentable {
     private final ArrayList<Identifier> ids;
     private final BiConsumer<T, LuaTableBuilder> ctxBuilder;
     private final String desc;
@@ -52,7 +52,7 @@ public class ScriptEvent<T> implements Autodocumentable {
     }
 
     @Override
-    public String generateAutodoc() {
+    public String generateAutodocString() {
         StringBuilder s = new StringBuilder();
 
         Identifier id = LuafyRegistries.SCRIPT_EVENTS.getId(this);
