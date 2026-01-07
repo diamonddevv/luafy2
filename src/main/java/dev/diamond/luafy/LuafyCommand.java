@@ -9,16 +9,21 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import dev.diamond.luafy.autodoc.SimpleAutodocumentable;
 import dev.diamond.luafy.autodoc.generator.AbstractAutodocGenerator;
+import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.registry.LuafyRegistries;
 import dev.diamond.luafy.script.ApiScriptPlugin;
 import dev.diamond.luafy.script.LuaScript;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.IdentifierArgumentType;
+import net.minecraft.command.argument.NbtCompoundArgumentType;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
+import org.luaj.vm2.LuaTable;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -42,9 +47,13 @@ public class LuafyCommand {
                                   argument("src", StringArgumentType.string()).executes(LuafyCommand::value)
                           )
                   ).then(
-                          literal("execute").then(
-                                  argument("id", IdentifierArgumentType.identifier()).suggests(new LuafyCommand.ScriptIdsSuggestionProvider()).executes(LuafyCommand::execute)
-                          )
+                          literal("execute")
+                                  .then(
+                                          argument("id", IdentifierArgumentType.identifier()).suggests(new LuafyCommand.ScriptIdsSuggestionProvider()).executes(LuafyCommand::execute)
+                                                  .then(
+                                                          argument("ctx", NbtCompoundArgumentType.nbtCompound()).executes(LuafyCommand::executeWithContext)
+                                                  )
+                                  )
                   ).then(
                           literal("autodoc")
                                   .then(
@@ -124,11 +133,23 @@ public class LuafyCommand {
         }
     }
 
+    private static int executeWithContext(CommandContext<ServerCommandSource> ctx) {
+        Identifier id = IdentifierArgumentType.getIdentifier(ctx, "id");
+        NbtCompound context = NbtCompoundArgumentType.getNbtCompound(ctx, "ctx");
+        if (Luafy.SCRIPT_MANAGER.has(id)) {
+
+            return execScript(ctx, Luafy.SCRIPT_MANAGER.get(id), "Successfully executed script " + id, LuaTableBuilder.fromNbtCompound(context));
+        } else {
+            ctx.getSource().sendFeedback(() -> Text.literal("Script " + id + " does not exist").formatted(Formatting.RED), true);
+            return 0;
+        }
+    }
+
 
     private static int execute(CommandContext<ServerCommandSource> ctx) {
         Identifier id = IdentifierArgumentType.getIdentifier(ctx, "id");
         if (Luafy.SCRIPT_MANAGER.has(id)) {
-            return execScript(ctx, Luafy.SCRIPT_MANAGER.get(id), "Successfully executed script " + id);
+            return execScript(ctx, Luafy.SCRIPT_MANAGER.get(id), "Successfully executed script " + id, null);
         } else {
             ctx.getSource().sendFeedback(() -> Text.literal("Script " + id + " does not exist").formatted(Formatting.RED), true);
             return 0;
@@ -137,18 +158,18 @@ public class LuafyCommand {
 
     private static int value(CommandContext<ServerCommandSource> ctx) {
         String src = StringArgumentType.getString(ctx, "src");
-        return execScript(ctx, new LuaScript("minecraft.get_player_from_selector(\"@s\").tell(" + src + ")"), "");
+        return execScript(ctx, new LuaScript("minecraft.get_player_from_selector(\"@s\").tell(" + src + ")"), "", null);
     }
 
 
     private static int eval(CommandContext<ServerCommandSource> ctx) {
         String src = StringArgumentType.getString(ctx, "src");
-        return execScript(ctx, new LuaScript(src), "Successfully executed code; " + src);
+        return execScript(ctx, new LuaScript(src), "Successfully executed code; " + src, null);
     }
 
 
-    private static int execScript(CommandContext<ServerCommandSource> ctx, LuaScript script, String successString) {
-        LuaScript.Result result = script.execute(ctx.getSource());
+    private static int execScript(CommandContext<ServerCommandSource> ctx, LuaScript script, String successString, @Nullable LuaTable contextTable) {
+        LuaScript.Result result = script.execute(ctx.getSource(), contextTable);
 
         if (result.success()) {
             if (!successString.isEmpty()) ctx.getSource().sendFeedback(() -> Text.literal(successString), true);

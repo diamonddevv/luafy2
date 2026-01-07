@@ -49,9 +49,8 @@ public class Luafy implements ModInitializer {
 
 		// generate LuaLS autodoc
 		long time = System.currentTimeMillis();
-		Luafy.LOGGER.info("Generating Lua Language Server autodoc..");
 		String path = AutodocGenerators.LUA_LS.buildOutput("autodoc");
-		Luafy.LOGGER.info("Generated at {}. (took {}ms)", path, System.currentTimeMillis() - time);
+		Luafy.LOGGER.info("Generated luals (LuaCATS) language server doc at {}. (took {}ms)", path, System.currentTimeMillis() - time);
 	}
 
 	public static Identifier id(String path) {

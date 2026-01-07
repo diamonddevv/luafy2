@@ -8,6 +8,7 @@ import dev.diamond.luafy.autodoc.ArgtypeStrings;
 import dev.diamond.luafy.lua.MetamethodImpl;
 import net.minecraft.util.Identifier;
 import org.luaj.vm2.LuaString;
+import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
 public class LuafyApi extends AbstractScriptApi {
@@ -27,6 +28,11 @@ public class LuafyApi extends AbstractScriptApi {
         }, "Executes the script with the given identifier. Returns the value returned from this script.", args -> {
             args.add("script", ArgtypeStrings.STRING, "Identifier of script to be executed.");
         }, ArgtypeStrings.VALUE);
+
+        builder.add("context", args -> script.getGlobals().get(LuaScript.CONTEXT_KEY),
+                "Returns the context table for this script. The contents of this table depend on the event that called it, " +
+                        "or the values passed by /luafy. This is the same as the global table `ctx`.",
+                args -> {}, ArgtypeStrings.TABLE);
 
 
         builder.add("provide_hello_world", args -> {

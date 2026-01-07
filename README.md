@@ -2,9 +2,12 @@
 modern rewrite of luafy
 
 ## writing scripts
-i reccommend the use of [Lua Language Server](https://luals.github.io/) when writing scripts for this mod.
-The mod generates the correct library file that allows for autocompletion and assistance when writing scripts
-using an IDE such as Vscode at `<game directory>/luafy_scripts/autodoc.lua`.
+i recommend the use of [Lua Language Server](https://luals.github.io/) when writing scripts for this mod.
+The mod generates the correct library file in [LuaCATS](https://github.com/LuaCATS) format that allows for autocompletion and assistance when writing scripts
+using an IDE such as Vscode/IntelliJ Idea at `<game directory>/luafy_scripts/autodoc.lua`.
+(This path can be given to the IDE.)
+
+[This file is also available in this repository.](autodocs/autodoc.lua)
 
 ### luaj
 this mod uses the FiguraMC implementation of Lua.

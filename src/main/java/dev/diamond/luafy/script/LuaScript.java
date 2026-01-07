@@ -4,6 +4,7 @@ import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.registry.LuafyRegistries;
 import net.minecraft.server.command.ServerCommandSource;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaTable;
@@ -11,7 +12,7 @@ import org.luaj.vm2.LuaValue;
 
 public class LuaScript {
 
-    private final String CONTEXT_KEY = "ctx";
+    public static final String CONTEXT_KEY = "ctx";
 
     private final Globals globals;
     private LuaValue script;
@@ -36,13 +37,16 @@ public class LuaScript {
     }
 
 
-    public Result execute(@NotNull ServerCommandSource src, LuaTable ctx) {
+    public Result execute(@NotNull ServerCommandSource src, @Nullable LuaTable ctx) {
         if (!compilationError.isBlank()) {
             return new Result(LuaValue.NIL, compilationError);
         }
 
         try {
             this.src = src.withSilent();
+            if (ctx == null) {
+                ctx = LuaTable.tableOf();
+            }
             this.globals.set(CONTEXT_KEY, ctx);
             return new Result(this.script.call(), "");
         } catch (LuaError err) {

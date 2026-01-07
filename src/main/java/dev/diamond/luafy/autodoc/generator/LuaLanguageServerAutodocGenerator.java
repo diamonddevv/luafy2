@@ -27,6 +27,9 @@ public class LuaLanguageServerAutodocGenerator extends AbstractAutodocGenerator 
                 -- Format: Lua LS library file
                 --#endregion
                 
+                ---@type table
+                ctx = {}
+                
                 """, LocalDateTime.now(),
                 FabricLoader.getInstance().getModContainer(Luafy.MOD_ID).orElseThrow().getMetadata().getVersion().getFriendlyString())
         );

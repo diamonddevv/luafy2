@@ -74,6 +74,7 @@ public abstract class AbstractAutodocGenerator {
 
 
         // write file
+        // TODO: change output location entirely
         String fn = outputFileName + "." + fileExtension;
         Path rootpath = FabricLoader.getInstance().getGameDir().resolve("luafy_autodocs");
         File file = new File(rootpath.toString(), fn);
