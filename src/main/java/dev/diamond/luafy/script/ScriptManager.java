@@ -6,15 +6,24 @@ import net.minecraft.util.Identifier;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 public class ScriptManager {
 
-
     private final HashMap<Identifier, LuaScript> scripts;
+    private final ExecutorService scriptExecutor;
 
     public ScriptManager() {
         this.scripts = new HashMap<>();
+        this.scriptExecutor = Executors.newCachedThreadPool();
+    }
+
+    public Future<LuaScript.Result> submitExecution(Callable<LuaScript.Result> scriptExecution) {
+        return this.scriptExecutor.submit(scriptExecution);
     }
 
     public void loadScript(Identifier id, LuaScript script) {
@@ -38,7 +47,7 @@ public class ScriptManager {
     }
 
     public void clearScriptEventsCaches() {
-        for (ScriptEvent event : LuafyRegistries.SCRIPT_EVENTS) {
+        for (ScriptEvent<?> event : LuafyRegistries.SCRIPT_EVENTS) {
             event.clear();
         }
     }

@@ -18,8 +18,8 @@ this mod uses the FiguraMC implementation of Lua.
 - lua scripts system
   - [x] loader
   - [x] executor
-    - [ ] with parameters
-    - [ ] threaded
+    - [x] with parameters
+    - [x] threaded
   - [x] events
 - APIs / game interfaces
   - [ ] entity
@@ -27,7 +27,6 @@ this mod uses the FiguraMC implementation of Lua.
   - [ ] item
   - [ ] world/server
   - [x] math (vectors, mainly)
-  - [ ] file (abstract read/write to file)
 - other
   - [x] autogen documentation (actively working on)
 

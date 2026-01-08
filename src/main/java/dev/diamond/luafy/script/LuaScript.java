@@ -1,7 +1,9 @@
 package dev.diamond.luafy.script;
 
 import dev.diamond.luafy.Luafy;
+import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.registry.LuafyRegistries;
+import dev.diamond.luafy.script.enumeration.ScriptEnum;
 import net.minecraft.server.command.ServerCommandSource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -9,6 +11,9 @@ import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
+
+import java.util.HashMap;
+import java.util.concurrent.Future;
 
 public class LuaScript {
 
@@ -18,10 +23,15 @@ public class LuaScript {
     private LuaValue script;
     private String compilationError;
     private ServerCommandSource src;
+    private final HashMap<Integer, Object> unserializableDataReferences;
+    private int nextUnserializableDataReferenceIndex;
 
     public LuaScript(String source) {
         this.globals = new Globals();
-        requireLibraries();
+        injectSources();
+
+        this.unserializableDataReferences = new HashMap<>();
+        this.nextUnserializableDataReferenceIndex = 0;
 
         try {
             this.script = this.globals.load(source);
@@ -32,16 +42,52 @@ public class LuaScript {
         }
     }
 
-    public Result execute(@NotNull ServerCommandSource src) {
+    public int addUnserializableData(Object o) {
+        unserializableDataReferences.put(nextUnserializableDataReferenceIndex, o);
+        return nextUnserializableDataReferenceIndex++;
+    }
+
+    public <T> T getUnserializableData(int idx, Class<T> clazz) {
+        return clazz.cast(unserializableDataReferences.get(idx));
+    }
+
+    public void releaseUnserializableData(int idx) {
+        unserializableDataReferences.remove(idx);
+    }
+
+    public Future<Result> execute(@NotNull ServerCommandSource src) {
         return this.execute(src, LuaTable.tableOf());
     }
 
+    public Future<Result> execute(@NotNull ServerCommandSource src, @Nullable LuaTable ctx) {
+        return Luafy.SCRIPT_MANAGER.submitExecution(() -> this.executor(src, ctx));
+    }
 
-    public Result execute(@NotNull ServerCommandSource src, @Nullable LuaTable ctx) {
+    public ServerCommandSource getSource() {
+        return src;
+    }
+
+    public Globals getGlobals() {
+        return globals;
+    }
+
+
+    private void injectSources() {
+        for (ScriptPlugin plugin : LuafyRegistries.SCRIPT_PLUGINS) {
+            plugin.apply(this);
+        }
+
+        for (ScriptEnum<?> e : LuafyRegistries.SCRIPT_ENUMS) {
+            this.globals.set(e.getArgtypeString(), LuaTableBuilder.provide(b -> {
+                for (var key : e.getEnumKeys()) b.add(key, key);
+            }));
+        }
+    }
+
+    private Result executor(@NotNull ServerCommandSource src, @Nullable LuaTable ctx) {
         if (!compilationError.isBlank()) {
             return new Result(LuaValue.NIL, compilationError);
         }
-
         try {
             this.src = src.withSilent();
             if (ctx == null) {
@@ -55,22 +101,6 @@ public class LuaScript {
             return new Result(LuaValue.NIL, error);
         }
     }
-
-    public ServerCommandSource getSource() {
-        return src;
-    }
-
-    public Globals getGlobals() {
-        return globals;
-    }
-
-
-    private void requireLibraries() {
-        for (ScriptPlugin plugin : LuafyRegistries.SCRIPT_PLUGINS) {
-            plugin.apply(this);
-        }
-    }
-
 
 
 

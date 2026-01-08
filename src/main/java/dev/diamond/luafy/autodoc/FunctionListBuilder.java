@@ -21,7 +21,7 @@ public class FunctionListBuilder {
         this.documentation = new ArrayList<>();
     }
 
-    public void add(String name, Function<Varargs, LuaValue> function, String desc, Consumer<ArglistBuilder> arglistBuilder, String returnType) {
+    public void add(String name, Function<Varargs, LuaValue> function, String desc, Consumer<ArglistBuilder> arglistBuilder, Argtype returnType) {
         this.functions.put(name, new VarArgFunction() {
             @Override
             public Varargs invoke(Varargs args) {

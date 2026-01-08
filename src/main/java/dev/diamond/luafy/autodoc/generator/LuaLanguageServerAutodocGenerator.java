@@ -1,9 +1,9 @@
 package dev.diamond.luafy.autodoc.generator;
 
 import dev.diamond.luafy.Luafy;
-import dev.diamond.luafy.autodoc.FunctionListBuilder;
 import dev.diamond.luafy.registry.LuafyRegistries;
 import dev.diamond.luafy.script.ApiScriptPlugin;
+import dev.diamond.luafy.script.enumeration.ScriptEnum;
 import dev.diamond.luafy.script.event.ScriptEvent;
 import dev.diamond.luafy.script.object.AbstractScriptObject;
 import net.fabricmc.loader.api.FabricLoader;
@@ -38,28 +38,32 @@ public class LuaLanguageServerAutodocGenerator extends AbstractAutodocGenerator 
     @Override
     public void addScriptObject(StringBuilder doc, AbstractScriptObject<?> scriptObject) {
         doc.append("--- ").append(scriptObject.getDesc()).append("\n");
-        doc.append("---@class ").append(scriptObject.getArgTypeString()).append("\n");
+        doc.append("---@class ").append(scriptObject.getArgtypeString());
+        if (scriptObject.getParentType().isPresent()) {
+            doc.append(": ").append(scriptObject.getParentType().get().getArgtypeString());
+        }
+        doc.append("\n");
         for (var field : scriptObject.getProperties()) {
             doc.append("---@field ");
             doc.append(field.name()).append(" ");
-            doc.append(field.type()).append(" ");
+            doc.append(field.type().getArgtypeString()).append(" ");
             doc.append(field.desc()).append("\n");
         }
-        doc.append("local ").append(scriptObject.getArgTypeString()).append(" = {}\n\n");
+        doc.append("local ").append(scriptObject.getArgtypeString()).append(" = {}\n\n");
 
         for (var function : scriptObject.getFunctions()) {
             doc.append("--- ").append(function.funcDesc()).append("\n");
             for (var arg : function.args()) {
                 doc.append("---@param ");
                 doc.append(arg.argName()).append(" ");
-                doc.append(arg.argType()).append(" ");
+                doc.append(arg.argType().getArgtypeString()).append(" ");
                 doc.append(arg.argDesc()).append("\n");
             }
             doc.append("---@return ");
-            doc.append(function.returnType()).append("\n");
+            doc.append(function.returnType().getArgtypeString()).append("\n");
 
             doc.append("function ");
-            doc.append(scriptObject.getArgTypeString()).append(".").append(function.funcName());
+            doc.append(scriptObject.getArgtypeString()).append(".").append(function.funcName());
             doc.append("(");
             for (int i = 0; i < function.args().size(); i++) {
                 doc.append(function.args().get(i).argName());
@@ -82,11 +86,11 @@ public class LuaLanguageServerAutodocGenerator extends AbstractAutodocGenerator 
             for (var arg : function.args()) {
                 doc.append("---@param ");
                 doc.append(arg.argName()).append(" ");
-                doc.append(arg.argType()).append(" ");
+                doc.append(arg.argType().getArgtypeString()).append(" ");
                 doc.append(arg.argDesc()).append("\n");
             }
             doc.append("---@return ");
-            doc.append(function.returnType()).append("\n");
+            doc.append(function.returnType().getArgtypeString()).append("\n");
 
             doc.append("function ");
             doc.append(api.name()).append(".").append(function.funcName());
@@ -104,6 +108,16 @@ public class LuaLanguageServerAutodocGenerator extends AbstractAutodocGenerator 
     @Override
     public void addScriptEvent(StringBuilder doc, ScriptEvent<?> event) {
         addComment(doc, LuafyRegistries.SCRIPT_EVENTS.getId(event) + " ; this generator does not currently provide additional information.\n");
+    }
+
+    @Override
+    public void addEnum(StringBuilder doc, ScriptEnum<?> e) {
+        doc.append("---@enum (key) ").append(e.getArgtypeString()).append("\n");
+        doc.append(e.getArgtypeString()).append(" = {\n");
+        for (var key : e.getEnumKeys()) {
+            doc.append("\t").append(key).append(" = \"").append(key).append("\",\n");
+        }
+        doc.append("}\n\n");
     }
 
     @Override

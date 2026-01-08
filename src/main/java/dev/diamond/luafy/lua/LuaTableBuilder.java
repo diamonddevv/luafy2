@@ -72,7 +72,7 @@ public class LuaTableBuilder {
     public static LuaTable ofArrayStrings(Collection<String> strings)    { return ofArray(strings   .stream().map(LuaValue::valueOf).toList()); }
     public static LuaTable ofArrayBools(Collection<Boolean> bools)       { return ofArray(bools     .stream().map(LuaValue::valueOf).toList()); }
     public static LuaTable ofArrayFloats(Collection<Float> floats)       { return ofArray(floats    .stream().map(LuaValue::valueOf).toList()); }
-
+    public static LuaTable ofArrayTables(Collection<LuaTable> tables)    { return ofArray(tables    .stream()                       .toList()); }
 
     public static LuaTable provide(Consumer<LuaTableBuilder> table) {
         var b = new LuaTableBuilder();

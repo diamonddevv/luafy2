@@ -9,7 +9,7 @@ public class ArglistBuilder {
         this.args = new ArrayList<>();
     }
 
-    public void add(String argName, String argType, String argDesc) {
+    public void add(String argName, Argtype argType, String argDesc) {
         this.args.add(new ArgDocInfo(argName, argType, argDesc));
     }
 }

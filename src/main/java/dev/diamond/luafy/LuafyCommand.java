@@ -13,6 +13,7 @@ import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.registry.LuafyRegistries;
 import dev.diamond.luafy.script.ApiScriptPlugin;
 import dev.diamond.luafy.script.LuaScript;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.IdentifierArgumentType;
 import net.minecraft.command.argument.NbtCompoundArgumentType;
@@ -25,7 +26,11 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import org.luaj.vm2.LuaTable;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -51,7 +56,10 @@ public class LuafyCommand {
                                   .then(
                                           argument("id", IdentifierArgumentType.identifier()).suggests(new LuafyCommand.ScriptIdsSuggestionProvider()).executes(LuafyCommand::execute)
                                                   .then(
-                                                          argument("ctx", NbtCompoundArgumentType.nbtCompound()).executes(LuafyCommand::executeWithContext)
+                                                          argument("ctx", NbtCompoundArgumentType.nbtCompound()).executes(ctx -> LuafyCommand.executeWithContext(ctx, false))
+                                                                  .then(
+                                                                          literal("awaits").executes(ctx -> LuafyCommand.executeWithContext(ctx, true))
+                                                                  )
                                                   )
                                   )
                   ).then(
@@ -86,11 +94,16 @@ public class LuafyCommand {
     private static int generateAutodoc(CommandContext<ServerCommandSource> ctx) {
         Identifier id = IdentifierArgumentType.getIdentifier(ctx, "generator");
         String outputFileName = StringArgumentType.getString(ctx, "outputFileName");
+
+
         if (LuafyRegistries.AUTODOC_GENERATORS.containsId(id)) {
             AbstractAutodocGenerator generator = LuafyRegistries.AUTODOC_GENERATORS.get(id);
             assert generator != null;
             long startTime = System.currentTimeMillis();
-            String filepath = generator.buildOutput(outputFileName);
+
+            Path rootpath = FabricLoader.getInstance().getGameDir().resolve("luafy_autodocs");
+            String fn = outputFileName + "." + generator.fileExtension;
+            String filepath = generator.buildOutput(new File(rootpath.toString(), fn));
             long delta = System.currentTimeMillis() - startTime;
             ctx.getSource().sendFeedback(() -> Text.literal("Autodoc generated at [" + filepath + "] (took " + delta + "ms)"), false);
             return 1;
@@ -133,12 +146,12 @@ public class LuafyCommand {
         }
     }
 
-    private static int executeWithContext(CommandContext<ServerCommandSource> ctx) {
+    private static int executeWithContext(CommandContext<ServerCommandSource> ctx, boolean awaits) {
         Identifier id = IdentifierArgumentType.getIdentifier(ctx, "id");
         NbtCompound context = NbtCompoundArgumentType.getNbtCompound(ctx, "ctx");
         if (Luafy.SCRIPT_MANAGER.has(id)) {
 
-            return execScript(ctx, Luafy.SCRIPT_MANAGER.get(id), "Successfully executed script " + id, LuaTableBuilder.fromNbtCompound(context));
+            return execScript(ctx, Luafy.SCRIPT_MANAGER.get(id), "Executed script " + id, LuaTableBuilder.fromNbtCompound(context), awaits);
         } else {
             ctx.getSource().sendFeedback(() -> Text.literal("Script " + id + " does not exist").formatted(Formatting.RED), true);
             return 0;
@@ -149,7 +162,7 @@ public class LuafyCommand {
     private static int execute(CommandContext<ServerCommandSource> ctx) {
         Identifier id = IdentifierArgumentType.getIdentifier(ctx, "id");
         if (Luafy.SCRIPT_MANAGER.has(id)) {
-            return execScript(ctx, Luafy.SCRIPT_MANAGER.get(id), "Successfully executed script " + id, null);
+            return execScript(ctx, Luafy.SCRIPT_MANAGER.get(id), "Executed script " + id, null, false);
         } else {
             ctx.getSource().sendFeedback(() -> Text.literal("Script " + id + " does not exist").formatted(Formatting.RED), true);
             return 0;
@@ -158,30 +171,37 @@ public class LuafyCommand {
 
     private static int value(CommandContext<ServerCommandSource> ctx) {
         String src = StringArgumentType.getString(ctx, "src");
-        return execScript(ctx, new LuaScript("minecraft.get_player_from_selector(\"@s\").tell(" + src + ")"), "", null);
+        return execScript(ctx, new LuaScript("minecraft.get_player_from_selector(\"@s\").tell(" + src + ")"), "", null, false);
     }
 
 
     private static int eval(CommandContext<ServerCommandSource> ctx) {
         String src = StringArgumentType.getString(ctx, "src");
-        return execScript(ctx, new LuaScript(src), "Successfully executed code; " + src, null);
+        return execScript(ctx, new LuaScript(src), "Successfully executed code; " + src, null, true);
     }
 
 
-    private static int execScript(CommandContext<ServerCommandSource> ctx, LuaScript script, String successString, @Nullable LuaTable contextTable) {
-        LuaScript.Result result = script.execute(ctx.getSource(), contextTable);
+    private static int execScript(CommandContext<ServerCommandSource> ctx, LuaScript script, String message, @Nullable LuaTable contextTable, boolean awaits) {
+        Future<LuaScript.Result> future = script.execute(ctx.getSource(), contextTable);
+        ctx.getSource().sendFeedback(() -> Text.literal(message), true);
 
-        if (result.success()) {
-            if (!successString.isEmpty()) ctx.getSource().sendFeedback(() -> Text.literal(successString), true);
-
-            if (result.getResult().isint()) {
-                return result.getResult().toint();
+        if (awaits) {
+            try {
+                var result = future.get();
+                if (result.success()) {
+                    if (result.getResult().isint()) {
+                        return result.getResult().toint();
+                    }
+                    return 1;
+                } else {
+                    ctx.getSource().sendFeedback(() -> Text.literal("An error occurred executing script; " + result.getError()).formatted(Formatting.RED), true);
+                    return 0;
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
             }
-            return 1;
-        } else {
-            ctx.getSource().sendFeedback(() -> Text.literal("An error occurred executing script; " + result.getError()).formatted(Formatting.RED), true);
-            return 0;
         }
+        return 1;
     }
 
 

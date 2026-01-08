@@ -2,7 +2,7 @@
 
 --#region Information
 -- GENERATED AUTODOC
--- Generated: 2026-01-07T19:57:43.422114700
+-- Generated: 2026-01-08T16:38:07.816933200
 -- Luafy Version: 2.0.0
 -- Format: Lua LS library file
 --#endregion
@@ -10,37 +10,117 @@
 ---@type table
 ctx = {}
 
+--#region Enums
+
+---@enum (key) Note
+Note = {
+	G_FLAT_LOW = "G_FLAT_LOW",
+	A_FLAT_LOW = "A_FLAT_LOW",
+	E_LOW = "E_LOW",
+	F_SHARP_LOW = "F_SHARP_LOW",
+	B_HIGH = "B_HIGH",
+	B_FLAT_HIGH = "B_FLAT_HIGH",
+	C_SHARP_HIGH = "C_SHARP_HIGH",
+	E_HIGH = "E_HIGH",
+	D_LOW = "D_LOW",
+	C_SHARP_LOW = "C_SHARP_LOW",
+	G_FLAT_HIGH = "G_FLAT_HIGH",
+	D_HIGH = "D_HIGH",
+	F_SHARP_HIGH = "F_SHARP_HIGH",
+	G_HIGH = "G_HIGH",
+	A_FLAT_HIGH = "A_FLAT_HIGH",
+	C_LOW = "C_LOW",
+	A_HIGH = "A_HIGH",
+	G_LOW = "G_LOW",
+	C_HIGH = "C_HIGH",
+	F_HIGH = "F_HIGH",
+	A_LOW = "A_LOW",
+	B_LOW = "B_LOW",
+	D_SHARP_HIGH = "D_SHARP_HIGH",
+	B_FLAT_LOW = "B_FLAT_LOW",
+	F_LOW = "F_LOW",
+	D_SHARP_LOW = "D_SHARP_LOW",
+}
+
+---@enum (key) Instrument
+Instrument = {
+	VIBRAPHONE = "VIBRAPHONE",
+	BASS = "BASS",
+	HIHAT = "HIHAT",
+	DIDGERIDOO = "DIDGERIDOO",
+	XYLOPHONE = "XYLOPHONE",
+	GLOCKENSPIEL = "GLOCKENSPIEL",
+	BIT = "BIT",
+	CHIME = "CHIME",
+	PLING = "PLING",
+	SNARE = "SNARE",
+	GUITAR = "GUITAR",
+	BANJO = "BANJO",
+	BASS_DRUM = "BASS_DRUM",
+	HARP = "HARP",
+	COWBELL = "COWBELL",
+	FLUTE = "FLUTE",
+}
+
+--#endregion
+
 --#region Script Object
 
 --- Mathematical 3D Vector
----@class vec3d
+---@class Vec3d
 ---@field x number x component
 ---@field y number y component
 ---@field z number z component
-local vec3d = {}
+local Vec3d = {}
+
+
+--- An entity.
+---@class Entity
+---@field name string Entity's name.
+---@field uuid string Entity's uuid.
+local Entity = {}
+
+--- Gets the entity's current position.
+---@return Vec3d
+function Entity.get_pos() end
 
 
 --- A player.
----@class player
----@field name string Player's username
----@field uuid string Player's uuid. Used internally to reference the player back from this LuaValue.
-local player = {}
-
---- Gets the player's current position.
----@return vec3d
-function player.get_pos() end
+---@class Player: Entity
+local Player = {}
 
 --- Prints a line to this player's chat.
 ---@param msg string String to display.
 ---@return nil
-function player.tell(msg) end
+function Player.tell(msg) end
 
 
 --- An object representing a mod installed on the server.
----@class mod
+---@class Mod
 ---@field modid string The id of this mod.
 ---@field version string The version of the mod currently installed.
-local mod = {}
+local Mod = {}
+
+
+--- Object representing the potential result of a script execution. Since scripts run asynchronously, this object allows for a result to be awaited if needed.
+---@class ScriptResult
+local ScriptResult = {}
+
+--- Awaits this script to complete execution if it has not already, and returns the result.
+---@return any?
+function ScriptResult.await_result() end
+
+--- Awaits this script to complete execution if it has not already, and returns if it succeeded.
+---@return boolean
+function ScriptResult.await_success() end
+
+--- Awaits this script to complete execution if it has not already, and returns the error string if it failed, or nil if it succeeded.
+---@return string?
+function ScriptResult.await_error() end
+
+--- Releases the internal Result Java object from the cache. Using this object after this has been called may result in an error.
+---@return nil
+function ScriptResult.release() end
 
 
 --#endregion
@@ -65,15 +145,38 @@ function minecraft.command(command) end
 
 --- Uses an entity selector to find a player.
 ---@param selector string Entity selector
----@return player
+---@return Player
 function minecraft.get_player_from_selector(selector) end
+
+--- Uses an entity selector to find an entity.
+---@param selector string Entity selector
+---@return Entity
+function minecraft.get_entity_from_selector(selector) end
+
+--- Uses an entity selector to find several entities.
+---@param selector string Entity selector
+---@return Entity[]
+function minecraft.get_entities_from_selector(selector) end
+
+--- Plays the specified noteblock note at the given location.
+---@param note Note Note to play
+---@param instrument Instrument Instrument
+---@param pos Vec3d Location to play sound at
+---@return nil
+function minecraft.note(note, instrument, pos) end
+
+--- Waits for a given number of seconds before continuing.
+---@param seconds number Number of seconds to wait.
+---@return nil
+function minecraft.sleep(seconds) end
 
 luafy = {}
 
---- Executes the script with the given identifier. Returns the value returned from this script.
+--- Executes the script with the given identifier, and awaits its completion. Returns future result, that can be awaited if needed.
 ---@param script string Identifier of script to be executed.
----@return any
-function luafy.script(script) end
+---@param context table? Context to pass to script. Defaults to an empty table.
+---@return ScriptResult
+function luafy.script(script, context) end
 
 --- Returns the context table for this script. The contents of this table depend on the event that called it, or the values passed by /luafy. This is the same as the global table `ctx`.
 ---@return table
@@ -93,7 +196,7 @@ math = {}
 ---@param x number x component
 ---@param y number y component
 ---@param z number z component
----@return vec3d
+---@return Vec3d
 function math.vec3d(x, y, z) end
 
 fabric = {}
@@ -109,7 +212,7 @@ function fabric.has_mod(modid) end
 
 --- Returns an object representing an installed mod. Returns nil if the specified mod does not exist.
 ---@param modid string A mod id.
----@return mod
+---@return Mod
 function fabric.get_mod(modid) end
 
 --- Returns a list of all the mods that are installed.

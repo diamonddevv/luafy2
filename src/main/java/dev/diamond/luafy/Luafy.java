@@ -1,5 +1,6 @@
 package dev.diamond.luafy;
 
+import dev.diamond.luafy.autodoc.generator.AbstractAutodocGenerator;
 import dev.diamond.luafy.registry.*;
 import dev.diamond.luafy.script.ScriptEventResourceLoader;
 import dev.diamond.luafy.script.ScriptManager;
@@ -9,14 +10,18 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.impl.resource.loader.ResourceManagerHelperImpl;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+
 public class Luafy implements ModInitializer {
 	public static final String MOD_ID = "luafy";
 	public static final String LUAJ_VER = "3.0.8";
+	public static final String DEV_ENV_DOC_OUTPUT_FILEPATH = "../autodocs/autodoc.lua";
 
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
@@ -42,6 +47,7 @@ public class Luafy implements ModInitializer {
 
 		ScriptPlugins.registerAll();
 		ScriptObjects.registerAll();
+		ScriptEnums.registerAll();
 		ScriptEvents.registerAll();
 		ScriptEvents.applyEvents();
 		AutodocGenerators.registerAll();
@@ -49,7 +55,7 @@ public class Luafy implements ModInitializer {
 
 		// generate LuaLS autodoc
 		long time = System.currentTimeMillis();
-		String path = AutodocGenerators.LUA_LS.buildOutput("autodoc");
+		String path = AutodocGenerators.LUA_LS.buildOutput(FabricLoaderImpl.INSTANCE.isDevelopmentEnvironment() ? new File(DEV_ENV_DOC_OUTPUT_FILEPATH) : AbstractAutodocGenerator.getDefaultFile(AutodocGenerators.LUA_LS));
 		Luafy.LOGGER.info("Generated luals (LuaCATS) language server doc at {}. (took {}ms)", path, System.currentTimeMillis() - time);
 	}
 
