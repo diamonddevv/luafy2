@@ -55,11 +55,11 @@ public class LuaScript {
         unserializableDataReferences.remove(idx);
     }
 
-    public Future<Result> execute(@NotNull ServerCommandSource src) {
+    public Future<ScriptExecutionResult> execute(@NotNull ServerCommandSource src) {
         return this.execute(src, LuaTable.tableOf());
     }
 
-    public Future<Result> execute(@NotNull ServerCommandSource src, @Nullable LuaTable ctx) {
+    public Future<ScriptExecutionResult> execute(@NotNull ServerCommandSource src, @Nullable LuaTable ctx) {
         return Luafy.SCRIPT_MANAGER.submitExecution(() -> this.executor(src, ctx));
     }
 
@@ -84,9 +84,9 @@ public class LuaScript {
         }
     }
 
-    private Result executor(@NotNull ServerCommandSource src, @Nullable LuaTable ctx) {
+    private ScriptExecutionResult executor(@NotNull ServerCommandSource src, @Nullable LuaTable ctx) {
         if (!compilationError.isBlank()) {
-            return new Result(LuaValue.NIL, compilationError);
+            return new ScriptExecutionResult(LuaValue.NIL, compilationError);
         }
         try {
             this.src = src.withSilent();
@@ -94,35 +94,13 @@ public class LuaScript {
                 ctx = LuaTable.tableOf();
             }
             this.globals.set(CONTEXT_KEY, ctx);
-            return new Result(this.script.call(), "");
+            return new ScriptExecutionResult(this.script.call(), "");
         } catch (LuaError err) {
             String error = "[LUA: INTERPRETATION] :: " + err.getMessage();
             Luafy.LOGGER.error(error);
-            return new Result(LuaValue.NIL, error);
+            return new ScriptExecutionResult(LuaValue.NIL, error);
         }
     }
 
 
-
-    public static class Result {
-        private final LuaValue value;
-        private final String error;
-
-        public Result(LuaValue value, String error) {
-            this.value = value;
-            this.error = error;
-        }
-
-        public boolean success() {
-            return error.isBlank();
-        }
-
-        public String getError() {
-            return this.error;
-        }
-
-        public LuaValue getResult() {
-            return this.value;
-        }
-    }
 }

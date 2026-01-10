@@ -1,6 +1,7 @@
 package dev.diamond.luafy.autodoc.generator;
 
 import dev.diamond.luafy.Luafy;
+import dev.diamond.luafy.autodoc.ScriptApiBuilder;
 import dev.diamond.luafy.registry.LuafyRegistries;
 import dev.diamond.luafy.script.ApiScriptPlugin;
 import dev.diamond.luafy.script.enumeration.ScriptEnum;
@@ -79,35 +80,55 @@ public class LuaLanguageServerAutodocGenerator extends AbstractAutodocGenerator 
 
     @Override
     public void addScriptApi(StringBuilder doc, ApiScriptPlugin.DocInfo api) {
+        var docs = api.builder().getDocumentation();
+
         doc.append(api.name()).append(" = {}\n\n");
 
-        for (var function : api.builder().getDocumentation()) {
-            doc.append("--- ").append(function.funcDesc()).append("\n");
-            for (var arg : function.args()) {
-                doc.append("---@param ");
-                doc.append(arg.argName()).append(" ");
-                doc.append(arg.argType().getArgtypeString()).append(" ");
-                doc.append(arg.argDesc()).append("\n");
+        for (var group : docs.keySet()) {
+            if (!group.equals(ScriptApiBuilder.GROUPLESS_GROUP)) {
+                doc.append("local ").append(group).append(" = {}\n\n");
             }
-            doc.append("---@return ");
-            doc.append(function.returnType().getArgtypeString()).append("\n");
 
-            doc.append("function ");
-            doc.append(api.name()).append(".").append(function.funcName());
-            doc.append("(");
-            for (int i = 0; i < function.args().size(); i++) {
-                doc.append(function.args().get(i).argName());
-                if (i < function.args().size() - 1) {
-                    doc.append(", ");
+            for (var function : docs.get(group)) {
+                doc.append("--- ").append(function.funcDesc()).append("\n");
+                for (var arg : function.args()) {
+                    doc.append("---@param ");
+                    doc.append(arg.argName()).append(" ");
+                    doc.append(arg.argType().getArgtypeString()).append(" ");
+                    doc.append(arg.argDesc()).append("\n");
                 }
+                doc.append("---@return ");
+                doc.append(function.returnType().getArgtypeString()).append("\n");
+
+                doc.append("function ");
+
+
+                if (!group.equals(ScriptApiBuilder.GROUPLESS_GROUP)) {
+                    doc.append(group).append(".");
+                } else {
+                    doc.append(api.name()).append(".");
+                }
+
+                doc.append(function.funcName());
+                doc.append("(");
+                for (int i = 0; i < function.args().size(); i++) {
+                    doc.append(function.args().get(i).argName());
+                    if (i < function.args().size() - 1) {
+                        doc.append(", ");
+                    }
+                }
+                doc.append(") end\n\n");
             }
-            doc.append(") end\n\n");
+
+            if (!group.equals(ScriptApiBuilder.GROUPLESS_GROUP)) {
+                doc.append(api.name()).append(".").append(group).append(" = ").append(group).append("\n\n");
+            }
         }
     }
 
     @Override
     public void addScriptEvent(StringBuilder doc, ScriptEvent<?> event) {
-        addComment(doc, LuafyRegistries.SCRIPT_EVENTS.getId(event) + " ; this generator does not currently provide additional information.\n");
+        addComment(doc, LuafyRegistries.SCRIPT_EVENTS.getId(event) + ": " + event.getDesc() + " ; this generator does not currently provide additional information.");
     }
 
     @Override

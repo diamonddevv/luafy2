@@ -1,6 +1,6 @@
 package dev.diamond.luafy.script.api;
 
-import dev.diamond.luafy.autodoc.FunctionListBuilder;
+import dev.diamond.luafy.autodoc.ScriptApiBuilder;
 import dev.diamond.luafy.script.LuaScript;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
@@ -15,14 +15,14 @@ public abstract class AbstractScriptApi extends TwoArgFunction {
         this.script = script;
     }
 
-    public abstract void addFunctions(FunctionListBuilder builder);
+    public abstract void addFunctions(ScriptApiBuilder builder);
 
     @Override
     public LuaValue call(LuaValue modname, LuaValue env) {
 
         LuaTable functions = new LuaTable();
 
-        FunctionListBuilder builder = new FunctionListBuilder();
+        ScriptApiBuilder builder = new ScriptApiBuilder();
         this.addFunctions(builder);
         builder.build(functions);
 

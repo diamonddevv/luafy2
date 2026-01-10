@@ -13,6 +13,7 @@ import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.registry.LuafyRegistries;
 import dev.diamond.luafy.script.ApiScriptPlugin;
 import dev.diamond.luafy.script.LuaScript;
+import dev.diamond.luafy.script.ScriptExecutionResult;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.IdentifierArgumentType;
@@ -182,7 +183,7 @@ public class LuafyCommand {
 
 
     private static int execScript(CommandContext<ServerCommandSource> ctx, LuaScript script, String message, @Nullable LuaTable contextTable, boolean awaits) {
-        Future<LuaScript.Result> future = script.execute(ctx.getSource(), contextTable);
+        Future<ScriptExecutionResult> future = script.execute(ctx.getSource(), contextTable);
         ctx.getSource().sendFeedback(() -> Text.literal(message), true);
 
         if (awaits) {

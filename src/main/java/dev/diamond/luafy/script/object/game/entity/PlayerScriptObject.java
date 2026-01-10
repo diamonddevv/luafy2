@@ -1,10 +1,11 @@
-package dev.diamond.luafy.script.object;
+package dev.diamond.luafy.script.object.game.entity;
 
 import dev.diamond.luafy.autodoc.Argtypes;
 import dev.diamond.luafy.lua.MetamethodImpl;
 import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.script.LuaScript;
+import dev.diamond.luafy.script.object.AbstractScriptObject;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -40,7 +41,7 @@ public class PlayerScriptObject extends AbstractScriptObject<ServerPlayerEntity>
 
     @Override
     public Optional<AbstractScriptObject<? super ServerPlayerEntity>> getParentType() {
-        return Optional.of(ScriptObjects.ENTITY);
+        return Optional.of(ScriptObjects.LIVING_ENTITY);
     }
 
     @Override

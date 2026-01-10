@@ -3,6 +3,7 @@ package dev.diamond.luafy.script.object;
 import dev.diamond.luafy.autodoc.Argtypes;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.script.LuaScript;
+import dev.diamond.luafy.script.ScriptExecutionResult;
 import net.minecraft.server.command.ServerCommandSource;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
@@ -10,7 +11,7 @@ import org.luaj.vm2.LuaValue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-public class ScriptResultScriptObject extends AbstractScriptObject<Future<LuaScript.Result>> {
+public class ScriptResultScriptObject extends AbstractScriptObject<Future<ScriptExecutionResult>> {
 
     private static final String PROP_INDEX = "_idx";
     private static final String FUNC_AWAIT_RESULT = "await_result";
@@ -34,7 +35,7 @@ public class ScriptResultScriptObject extends AbstractScriptObject<Future<LuaScr
     }
 
     @Override
-    public void toTable(Future<LuaScript.Result> obj, LuaTableBuilder builder, LuaScript script) {
+    public void toTable(Future<ScriptExecutionResult> obj, LuaTableBuilder builder, LuaScript script) {
         int idx = script.addUnserializableData(obj);
 
         builder.add(PROP_INDEX, idx);
@@ -54,7 +55,7 @@ public class ScriptResultScriptObject extends AbstractScriptObject<Future<LuaScr
         });
         builder.add(FUNC_AWAIT_ERROR, args -> {
             try {
-                LuaScript.Result result = obj.get();
+                ScriptExecutionResult result = obj.get();
                 return result.success() ? LuaValue.NIL : LuaValue.valueOf(result.getError());
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
@@ -67,7 +68,7 @@ public class ScriptResultScriptObject extends AbstractScriptObject<Future<LuaScr
     }
 
     @Override
-    public Future<LuaScript.Result> toThing(LuaTable table, ServerCommandSource src, LuaScript script) {
+    public Future<ScriptExecutionResult> toThing(LuaTable table, ServerCommandSource src, LuaScript script) {
         // technically, this probably isn't needed. i doubt variables of this type would ever be passed around, but just in case, i guess.
         int idx = table.get(PROP_INDEX).toint();
         return script.getUnserializableData(idx, DummyFutureLuaScriptResultWrapper.class);
@@ -78,5 +79,5 @@ public class ScriptResultScriptObject extends AbstractScriptObject<Future<LuaScr
         return "ScriptResult";
     }
 
-    private static abstract class DummyFutureLuaScriptResultWrapper implements Future<LuaScript.Result> {}
+    private static abstract class DummyFutureLuaScriptResultWrapper implements Future<ScriptExecutionResult> {}
 }

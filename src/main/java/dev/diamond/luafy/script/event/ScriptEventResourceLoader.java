@@ -1,9 +1,12 @@
 package dev.diamond.luafy.script;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.registry.LuafyRegistries;
+import dev.diamond.luafy.script.event.ScriptEntry;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
@@ -46,7 +49,20 @@ public class ScriptEventResourceLoader implements SimpleSynchronousResourceReloa
                         var event = LuafyRegistries.SCRIPT_EVENTS.get(id);
                         assert event != null; // we checked it exists so this is fineeeee
 
-                        event.register(data.identifiers.stream().map(Identifier::of).collect(Collectors.toSet()));
+
+                        ArrayList<ScriptEntry> entries = new ArrayList<>();
+                        for (var e : data.entries) {
+
+                            if (e.isJsonPrimitive()) {
+                                String stringId = e.getAsString();
+                                e = new JsonObject();
+                                ((JsonObject) e).addProperty("id", stringId);
+                            }
+
+                            entries.add(new ScriptEntry(gson.fromJson(e.getAsJsonObject(), ScriptEntry.Bean.class)));
+                        }
+
+                        event.register(entries);
 
                         count += 1;
                     }
@@ -63,6 +79,7 @@ public class ScriptEventResourceLoader implements SimpleSynchronousResourceReloa
 
     private static class Bean {
         @SerializedName("scripts")
-        public ArrayList<String> identifiers;
+        public ArrayList<JsonElement> entries;
     }
+
 }

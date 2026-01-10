@@ -22,7 +22,7 @@ public class ScriptManager {
         this.scriptExecutor = Executors.newCachedThreadPool();
     }
 
-    public Future<LuaScript.Result> submitExecution(Callable<LuaScript.Result> scriptExecution) {
+    public Future<ScriptExecutionResult> submitExecution(Callable<ScriptExecutionResult> scriptExecution) {
         return this.scriptExecutor.submit(scriptExecution);
     }
 

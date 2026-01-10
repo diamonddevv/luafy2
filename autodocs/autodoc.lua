@@ -2,7 +2,7 @@
 
 --#region Information
 -- GENERATED AUTODOC
--- Generated: 2026-01-08T16:38:07.816933200
+-- Generated: 2026-01-10T16:39:38.311654400
 -- Luafy Version: 2.0.0
 -- Format: Lua LS library file
 --#endregion
@@ -74,27 +74,6 @@ Instrument = {
 local Vec3d = {}
 
 
---- An entity.
----@class Entity
----@field name string Entity's name.
----@field uuid string Entity's uuid.
-local Entity = {}
-
---- Gets the entity's current position.
----@return Vec3d
-function Entity.get_pos() end
-
-
---- A player.
----@class Player: Entity
-local Player = {}
-
---- Prints a line to this player's chat.
----@param msg string String to display.
----@return nil
-function Player.tell(msg) end
-
-
 --- An object representing a mod installed on the server.
 ---@class Mod
 ---@field modid string The id of this mod.
@@ -123,6 +102,51 @@ function ScriptResult.await_error() end
 function ScriptResult.release() end
 
 
+--- An entity.
+---@class Entity
+---@field name string Entity's name.
+---@field uuid string Entity's uuid.
+local Entity = {}
+
+--- Gets the entity's current position.
+---@return Vec3d
+function Entity.get_pos() end
+
+
+--- A living entity.
+---@class LivingEntity: Entity
+local LivingEntity = {}
+
+--- Returns this entities health.
+---@return number
+function LivingEntity.get_health() end
+
+
+--- A player.
+---@class Player: LivingEntity
+local Player = {}
+
+--- Prints a line to this player's chat.
+---@param msg string String to display.
+---@return nil
+function Player.tell(msg) end
+
+
+--- A block type.
+---@class Block
+local Block = {}
+
+
+--- An item type.
+---@class Item
+local Item = {}
+
+
+--- An item stack.
+---@class ItemStack
+local ItemStack = {}
+
+
 --#endregion
 
 --#region Script Api
@@ -143,32 +167,37 @@ function minecraft.say(message) end
 ---@return integer
 function minecraft.command(command) end
 
---- Uses an entity selector to find a player.
----@param selector string Entity selector
----@return Player
-function minecraft.get_player_from_selector(selector) end
-
---- Uses an entity selector to find an entity.
----@param selector string Entity selector
----@return Entity
-function minecraft.get_entity_from_selector(selector) end
-
---- Uses an entity selector to find several entities.
----@param selector string Entity selector
----@return Entity[]
-function minecraft.get_entities_from_selector(selector) end
-
 --- Plays the specified noteblock note at the given location.
 ---@param note Note Note to play
 ---@param instrument Instrument Instrument
 ---@param pos Vec3d Location to play sound at
+---@param particle boolean If true, a particle will also render. Defaults to true.
 ---@return nil
-function minecraft.note(note, instrument, pos) end
+function minecraft.note(note, instrument, pos, particle) end
 
 --- Waits for a given number of seconds before continuing.
 ---@param seconds number Number of seconds to wait.
 ---@return nil
 function minecraft.sleep(seconds) end
+
+local entities = {}
+
+--- Uses an entity selector to find a player.
+---@param selector string Entity selector
+---@return Player
+function entities.get_player_from_selector(selector) end
+
+--- Uses an entity selector to find an entity.
+---@param selector string Entity selector
+---@return Entity
+function entities.get_entity_from_selector(selector) end
+
+--- Uses an entity selector to find several entities.
+---@param selector string Entity selector
+---@return Entity[]
+function entities.get_entities_from_selector(selector) end
+
+minecraft.entities = entities
 
 luafy = {}
 
@@ -223,7 +252,7 @@ function fabric.get_mods() end
 
 --#region Script Event
 
--- luafy:tick ; this generator does not currently provide additional information.
-
+-- luafy:load: Executes after a reload. ; this generator does not currently provide additional information.
+-- luafy:tick: Executes every server tick. ; this generator does not currently provide additional information.
 --#endregion
 
