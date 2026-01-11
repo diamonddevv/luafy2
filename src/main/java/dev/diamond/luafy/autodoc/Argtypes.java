@@ -17,7 +17,10 @@ public class Argtypes {
     public static Argtype array(Argtype argtype) {
         return () -> argtype.getArgtypeString() + "[]";
     }
+    public static Argtype or(Argtype a, Argtype b) {
+        return () -> a.getArgtypeString() + " | " + b.getArgtypeString();
+    }
     public static Argtype maybe(Argtype argtype) {
-        return () -> argtype.getArgtypeString() + "?";
+        return () -> argtype.getArgtypeString() + " | nil";
     }
 }

@@ -117,10 +117,6 @@ public class MinecraftApi extends AbstractScriptApi {
                 try {
                     EntitySelector s = reader.read();
 
-                    if (s.includesNonPlayers()) {
-                        throw EntityArgumentType.PLAYER_SELECTOR_HAS_ENTITIES_EXCEPTION.create();
-                    }
-
                     if (s.getLimit() > 1) {
                         throw EntityArgumentType.TOO_MANY_PLAYERS_EXCEPTION.create();
                     }

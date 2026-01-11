@@ -1,5 +1,6 @@
 package dev.diamond.luafy.autodoc.generator;
 
+import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.autodoc.FunctionListBuilder;
 import dev.diamond.luafy.registry.LuafyRegistries;
 import dev.diamond.luafy.script.ApiScriptPlugin;
@@ -39,6 +40,8 @@ public abstract class AbstractAutodocGenerator {
 
 
     public String buildOutput(File file) {
+        Luafy.LOGGER.info("Generating autodoc (Generator class: '{}')..", this.getClass().getSimpleName());
+        long time = System.currentTimeMillis();
 
         // write doc
         StringBuilder doc = new StringBuilder();
@@ -51,6 +54,7 @@ public abstract class AbstractAutodocGenerator {
             Identifier id = LuafyRegistries.SCRIPT_ENUMS.getId(obj);
             assert id != null;
             addEnum(doc, obj);
+            Luafy.LOGGER.info("Added enum {}", id);
         });
         endRegion(doc, REGION_SCRIPT_ENUM);
 
@@ -59,6 +63,7 @@ public abstract class AbstractAutodocGenerator {
             Identifier id = LuafyRegistries.SCRIPT_OBJECTS.getId(obj);
             assert id != null;
             addScriptObject(doc, obj);
+            Luafy.LOGGER.info("Added object {}", id);
         });
         endRegion(doc, REGION_SCRIPT_OBJECT);
 
@@ -71,6 +76,7 @@ public abstract class AbstractAutodocGenerator {
                 ApiScriptPlugin.DocInfo b = api.generatePopulatedFunctionList();
 
                 addScriptApi(doc, b);
+                Luafy.LOGGER.info("Added api {}", id);
             }
         });
         endRegion(doc, REGION_SCRIPT_API);
@@ -80,6 +86,7 @@ public abstract class AbstractAutodocGenerator {
             Identifier id = LuafyRegistries.SCRIPT_EVENTS.getId(obj);
             assert id != null;
             addScriptEvent(doc, obj);
+            Luafy.LOGGER.info("Added event {}", id);
         });
         endRegion(doc, REGION_SCRIPT_EVENT);
 
@@ -91,7 +98,10 @@ public abstract class AbstractAutodocGenerator {
         } catch (IOException e) {
             throw new RuntimeException("Failed to write autodoc file: " + e);
         }
-        return file.getPath();
+
+        String path = file.getPath();
+        Luafy.LOGGER.info("Generated autodoc (Generator class: '{}') at {}. (took {}ms)", this.getClass().getSimpleName(), path, System.currentTimeMillis() - time);
+        return path;
     }
 
 

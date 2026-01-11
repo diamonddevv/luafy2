@@ -2,7 +2,7 @@
 
 --#region Information
 -- GENERATED AUTODOC
--- Generated: 2026-01-11T13:07:52.994157200
+-- Generated: 2026-01-11T14:02:13.116597400
 -- Luafy Version: 2.0.0
 -- Format: Lua LS library file
 --#endregion
@@ -86,7 +86,7 @@ local Mod = {}
 local ScriptResult = {}
 
 --- Awaits this script to complete execution if it has not already, and returns the result.
----@return any?
+---@return any | nil
 function ScriptResult.await_result() end
 
 --- Awaits this script to complete execution if it has not already, and returns if it succeeded.
@@ -94,7 +94,7 @@ function ScriptResult.await_result() end
 function ScriptResult.await_success() end
 
 --- Awaits this script to complete execution if it has not already, and returns the error string if it failed, or nil if it succeeded.
----@return string?
+---@return string | nil
 function ScriptResult.await_error() end
 
 --- Releases the internal Result Java object from the cache. Using this object after this has been called may result in an error.
@@ -112,6 +112,14 @@ local Entity = {}
 ---@return Vec3d
 function Entity.get_pos() end
 
+--- Returns true if this entity is a LivingEntity.
+---@return boolean
+function Entity.is_living() end
+
+--- Return this entity as a LivingEntity.
+---@return LivingEntity
+function Entity.as_living() end
+
 
 --- A living entity.
 ---@class LivingEntity: Entity
@@ -124,22 +132,22 @@ function LivingEntity.get_health() end
 --- Damages this entity.
 ---@param damage_type string Identifier of a damage type.
 ---@param amount number Amount of damage to deal.
----@param source Entity? Optional entity that dealt this damage.
+---@param source Entity | nil Optional entity that dealt this damage.
 ---@return nil
 function LivingEntity.hurt(damage_type, amount, source) end
 
 --- Kills this entity.
 ---@param damage_type string Identifier of a damage type.
----@param source Entity? Optional entity that killed this one.
+---@param source Entity | nil Optional entity that killed this one.
 ---@return nil
 function LivingEntity.kill(damage_type, source) end
 
 --- Teleports this entity to the specified position
 ---@param pos Vec3d Position to teleport to.
----@param yaw number? Yaw angle of entity after teleporting. Defaults to current yaw.
----@param pitch number? Pitch angle of entity after teleporting. Defaults to current pitch.
----@param retain_velocity boolean? If true, the entity will retain their velocity after teleporting. Defaults to true.
----@param dimension_id string? Identifier of dimension to teleport to. Defaults to the entities current dimension.
+---@param yaw number | nil Yaw angle of entity after teleporting. Defaults to current yaw.
+---@param pitch number | nil Pitch angle of entity after teleporting. Defaults to current pitch.
+---@param retain_velocity boolean | nil If true, the entity will retain their velocity after teleporting. Defaults to true.
+---@param dimension_id string | nil Identifier of dimension to teleport to. Defaults to the entities current dimension.
 ---@return nil
 function LivingEntity.teleport(pos, yaw, pitch, retain_velocity, dimension_id) end
 
@@ -225,7 +233,7 @@ luafy = {}
 
 --- Executes the script with the given identifier, and awaits its completion. Returns future result, that can be awaited if needed.
 ---@param script string Identifier of script to be executed.
----@param context table? Context to pass to script. Defaults to an empty table.
+---@param context table | nil Context to pass to script. Defaults to an empty table.
 ---@return ScriptResult
 function luafy.script(script, context) end
 

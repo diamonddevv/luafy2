@@ -19,14 +19,14 @@ import java.util.function.Consumer;
 
 public abstract class AbstractScriptObject<T> implements SimpleAutodocumentable, Argtype {
     private final String desc;
-    private final ScriptObjectDocBuilder docs;
+    private final Consumer<ScriptObjectDocBuilder> docBuilder;
+    private ScriptObjectDocBuilder docs;
 
     public AbstractScriptObject(String desc, Consumer<ScriptObjectDocBuilder> docBuilder) {
         this.desc = desc;
+        this.docBuilder = docBuilder;
+        this.docs = null;
 
-        var sodb = new ScriptObjectDocBuilder();
-        docBuilder.accept(sodb);
-        this.docs = sodb;
     }
 
     public abstract void toTable(T obj, LuaTableBuilder builder, LuaScript script);
@@ -46,6 +46,14 @@ public abstract class AbstractScriptObject<T> implements SimpleAutodocumentable,
             Luafy.LOGGER.error("Tried to write to a readonly object!");
             return LuaValue.NIL;
         });
+    }
+
+    public static void buildAllDocs() {
+        for (var entry : LuafyRegistries.SCRIPT_OBJECTS) {
+            var sodb = new ScriptObjectDocBuilder();
+            entry.docBuilder.accept(sodb);
+            entry.docs = sodb;
+        }
     }
 
     @Override

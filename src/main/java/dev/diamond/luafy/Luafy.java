@@ -46,17 +46,16 @@ public class Luafy implements ModInitializer {
 		ResourceManagerHelperImpl.get(ResourceType.SERVER_DATA).registerReloadListener(SCRIPT_EVENT_RESOURCE_LOADER);
 
 		ScriptPlugins.registerAll();
-		ScriptObjects.registerAll();
 		ScriptEnums.registerAll();
+		ScriptObjects.registerAll();
 		ScriptEvents.registerAll();
 		ScriptEvents.applyEvents();
 		AutodocGenerators.registerAll();
 
 
 		// generate LuaLS autodoc
-		long time = System.currentTimeMillis();
-		String path = AutodocGenerators.LUA_LS.buildOutput(FabricLoaderImpl.INSTANCE.isDevelopmentEnvironment() ? new File(DEV_ENV_DOC_OUTPUT_FILEPATH) : AbstractAutodocGenerator.getDefaultFile(AutodocGenerators.LUA_LS));
-		Luafy.LOGGER.info("Generated luals (LuaCATS) language server doc at {}. (took {}ms)", path, System.currentTimeMillis() - time);
+		AutodocGenerators.LUA_LS.buildOutput(FabricLoaderImpl.INSTANCE.isDevelopmentEnvironment() ? new File(DEV_ENV_DOC_OUTPUT_FILEPATH) : AbstractAutodocGenerator.getDefaultFile(AutodocGenerators.LUA_LS));
+
 	}
 
 	public static Identifier id(String path) {

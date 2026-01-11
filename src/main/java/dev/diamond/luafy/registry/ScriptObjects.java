@@ -40,5 +40,7 @@ public class ScriptObjects {
         Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("item"), ITEM);
         Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("item_stack"), ITEM_STACK);
 
+        // this has to be deferred so that objects can reference each other in their docs
+        AbstractScriptObject.buildAllDocs();
     }
 }
