@@ -2,7 +2,7 @@
 
 --#region Information
 -- GENERATED AUTODOC
--- Generated: 2026-01-10T16:39:38.311654400
+-- Generated: 2026-01-11T13:07:52.994157200
 -- Luafy Version: 2.0.0
 -- Format: Lua LS library file
 --#endregion
@@ -120,6 +120,28 @@ local LivingEntity = {}
 --- Returns this entities health.
 ---@return number
 function LivingEntity.get_health() end
+
+--- Damages this entity.
+---@param damage_type string Identifier of a damage type.
+---@param amount number Amount of damage to deal.
+---@param source Entity? Optional entity that dealt this damage.
+---@return nil
+function LivingEntity.hurt(damage_type, amount, source) end
+
+--- Kills this entity.
+---@param damage_type string Identifier of a damage type.
+---@param source Entity? Optional entity that killed this one.
+---@return nil
+function LivingEntity.kill(damage_type, source) end
+
+--- Teleports this entity to the specified position
+---@param pos Vec3d Position to teleport to.
+---@param yaw number? Yaw angle of entity after teleporting. Defaults to current yaw.
+---@param pitch number? Pitch angle of entity after teleporting. Defaults to current pitch.
+---@param retain_velocity boolean? If true, the entity will retain their velocity after teleporting. Defaults to true.
+---@param dimension_id string? Identifier of dimension to teleport to. Defaults to the entities current dimension.
+---@return nil
+function LivingEntity.teleport(pos, yaw, pitch, retain_velocity, dimension_id) end
 
 
 --- A player.
