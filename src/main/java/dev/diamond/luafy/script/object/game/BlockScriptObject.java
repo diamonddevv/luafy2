@@ -1,9 +1,9 @@
 package dev.diamond.luafy.script.object.game;
 
-import com.jcraft.jorbis.Block;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.script.object.AbstractScriptObject;
+import net.minecraft.block.Block;
 import net.minecraft.server.command.ServerCommandSource;
 import org.luaj.vm2.LuaTable;
 

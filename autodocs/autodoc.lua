@@ -2,7 +2,7 @@
 
 --#region Information
 -- GENERATED AUTODOC
--- Generated: 2026-01-11T14:02:13.116597400
+-- Generated: 2026-01-14T12:53:05.734402500
 -- Luafy Version: 2.0.0
 -- Format: Lua LS library file
 --#endregion
@@ -136,8 +136,8 @@ function LivingEntity.get_health() end
 ---@return nil
 function LivingEntity.hurt(damage_type, amount, source) end
 
---- Kills this entity.
----@param damage_type string Identifier of a damage type.
+--- Applies infinite damage to this entity with the specified type. If no type is specified, the default damage source is used. Please note that if the entity is invulnerable to the specified damage source, it will not kill them!
+---@param damage_type string | nil Identifier of a damage type.
 ---@param source Entity | nil Optional entity that killed this one.
 ---@return nil
 function LivingEntity.kill(damage_type, source) end
@@ -170,6 +170,11 @@ local Block = {}
 --- An item type.
 ---@class Item
 local Item = {}
+
+--- Creates an items stack of this item type.
+---@param count integer The number of items to create a stack of.
+---@return ItemStack
+function Item.create_stack(count) end
 
 
 --- An item stack.
@@ -209,6 +214,20 @@ function minecraft.note(note, instrument, pos, particle) end
 ---@param seconds number Number of seconds to wait.
 ---@return nil
 function minecraft.sleep(seconds) end
+
+local registry = {}
+
+--- Fetches an item type from the registry.
+---@param id string Identifier of the item type.
+---@return Item
+function registry.item(id) end
+
+--- Fetches an block type from the registry.
+---@param id string Identifier of the block type.
+---@return Block
+function registry.block(id) end
+
+minecraft.registry = registry
 
 local entities = {}
 

@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageType;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.command.ServerCommandSource;
@@ -39,8 +40,8 @@ public class LivingEntityScriptObject extends AbstractScriptObject<LivingEntity>
                 args.add("amount", Argtypes.NUMBER, "Amount of damage to deal.");
                 args.add("source", Argtypes.maybe(ScriptObjects.ENTITY), "Optional entity that dealt this damage.");
             }, Argtypes.NIL);
-            doc.addFunction(FUNC_KILL, "Kills this entity.", args -> {
-                args.add("damage_type", Argtypes.STRING, "Identifier of a damage type.");
+            doc.addFunction(FUNC_KILL, "Applies infinite damage to this entity with the specified type. If no type is specified, the default damage source is used. Please note that if the entity is invulnerable to the specified damage source, it will not kill them!", args -> {
+                args.add("damage_type", Argtypes.maybe(Argtypes.STRING), "Identifier of a damage type.");
                 args.add("source", Argtypes.maybe(ScriptObjects.ENTITY), "Optional entity that killed this one.");
             }, Argtypes.NIL);
             doc.addFunction(FUNC_TELEPORT, "Teleports this entity to the specified position", args -> {
@@ -73,12 +74,19 @@ public class LivingEntityScriptObject extends AbstractScriptObject<LivingEntity>
             return LuaValue.NIL;
         });
         builder.add(FUNC_KILL, args -> {
-            Identifier damageTypeId = Identifier.of(MetamethodImpl.tostring(args.arg(1)));
+            Optional<Identifier> damageTypeId = args.arg(1).isnil() ?
+                    Optional.empty() : Optional.of(Identifier.of(MetamethodImpl.tostring(args.arg(1))));
             Optional<Entity> e = args.arg(2).isnil() ?
                     Optional.empty() : Optional.of(ScriptObjects.ENTITY.toThing(args.arg(2).checktable(), script.getSource(), script));
 
             ServerWorld world = script.getSource().getWorld();
-            DamageType type = world.getRegistryManager().getOrThrow(RegistryKeys.DAMAGE_TYPE).get(damageTypeId);
+            DamageType type;
+
+            if (damageTypeId.isPresent()) {
+                type = world.getRegistryManager().getOrThrow(RegistryKeys.DAMAGE_TYPE).get(damageTypeId.get());
+            } else {
+                type = world.getRegistryManager().getOrThrow(RegistryKeys.DAMAGE_TYPE).get(DamageTypes.GENERIC_KILL);
+            }
             DamageSource source = new DamageSource(world.getRegistryManager().getOrThrow(RegistryKeys.DAMAGE_TYPE).getEntry(type), e.orElse(null));
 
             obj.damage(world, source, Float.MAX_VALUE);

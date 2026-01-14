@@ -13,16 +13,20 @@ import dev.diamond.luafy.lua.MetamethodImpl;
 import dev.diamond.luafy.script.enumeration.Instrument;
 import dev.diamond.luafy.script.enumeration.Note;
 import net.minecraft.SharedConstants;
+import net.minecraft.block.Block;
 import net.minecraft.command.EntitySelector;
 import net.minecraft.command.EntitySelectorReader;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.Item;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import org.luaj.vm2.LuaBoolean;
 import org.luaj.vm2.LuaString;
@@ -109,7 +113,6 @@ public class MinecraftApi extends AbstractScriptApi {
 
         });
 
-
         apiBuilder.addGroup("entities", builder -> {
             builder.add("get_player_from_selector", args -> {
                 String selector = MetamethodImpl.tostring(args.arg1());
@@ -168,6 +171,26 @@ public class MinecraftApi extends AbstractScriptApi {
             }, "Uses an entity selector to find several entities.", args -> {
                 args.add("selector", Argtypes.STRING, "Entity selector");
             }, Argtypes.array(ScriptObjects.ENTITY));
+        });
+
+        apiBuilder.addGroup("registry", builder -> {
+
+            builder.add("item", args -> {
+                Identifier id = Identifier.of(MetamethodImpl.tostring(args.arg1()));
+                Item item = Registries.ITEM.get(id);
+                return LuaTableBuilder.provide(b -> ScriptObjects.ITEM.toTable(item, b, script));
+            }, "Fetches an item type from the registry.", args -> {
+                args.add("id", Argtypes.STRING, "Identifier of the item type.");
+            }, ScriptObjects.ITEM);
+
+            builder.add("block", args -> {
+                Identifier id = Identifier.of(MetamethodImpl.tostring(args.arg1()));
+                Block block = Registries.BLOCK.get(id);
+                return LuaTableBuilder.provide(b -> ScriptObjects.BLOCK.toTable(block, b, script));
+            }, "Fetches an block type from the registry.", args -> {
+                args.add("id", Argtypes.STRING, "Identifier of the block type.");
+            }, ScriptObjects.BLOCK);
+
         });
     }
 
