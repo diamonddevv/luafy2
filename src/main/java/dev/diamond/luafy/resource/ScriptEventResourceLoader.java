@@ -1,4 +1,4 @@
-package dev.diamond.luafy.script;
+package dev.diamond.luafy.resource;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 public class ScriptEventResourceLoader implements SimpleSynchronousResourceReloadListener {
 

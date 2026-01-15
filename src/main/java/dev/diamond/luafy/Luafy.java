@@ -2,9 +2,9 @@ package dev.diamond.luafy;
 
 import dev.diamond.luafy.autodoc.generator.AbstractAutodocGenerator;
 import dev.diamond.luafy.registry.*;
-import dev.diamond.luafy.script.ScriptEventResourceLoader;
+import dev.diamond.luafy.resource.ScriptEventResourceLoader;
 import dev.diamond.luafy.script.ScriptManager;
-import dev.diamond.luafy.script.ScriptResourceLoader;
+import dev.diamond.luafy.resource.ScriptResourceLoader;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;

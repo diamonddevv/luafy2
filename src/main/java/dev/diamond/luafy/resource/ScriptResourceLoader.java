@@ -1,6 +1,7 @@
-package dev.diamond.luafy.script;
+package dev.diamond.luafy.resource;
 
 import dev.diamond.luafy.Luafy;
+import dev.diamond.luafy.script.LuaScript;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
