@@ -39,9 +39,7 @@ public class ItemScriptObject extends AbstractScriptObject<Item> {
             return LuaTableBuilder.provide(b -> ScriptObjects.ITEM_STACK.toTable(stack, b, script));
         });
 
-        builder.addMetamethod(MetamethodNames.TO_STRING, args -> {
-            return LuaValue.valueOf(BuiltInRegistries.ITEM.getKey(obj).toString());
-        });
+        builder.addMetamethod(MetamethodNames.TO_STRING, args -> LuaValue.valueOf(BuiltInRegistries.ITEM.getKey(obj).toString()));
     }
 
     @Override

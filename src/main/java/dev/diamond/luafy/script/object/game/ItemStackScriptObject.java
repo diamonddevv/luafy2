@@ -2,12 +2,14 @@ package dev.diamond.luafy.script.object.game;
 
 import dev.diamond.luafy.autodoc.Argtypes;
 import dev.diamond.luafy.lua.LuaTableBuilder;
+import dev.diamond.luafy.lua.MetamethodImpl;
 import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.script.object.AbstractScriptObject;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
@@ -20,8 +22,9 @@ public class ItemStackScriptObject extends AbstractScriptObject<ItemStack> {
     public static final String FUNC_COUNT_SET = "set_count";
     public static final String FUNC_ITEM_TYPE = "get_item_type";
     public static final String FUNC_ITEM_ID = "get_item_id";
-    public static final String FUNC_COMPONENTS = "get_components";
-    public static final String FUNC_COMPONENTS_SET = "set_components";
+
+    public static final String FUNC_COMPONENT = "get_component";
+    public static final String FUNC_COMPONENT_SET = "set_component";
 
     public ItemStackScriptObject() {
         super("An item stack.", doc -> {
@@ -31,6 +34,10 @@ public class ItemStackScriptObject extends AbstractScriptObject<ItemStack> {
             }, Argtypes.NIL);
             doc.addFunction(FUNC_ITEM_TYPE, "Gets the item type of this stack.", args -> {}, ScriptObjects.ITEM);
             doc.addFunction(FUNC_ITEM_ID, "Gets the item id of this stack.", args -> {}, Argtypes.STRING);
+
+            doc.addFunction(FUNC_COMPONENT, "Gets a component from this stack.", args -> {
+                args.add("component_id", Argtypes.STRING, "The id of the component to fetch.");
+            }, Argtypes.VALUE);
         });
     }
 
@@ -47,6 +54,11 @@ public class ItemStackScriptObject extends AbstractScriptObject<ItemStack> {
         builder.add(FUNC_ITEM_TYPE, args -> LuaTableBuilder.provide(b -> ScriptObjects.ITEM.toTable(obj.getItem(), b, script)));
         builder.add(FUNC_ITEM_ID, args -> LuaValue.valueOf(BuiltInRegistries.ITEM.getId(obj.getItem())));
 
+        builder.add(FUNC_COMPONENT, args -> {
+           String key = MetamethodImpl.tostring(args.arg1());
+           var type = BuiltInRegistries.DATA_COMPONENT_TYPE.get(Identifier.parse(key));
+           
+        });
     }
 
     @Override
