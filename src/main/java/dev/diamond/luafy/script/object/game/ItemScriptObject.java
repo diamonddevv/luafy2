@@ -6,11 +6,11 @@ import dev.diamond.luafy.lua.MetamethodNames;
 import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.script.object.AbstractScriptObject;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.util.Identifier;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
@@ -31,7 +31,7 @@ public class ItemScriptObject extends AbstractScriptObject<Item> {
 
     @Override
     public void toTable(Item obj, LuaTableBuilder builder, LuaScript script) {
-        builder.add(PROP_ID, Registries.ITEM.getId(obj).toString());
+        builder.add(PROP_ID, BuiltInRegistries.ITEM.getKey(obj).toString());
 
         builder.add(FUNC_CREATE_STACK, args -> {
             int count = args.arg1().toint();
@@ -40,13 +40,13 @@ public class ItemScriptObject extends AbstractScriptObject<Item> {
         });
 
         builder.addMetamethod(MetamethodNames.TO_STRING, args -> {
-            return LuaValue.valueOf(Registries.ITEM.getId(obj).toString());
+            return LuaValue.valueOf(BuiltInRegistries.ITEM.getKey(obj).toString());
         });
     }
 
     @Override
-    public Item toThing(LuaTable table, ServerCommandSource src, LuaScript script) {
-        return Registries.ITEM.get(Identifier.of(table.get(PROP_ID).tojstring()));
+    public Item toThing(LuaTable table, CommandSourceStack src, LuaScript script) {
+        return BuiltInRegistries.ITEM.getValue(Identifier.parse(table.get(PROP_ID).tojstring()));
     }
 
     @Override

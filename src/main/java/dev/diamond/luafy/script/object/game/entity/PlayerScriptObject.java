@@ -6,15 +6,15 @@ import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.script.object.AbstractScriptObject;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
 import java.util.Optional;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 
-public class PlayerScriptObject extends AbstractScriptObject<ServerPlayerEntity> {
+public class PlayerScriptObject extends AbstractScriptObject<ServerPlayer> {
 
     public static final String FUNC_TELL = "tell";
 
@@ -28,11 +28,11 @@ public class PlayerScriptObject extends AbstractScriptObject<ServerPlayerEntity>
     }
 
     @Override
-    public void toTable(ServerPlayerEntity obj, LuaTableBuilder builder, LuaScript script) {
+    public void toTable(ServerPlayer obj, LuaTableBuilder builder, LuaScript script) {
         applyInheritanceToTable(obj, builder, script);
 
         builder.add(FUNC_TELL, args -> {
-            obj.sendMessageToClient(Text.literal(MetamethodImpl.tostring(args.arg1())), false);
+            obj.sendSystemMessage(Component.literal(MetamethodImpl.tostring(args.arg1())), false);
             return LuaValue.NIL;
         });
 
@@ -40,13 +40,13 @@ public class PlayerScriptObject extends AbstractScriptObject<ServerPlayerEntity>
     }
 
     @Override
-    public Optional<AbstractScriptObject<? super ServerPlayerEntity>> getParentType() {
+    public Optional<AbstractScriptObject<? super ServerPlayer>> getParentType() {
         return Optional.of(ScriptObjects.LIVING_ENTITY);
     }
 
     @Override
-    public ServerPlayerEntity toThing(LuaTable table, ServerCommandSource src, LuaScript script) {
-        return src.getServer().getPlayerManager().getPlayer(java.util.UUID.fromString(table.get(EntityScriptObject.PROP_UUID).tojstring()));
+    public ServerPlayer toThing(LuaTable table, CommandSourceStack src, LuaScript script) {
+        return src.getServer().getPlayerList().getPlayer(java.util.UUID.fromString(table.get(EntityScriptObject.PROP_UUID).tojstring()));
     }
 
     @Override

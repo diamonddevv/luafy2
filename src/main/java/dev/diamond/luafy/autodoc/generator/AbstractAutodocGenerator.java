@@ -10,8 +10,7 @@ import dev.diamond.luafy.script.enumeration.ScriptEnum;
 import dev.diamond.luafy.script.event.ScriptEvent;
 import dev.diamond.luafy.script.object.AbstractScriptObject;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.resources.Identifier;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -51,7 +50,7 @@ public abstract class AbstractAutodocGenerator {
 
         startRegion(doc, REGION_SCRIPT_ENUM);
         LuafyRegistries.SCRIPT_ENUMS.forEach(obj -> {
-            Identifier id = LuafyRegistries.SCRIPT_ENUMS.getId(obj);
+            Identifier id = LuafyRegistries.SCRIPT_ENUMS.getKey(obj);
             assert id != null;
             addEnum(doc, obj);
             Luafy.LOGGER.info("Added enum {}", id);
@@ -60,7 +59,7 @@ public abstract class AbstractAutodocGenerator {
 
         startRegion(doc, REGION_SCRIPT_OBJECT);
         LuafyRegistries.SCRIPT_OBJECTS.forEach(obj -> {
-            Identifier id = LuafyRegistries.SCRIPT_OBJECTS.getId(obj);
+            Identifier id = LuafyRegistries.SCRIPT_OBJECTS.getKey(obj);
             assert id != null;
             addScriptObject(doc, obj);
             Luafy.LOGGER.info("Added object {}", id);
@@ -70,7 +69,7 @@ public abstract class AbstractAutodocGenerator {
         startRegion(doc, REGION_SCRIPT_API);
         LuafyRegistries.SCRIPT_PLUGINS.forEach(obj -> {
             if (obj instanceof ApiScriptPlugin<?> api) {
-                Identifier id = LuafyRegistries.SCRIPT_PLUGINS.getId(api);
+                Identifier id = LuafyRegistries.SCRIPT_PLUGINS.getKey(api);
                 assert id != null;
 
                 ApiScriptPlugin.DocInfo b = api.generatePopulatedFunctionList();
@@ -83,7 +82,7 @@ public abstract class AbstractAutodocGenerator {
 
         startRegion(doc, REGION_SCRIPT_EVENT);
         LuafyRegistries.SCRIPT_EVENTS.forEach(obj -> {
-            Identifier id = LuafyRegistries.SCRIPT_EVENTS.getId(obj);
+            Identifier id = LuafyRegistries.SCRIPT_EVENTS.getKey(obj);
             assert id != null;
             addScriptEvent(doc, obj);
             Luafy.LOGGER.info("Added event {}", id);

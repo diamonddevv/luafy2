@@ -4,7 +4,7 @@ import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.script.event.ScriptEvent;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.registry.Registry;
+import net.minecraft.core.Registry;
 
 public class ScriptEvents {
 
@@ -31,15 +31,15 @@ public class ScriptEvents {
     public static void applyEvents() {
         // load
         ServerLifecycleEvents.SERVER_STARTED.register((server) -> {
-            LOAD.trigger(server.getCommandSource(), null);
+            LOAD.trigger(server.createCommandSourceStack(), null);
         });
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, manager, throwableIsNull) -> {
-            LOAD.trigger(server.getCommandSource(), null);
+            LOAD.trigger(server.createCommandSourceStack(), null);
         });
 
         // tick
         ServerTickEvents.START_SERVER_TICK.register(server -> {
-            TICK.trigger(server.getCommandSource(), null);
+            TICK.trigger(server.createCommandSourceStack(), null);
         });
 
 

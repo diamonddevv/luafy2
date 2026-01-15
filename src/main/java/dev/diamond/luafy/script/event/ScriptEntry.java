@@ -2,9 +2,8 @@ package dev.diamond.luafy.script.event;
 
 import com.google.gson.annotations.SerializedName;
 import dev.diamond.luafy.script.ScriptExecutionResult;
-import net.minecraft.util.Identifier;
-
 import java.util.concurrent.Future;
+import net.minecraft.resources.Identifier;
 
 public class ScriptEntry {
     public Identifier id;
@@ -13,7 +12,7 @@ public class ScriptEntry {
     private Future<ScriptExecutionResult> lastResult;
 
     public ScriptEntry(ScriptEntry.Bean bean) {
-        this.id = Identifier.of(bean.id);
+        this.id = Identifier.parse(bean.id);
         this.awaitCompletion = bean.awaitCompletion;
     }
 

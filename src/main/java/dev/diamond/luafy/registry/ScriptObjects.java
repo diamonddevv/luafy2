@@ -8,7 +8,7 @@ import dev.diamond.luafy.script.object.game.ItemStackScriptObject;
 import dev.diamond.luafy.script.object.game.entity.EntityScriptObject;
 import dev.diamond.luafy.script.object.game.entity.LivingEntityScriptObject;
 import dev.diamond.luafy.script.object.game.entity.PlayerScriptObject;
-import net.minecraft.registry.Registry;
+import net.minecraft.core.Registry;
 
 public class ScriptObjects {
 

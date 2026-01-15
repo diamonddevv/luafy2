@@ -4,13 +4,13 @@ import dev.diamond.luafy.autodoc.Argtypes;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.lua.MetamethodNames;
 import dev.diamond.luafy.script.LuaScript;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.world.phys.Vec3;
 import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaTable;
 
 
-public class Vec3dScriptObject extends AbstractScriptObject<Vec3d> {
+public class Vec3dScriptObject extends AbstractScriptObject<Vec3> {
 
 
     public Vec3dScriptObject() {
@@ -22,7 +22,7 @@ public class Vec3dScriptObject extends AbstractScriptObject<Vec3d> {
     }
 
     @Override
-    public void toTable(Vec3d obj, LuaTableBuilder builder, LuaScript script) {
+    public void toTable(Vec3 obj, LuaTableBuilder builder, LuaScript script) {
         builder.add("x", obj.x);
         builder.add("y", obj.y);
         builder.add("z", obj.z);
@@ -31,8 +31,8 @@ public class Vec3dScriptObject extends AbstractScriptObject<Vec3d> {
     }
 
     @Override
-    public Vec3d toThing(LuaTable table, ServerCommandSource src, LuaScript script) {
-        return new Vec3d(table.get("x").tofloat(), table.get("y").tofloat(), table.get("z").tofloat());
+    public Vec3 toThing(LuaTable table, CommandSourceStack src, LuaScript script) {
+        return new Vec3(table.get("x").tofloat(), table.get("y").tofloat(), table.get("z").tofloat());
     }
 
     @Override
@@ -40,7 +40,7 @@ public class Vec3dScriptObject extends AbstractScriptObject<Vec3d> {
         return "Vec3d";
     }
 
-    private static String toString(Vec3d obj) {
+    private static String toString(Vec3 obj) {
         return String.format("[%s, %s, %s]", obj.x, obj.y, obj.z);
     }
 }

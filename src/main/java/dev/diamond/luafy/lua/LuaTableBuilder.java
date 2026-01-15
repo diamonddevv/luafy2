@@ -1,8 +1,5 @@
 package dev.diamond.luafy.lua;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
 import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
@@ -14,6 +11,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 
 public class LuaTableBuilder {
     private final LuaTable table;
@@ -80,11 +80,11 @@ public class LuaTableBuilder {
         return b.build();
     }
 
-    public static LuaTable fromNbtCompound(NbtCompound compound) {
+    public static LuaTable fromNbtCompound(CompoundTag compound) {
         LuaTableBuilder builder = new LuaTableBuilder();
 
-        for (var key : compound.getKeys()) {
-            NbtElement element = compound.get(key);
+        for (var key : compound.keySet()) {
+            Tag element = compound.get(key);
             assert element != null;
             builder.addInternal(key, fromNbtElement(element));
         }
@@ -92,15 +92,15 @@ public class LuaTableBuilder {
         return builder.build();
     }
 
-    private static LuaValue fromNbtElement(NbtElement element) {
-        return switch (element.getType()) {
-            case NbtElement.BYTE_TYPE -> LuaValue.valueOf(element.asByte().orElseThrow());
-            case NbtElement.SHORT_TYPE -> LuaValue.valueOf(element.asShort().orElseThrow());
-            case NbtElement.INT_TYPE -> LuaValue.valueOf(element.asInt().orElseThrow());
-            case NbtElement.LONG_TYPE -> LuaValue.valueOf(element.asLong().orElseThrow());
-            case NbtElement.FLOAT_TYPE -> LuaValue.valueOf(element.asFloat().orElseThrow());
-            case NbtElement.DOUBLE_TYPE -> LuaValue.valueOf(element.asDouble().orElseThrow());
-            case NbtElement.BYTE_ARRAY_TYPE -> {
+    private static LuaValue fromNbtElement(Tag element) {
+        return switch (element.getId()) {
+            case Tag.TAG_BYTE -> LuaValue.valueOf(element.asByte().orElseThrow());
+            case Tag.TAG_SHORT -> LuaValue.valueOf(element.asShort().orElseThrow());
+            case Tag.TAG_INT -> LuaValue.valueOf(element.asInt().orElseThrow());
+            case Tag.TAG_LONG -> LuaValue.valueOf(element.asLong().orElseThrow());
+            case Tag.TAG_FLOAT -> LuaValue.valueOf(element.asFloat().orElseThrow());
+            case Tag.TAG_DOUBLE -> LuaValue.valueOf(element.asDouble().orElseThrow());
+            case Tag.TAG_BYTE_ARRAY -> {
                 byte[] values = element.asByteArray().orElseThrow();
                 LuaValue[] arr = new LuaValue[values.length];
                 for (int i = 0; i < values.length; i++) {
@@ -108,17 +108,17 @@ public class LuaTableBuilder {
                 }
                 yield LuaTable.listOf(arr);
             }
-            case NbtElement.STRING_TYPE -> LuaValue.valueOf(element.asString().orElseThrow());
-            case NbtElement.LIST_TYPE -> {
-                NbtList list = element.asNbtList().orElseThrow();
+            case Tag.TAG_STRING -> LuaValue.valueOf(element.asString().orElseThrow());
+            case Tag.TAG_LIST -> {
+                ListTag list = element.asList().orElseThrow();
                 LuaValue[] values = new LuaValue[list.size()];
                 for (int i = 0; i < list.size(); i++) {
                     values[i] = fromNbtElement(list.get(i));
                 }
                 yield LuaTable.listOf(values);
             }
-            case NbtElement.COMPOUND_TYPE -> fromNbtCompound(element.asCompound().orElseThrow());
-            case NbtElement.INT_ARRAY_TYPE -> {
+            case Tag.TAG_COMPOUND -> fromNbtCompound(element.asCompound().orElseThrow());
+            case Tag.TAG_INT_ARRAY -> {
                 int[] values = element.asIntArray().orElseThrow();
                 LuaValue[] arr = new LuaValue[values.length];
                 for (int i = 0; i < values.length; i++) {
@@ -126,7 +126,7 @@ public class LuaTableBuilder {
                 }
                 yield LuaTable.listOf(arr);
             }
-            case NbtElement.LONG_ARRAY_TYPE -> {
+            case Tag.TAG_LONG_ARRAY -> {
                 long[] values = element.asLongArray().orElseThrow();
                 LuaValue[] arr = new LuaValue[values.length];
                 for (int i = 0; i < values.length; i++) {

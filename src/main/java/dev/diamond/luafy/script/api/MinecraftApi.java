@@ -13,21 +13,21 @@ import dev.diamond.luafy.lua.MetamethodImpl;
 import dev.diamond.luafy.script.enumeration.Instrument;
 import dev.diamond.luafy.script.enumeration.Note;
 import net.minecraft.SharedConstants;
-import net.minecraft.block.Block;
-import net.minecraft.command.EntitySelector;
-import net.minecraft.command.EntitySelectorReader;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.Item;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.Registries;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.selector.EntitySelector;
+import net.minecraft.commands.arguments.selector.EntitySelectorParser;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.Vec3;
 import org.luaj.vm2.LuaBoolean;
 import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaValue;
@@ -46,14 +46,14 @@ public class MinecraftApi extends AbstractScriptApi {
         apiBuilder.addGroupless(builder -> {
 
             builder.add("get_version", args -> {
-                return LuaString.valueOf(SharedConstants.getGameVersion().name());
+                return LuaString.valueOf(SharedConstants.getCurrentVersion().name());
             }, "Returns the current Minecraft version string.", args -> {}, Argtypes.STRING);
 
             builder.add("say", args -> {
                 String s = MetamethodImpl.tostring(args.arg1());
 
-                for (ServerPlayerEntity spe : script.getSource().getServer().getPlayerManager().getPlayerList()) {
-                    spe.sendMessageToClient(Text.literal(s), false);
+                for (ServerPlayer spe : script.getSource().getServer().getPlayerList().getPlayers()) {
+                    spe.sendSystemMessage(Component.literal(s), false);
                 }
 
                 script.getGlobals().STDOUT.print(s);
@@ -66,7 +66,7 @@ public class MinecraftApi extends AbstractScriptApi {
 
             builder.add("command", args -> {
                 String s = MetamethodImpl.tostring(args.arg1());
-                var source = script.getSource().getServer().getCommandSource();
+                var source = script.getSource().getServer().createCommandSourceStack();
                 var cmd = parseCommand(s, source);
                 int result = executeCommand(cmd, source);
                 return LuaValue.valueOf(result);
@@ -77,18 +77,18 @@ public class MinecraftApi extends AbstractScriptApi {
             builder.add("note", args -> {
                 Note note = ScriptEnums.NOTE.fromKey(MetamethodImpl.tostring(args.arg(1)));
                 Instrument instrument = ScriptEnums.INSTRUMENT.fromKey(MetamethodImpl.tostring(args.arg(2)));
-                Vec3d pos = ScriptObjects.VEC3D.toThing(args.arg(3).checktable(), script.getSource(), this.script);
+                Vec3 pos = ScriptObjects.VEC3D.toThing(args.arg(3).checktable(), script.getSource(), this.script);
                 boolean particle = args.arg(4).or(LuaBoolean.TRUE).checkboolean();
 
-                ServerWorld world = script.getSource().getWorld();
+                ServerLevel world = script.getSource().getLevel();
 
                 int idx = note.getIndex();
                 float pitch = note.getPitch();
 
                 world.getServer().execute(() -> { // exec on main thread
                     if (particle)
-                        world.spawnParticles(ParticleTypes.NOTE, pos.getX(), pos.getY() + 0.7, pos.getZ(), 1, (double)idx / 24.0, 0.0, 0.0, 0);
-                    world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), instrument.getInstrument().getSound(), SoundCategory.RECORDS, 3.0F, pitch, world.random.nextLong());
+                        world.sendParticles(ParticleTypes.NOTE, pos.x(), pos.y() + 0.7, pos.z(), 1, (double)idx / 24.0, 0.0, 0.0, 0);
+                    world.playSeededSound(null, pos.x(), pos.y(), pos.z(), instrument.getInstrument().getSoundEvent(), SoundSource.RECORDS, 3.0F, pitch, world.random.nextLong());
                 });
 
                 return LuaValue.NIL;
@@ -116,15 +116,15 @@ public class MinecraftApi extends AbstractScriptApi {
         apiBuilder.addGroup("entities", builder -> {
             builder.add("get_player_from_selector", args -> {
                 String selector = MetamethodImpl.tostring(args.arg1());
-                EntitySelectorReader reader = new EntitySelectorReader(new StringReader(selector), true);
+                EntitySelectorParser reader = new EntitySelectorParser(new StringReader(selector), true);
                 try {
-                    EntitySelector s = reader.read();
+                    EntitySelector s = reader.parse();
 
-                    if (s.getLimit() > 1) {
-                        throw EntityArgumentType.TOO_MANY_PLAYERS_EXCEPTION.create();
+                    if (s.getMaxResults() > 1) {
+                        throw EntityArgument.ERROR_NOT_SINGLE_PLAYER.create();
                     }
 
-                    ServerPlayerEntity player = s.getPlayer(script.getSource());
+                    ServerPlayer player = s.findSinglePlayer(script.getSource());
                     return LuaTableBuilder.provide(b -> ScriptObjects.PLAYER.toTable(player, b, this.script));
                 } catch (CommandSyntaxException e) {
                     throw new RuntimeException(e);
@@ -135,15 +135,15 @@ public class MinecraftApi extends AbstractScriptApi {
 
             builder.add("get_entity_from_selector", args -> {
                 String selector = MetamethodImpl.tostring(args.arg1());
-                EntitySelectorReader reader = new EntitySelectorReader(new StringReader(selector), true);
+                EntitySelectorParser reader = new EntitySelectorParser(new StringReader(selector), true);
                 try {
-                    EntitySelector s = reader.read();
+                    EntitySelector s = reader.parse();
 
-                    if (s.getLimit() > 1) {
-                        throw EntityArgumentType.TOO_MANY_ENTITIES_EXCEPTION.create();
+                    if (s.getMaxResults() > 1) {
+                        throw EntityArgument.ERROR_NOT_SINGLE_ENTITY.create();
                     }
 
-                    Entity e = s.getEntity(script.getSource());
+                    Entity e = s.findSingleEntity(script.getSource());
                     return LuaTableBuilder.provide(b -> ScriptObjects.ENTITY.toTable(e, b, this.script));
                 } catch (CommandSyntaxException e) {
                     throw new RuntimeException(e);
@@ -154,10 +154,10 @@ public class MinecraftApi extends AbstractScriptApi {
 
             builder.add("get_entities_from_selector", args -> {
                 String selector = MetamethodImpl.tostring(args.arg1());
-                EntitySelectorReader reader = new EntitySelectorReader(new StringReader(selector), true);
+                EntitySelectorParser reader = new EntitySelectorParser(new StringReader(selector), true);
                 try {
-                    EntitySelector s = reader.read();
-                    List<? extends Entity> es = s.getEntities(script.getSource());
+                    EntitySelector s = reader.parse();
+                    List<? extends Entity> es = s.findEntities(script.getSource());
                     return LuaTableBuilder.ofArrayTables(
                             es.stream().map(
                                     e -> LuaTableBuilder.provide(
@@ -176,16 +176,16 @@ public class MinecraftApi extends AbstractScriptApi {
         apiBuilder.addGroup("registry", builder -> {
 
             builder.add("item", args -> {
-                Identifier id = Identifier.of(MetamethodImpl.tostring(args.arg1()));
-                Item item = Registries.ITEM.get(id);
+                Identifier id = Identifier.parse(MetamethodImpl.tostring(args.arg1()));
+                Item item = BuiltInRegistries.ITEM.getValue(id);
                 return LuaTableBuilder.provide(b -> ScriptObjects.ITEM.toTable(item, b, script));
             }, "Fetches an item type from the registry.", args -> {
                 args.add("id", Argtypes.STRING, "Identifier of the item type.");
             }, ScriptObjects.ITEM);
 
             builder.add("block", args -> {
-                Identifier id = Identifier.of(MetamethodImpl.tostring(args.arg1()));
-                Block block = Registries.BLOCK.get(id);
+                Identifier id = Identifier.parse(MetamethodImpl.tostring(args.arg1()));
+                Block block = BuiltInRegistries.BLOCK.getValue(id);
                 return LuaTableBuilder.provide(b -> ScriptObjects.BLOCK.toTable(block, b, script));
             }, "Fetches an block type from the registry.", args -> {
                 args.add("id", Argtypes.STRING, "Identifier of the block type.");
@@ -194,18 +194,18 @@ public class MinecraftApi extends AbstractScriptApi {
         });
     }
 
-    public static ParseResults<ServerCommandSource> parseCommand(String command, ServerCommandSource source) {
-        return source.getDispatcher().parse(command, source);
+    public static ParseResults<CommandSourceStack> parseCommand(String command, CommandSourceStack source) {
+        return source.dispatcher().parse(command, source);
     }
-    public static int executeCommand(ParseResults<ServerCommandSource> command, ServerCommandSource source) {
+    public static int executeCommand(ParseResults<CommandSourceStack> command, CommandSourceStack source) {
 
         try {
             AtomicInteger r = new AtomicInteger();
-            source.getDispatcher().setConsumer((context, success, result) -> {
+            source.dispatcher().setConsumer((context, success, result) -> {
                 r.set(result);
             });
 
-            source.getDispatcher().execute(command);
+            source.dispatcher().execute(command);
 
             return r.get();
         } catch (CommandSyntaxException e) {

@@ -7,16 +7,16 @@ import dev.diamond.luafy.script.event.ScriptEvent;
 import dev.diamond.luafy.script.ScriptPlugin;
 import dev.diamond.luafy.script.object.AbstractScriptObject;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 
 public class LuafyRegistries {
 
-    public static RegistryKey<Registry<ScriptPlugin>> SCRIPT_PLUGINS_KEY;
-    public static RegistryKey<Registry<ScriptEvent<?>>> SCRIPT_EVENTS_KEY;
-    public static RegistryKey<Registry<AbstractScriptObject<?>>> SCRIPT_OBJECTS_KEY;
-    public static RegistryKey<Registry<ScriptEnum<?>>> SCRIPT_ENUMS_KEY;
-    public static RegistryKey<Registry<AbstractAutodocGenerator>> AUTODOC_GENERATORS_KEY;
+    public static ResourceKey<Registry<ScriptPlugin>> SCRIPT_PLUGINS_KEY;
+    public static ResourceKey<Registry<ScriptEvent<?>>> SCRIPT_EVENTS_KEY;
+    public static ResourceKey<Registry<AbstractScriptObject<?>>> SCRIPT_OBJECTS_KEY;
+    public static ResourceKey<Registry<ScriptEnum<?>>> SCRIPT_ENUMS_KEY;
+    public static ResourceKey<Registry<AbstractAutodocGenerator>> AUTODOC_GENERATORS_KEY;
 
     public static Registry<ScriptPlugin> SCRIPT_PLUGINS;
     public static Registry<ScriptEvent<?>> SCRIPT_EVENTS;
@@ -24,11 +24,11 @@ public class LuafyRegistries {
     public static Registry<ScriptEnum<?>> SCRIPT_ENUMS;
     public static Registry<AbstractAutodocGenerator> AUTODOC_GENERATORS;
 
-    private static <T> Registry<T> create(RegistryKey<Registry<T>> key) {
+    private static <T> Registry<T> create(ResourceKey<Registry<T>> key) {
         return FabricRegistryBuilder.createSimple(key).buildAndRegister();
     }
-    private static <T> RegistryKey<Registry<T>> of(String path) {
-        return RegistryKey.ofRegistry(Luafy.id(path));
+    private static <T> ResourceKey<Registry<T>> of(String path) {
+        return ResourceKey.createRegistryKey(Luafy.id(path));
     }
 
     public static void register() {

@@ -1,6 +1,6 @@
 package dev.diamond.luafy.script.enumeration;
 
-import net.minecraft.block.enums.NoteBlockInstrument;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 
 public enum Instrument {
 

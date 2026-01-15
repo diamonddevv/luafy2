@@ -9,13 +9,13 @@ import dev.diamond.luafy.registry.LuafyRegistries;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.lua.MetamethodNames;
 import dev.diamond.luafy.script.LuaScript;
-import net.minecraft.server.command.ServerCommandSource;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.function.Consumer;
+import net.minecraft.commands.CommandSourceStack;
 
 public abstract class AbstractScriptObject<T> implements SimpleAutodocumentable, Argtype {
     private final String desc;
@@ -30,7 +30,7 @@ public abstract class AbstractScriptObject<T> implements SimpleAutodocumentable,
     }
 
     public abstract void toTable(T obj, LuaTableBuilder builder, LuaScript script);
-    public abstract T toThing(LuaTable table, ServerCommandSource src, LuaScript script);
+    public abstract T toThing(LuaTable table, CommandSourceStack src, LuaScript script);
 
     public Optional<AbstractScriptObject<? super T>> getParentType() {
         return Optional.empty();

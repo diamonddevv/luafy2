@@ -4,7 +4,6 @@ import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.registry.LuafyRegistries;
 import dev.diamond.luafy.script.enumeration.ScriptEnum;
-import net.minecraft.server.command.ServerCommandSource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.luaj.vm2.Globals;
@@ -14,6 +13,7 @@ import org.luaj.vm2.LuaValue;
 
 import java.util.HashMap;
 import java.util.concurrent.Future;
+import net.minecraft.commands.CommandSourceStack;
 
 public class LuaScript {
 
@@ -22,7 +22,7 @@ public class LuaScript {
     private final Globals globals;
     private LuaValue script;
     private String compilationError;
-    private ServerCommandSource src;
+    private CommandSourceStack src;
     private final HashMap<Integer, Object> unserializableDataReferences;
     private int nextUnserializableDataReferenceIndex;
 
@@ -55,15 +55,15 @@ public class LuaScript {
         unserializableDataReferences.remove(idx);
     }
 
-    public Future<ScriptExecutionResult> execute(@NotNull ServerCommandSource src) {
+    public Future<ScriptExecutionResult> execute(@NotNull CommandSourceStack src) {
         return this.execute(src, LuaTable.tableOf());
     }
 
-    public Future<ScriptExecutionResult> execute(@NotNull ServerCommandSource src, @Nullable LuaTable ctx) {
+    public Future<ScriptExecutionResult> execute(@NotNull CommandSourceStack src, @Nullable LuaTable ctx) {
         return Luafy.SCRIPT_MANAGER.submitExecution(() -> this.executor(src, ctx));
     }
 
-    public ServerCommandSource getSource() {
+    public CommandSourceStack getSource() {
         return src;
     }
 
@@ -84,12 +84,12 @@ public class LuaScript {
         }
     }
 
-    private ScriptExecutionResult executor(@NotNull ServerCommandSource src, @Nullable LuaTable ctx) {
+    private ScriptExecutionResult executor(@NotNull CommandSourceStack src, @Nullable LuaTable ctx) {
         if (!compilationError.isBlank()) {
             return new ScriptExecutionResult(LuaValue.NIL, compilationError);
         }
         try {
-            this.src = src.withSilent();
+            this.src = src.withSuppressedOutput();
             if (ctx == null) {
                 ctx = LuaTable.tableOf();
             }

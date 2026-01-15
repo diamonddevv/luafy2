@@ -5,7 +5,7 @@ import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.script.LuaScript;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.commands.CommandSourceStack;
 import org.luaj.vm2.LuaTable;
 
 public class ModScriptObject extends AbstractScriptObject<ModContainer> {
@@ -29,7 +29,7 @@ public class ModScriptObject extends AbstractScriptObject<ModContainer> {
     }
 
     @Override
-    public ModContainer toThing(LuaTable table, ServerCommandSource src, LuaScript script) {
+    public ModContainer toThing(LuaTable table, CommandSourceStack src, LuaScript script) {
         return FabricLoader.getInstance().getModContainer(table.get(PROP_MODID).tojstring()).orElseThrow();
     }
 

@@ -6,23 +6,23 @@ import dev.diamond.luafy.lua.MetamethodImpl;
 import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.script.object.AbstractScriptObject;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.damage.DamageType;
-import net.minecraft.entity.damage.DamageTypes;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.TeleportTarget;
-import net.minecraft.world.World;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
 import java.util.Optional;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.portal.TeleportTransition;
+import net.minecraft.world.phys.Vec3;
 
 
 public class LivingEntityScriptObject extends AbstractScriptObject<LivingEntity> {
@@ -60,55 +60,55 @@ public class LivingEntityScriptObject extends AbstractScriptObject<LivingEntity>
 
         builder.add(FUNC_GET_HEALTH, args -> LuaValue.valueOf(obj.getHealth()));
         builder.add(FUNC_HURT, args -> {
-            Identifier damageTypeId = Identifier.of(MetamethodImpl.tostring(args.arg(1)));
+            Identifier damageTypeId = Identifier.parse(MetamethodImpl.tostring(args.arg(1)));
             float amount = args.arg(2).tofloat();
             Optional<Entity> e = args.arg(3).isnil() ?
                     Optional.empty() : Optional.of(ScriptObjects.ENTITY.toThing(args.arg(3).checktable(), script.getSource(), script));
 
-            ServerWorld world = script.getSource().getWorld();
-            DamageType type = world.getRegistryManager().getOrThrow(RegistryKeys.DAMAGE_TYPE).get(damageTypeId);
-            DamageSource source = new DamageSource(world.getRegistryManager().getOrThrow(RegistryKeys.DAMAGE_TYPE).getEntry(type), e.orElse(null));
+            ServerLevel world = script.getSource().getLevel();
+            DamageType type = world.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getValue(damageTypeId);
+            DamageSource source = new DamageSource(world.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).wrapAsHolder(type), e.orElse(null));
 
-            obj.damage(world, source, amount);
+            obj.hurtServer(world, source, amount);
 
             return LuaValue.NIL;
         });
         builder.add(FUNC_KILL, args -> {
             Optional<Identifier> damageTypeId = args.arg(1).isnil() ?
-                    Optional.empty() : Optional.of(Identifier.of(MetamethodImpl.tostring(args.arg(1))));
+                    Optional.empty() : Optional.of(Identifier.parse(MetamethodImpl.tostring(args.arg(1))));
             Optional<Entity> e = args.arg(2).isnil() ?
                     Optional.empty() : Optional.of(ScriptObjects.ENTITY.toThing(args.arg(2).checktable(), script.getSource(), script));
 
-            ServerWorld world = script.getSource().getWorld();
+            ServerLevel world = script.getSource().getLevel();
             DamageType type;
 
             if (damageTypeId.isPresent()) {
-                type = world.getRegistryManager().getOrThrow(RegistryKeys.DAMAGE_TYPE).get(damageTypeId.get());
+                type = world.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getValue(damageTypeId.get());
             } else {
-                type = world.getRegistryManager().getOrThrow(RegistryKeys.DAMAGE_TYPE).get(DamageTypes.GENERIC_KILL);
+                type = world.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getValue(DamageTypes.GENERIC_KILL);
             }
-            DamageSource source = new DamageSource(world.getRegistryManager().getOrThrow(RegistryKeys.DAMAGE_TYPE).getEntry(type), e.orElse(null));
+            DamageSource source = new DamageSource(world.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).wrapAsHolder(type), e.orElse(null));
 
-            obj.damage(world, source, Float.MAX_VALUE);
+            obj.hurtServer(world, source, Float.MAX_VALUE);
 
             return LuaValue.NIL;
         });
         builder.add(FUNC_TELEPORT, args -> {
-            Vec3d pos = ScriptObjects.VEC3D.toThing(args.arg(1).checktable(), script.getSource(), script);
-            float yaw = args.arg(2).or(LuaValue.valueOf(obj.getYaw())).tofloat();
-            float pitch = args.arg(3).or(LuaValue.valueOf(obj.getPitch())).tofloat();
+            Vec3 pos = ScriptObjects.VEC3D.toThing(args.arg(1).checktable(), script.getSource(), script);
+            float yaw = args.arg(2).or(LuaValue.valueOf(obj.getYRot())).tofloat();
+            float pitch = args.arg(3).or(LuaValue.valueOf(obj.getXRot())).tofloat();
             boolean retainVel = args.arg(4).or(LuaValue.valueOf(true)).toboolean();
 
-            RegistryKey<World> registryKey = args.arg(5).isnil() ?
-                    obj.getEntityWorld().getRegistryKey() : RegistryKey.of(RegistryKeys.WORLD, Identifier.of(MetamethodImpl.tostring(args.arg(5))));
+            ResourceKey<Level> registryKey = args.arg(5).isnil() ?
+                    obj.level().dimension() : ResourceKey.create(Registries.DIMENSION, Identifier.parse(MetamethodImpl.tostring(args.arg(5))));
 
-            ServerWorld serverWorld = script.getSource().getServer().getWorld(registryKey);
+            ServerLevel serverWorld = script.getSource().getServer().getLevel(registryKey);
 
 
-            obj.teleportTo(new TeleportTarget(
+            obj.teleport(new TeleportTransition(
                     serverWorld,
                     pos,
-                    retainVel ? obj.getVelocity() : new Vec3d(0, 0, 0),
+                    retainVel ? obj.getDeltaMovement() : new Vec3(0, 0, 0),
                     yaw,
                     pitch,
                     e -> {}
@@ -120,7 +120,7 @@ public class LivingEntityScriptObject extends AbstractScriptObject<LivingEntity>
     }
 
     @Override
-    public LivingEntity toThing(LuaTable table, ServerCommandSource src, LuaScript script) {
+    public LivingEntity toThing(LuaTable table, CommandSourceStack src, LuaScript script) {
         return (LivingEntity) ScriptObjects.ENTITY.toThing(table, src, script);
     }
 

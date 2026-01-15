@@ -5,9 +5,9 @@ import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.script.object.AbstractScriptObject;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
@@ -33,16 +33,16 @@ public class EntityScriptObject extends AbstractScriptObject<Entity> {
 
     @Override
     public void toTable(Entity obj, LuaTableBuilder builder, LuaScript script) {
-        builder.add(PROP_NAME, obj.getStringifiedName());
-        builder.add(PROP_UUID, obj.getUuidAsString());
-        builder.add(FUNC_GET_POS, args -> LuaTableBuilder.provide(b -> ScriptObjects.VEC3D.toTable(obj.getEntityPos(), b, script)));
+        builder.add(PROP_NAME, obj.getPlainTextName());
+        builder.add(PROP_UUID, obj.getStringUUID());
+        builder.add(FUNC_GET_POS, args -> LuaTableBuilder.provide(b -> ScriptObjects.VEC3D.toTable(obj.position(), b, script)));
         builder.add(FUNC_IS_LIVING, args -> LuaValue.valueOf(obj instanceof LivingEntity));
         builder.add(FUNC_AS_LIVING, args -> LuaTableBuilder.provide(b -> ScriptObjects.LIVING_ENTITY.toTable((LivingEntity) obj, b, script)));
     }
 
     @Override
-    public Entity toThing(LuaTable table, ServerCommandSource src, LuaScript script) {
-        return src.getWorld().getEntity(java.util.UUID.fromString(table.get(PROP_UUID).tojstring()));
+    public Entity toThing(LuaTable table, CommandSourceStack src, LuaScript script) {
+        return src.getLevel().getEntity(java.util.UUID.fromString(table.get(PROP_UUID).tojstring()));
     }
 
     @Override

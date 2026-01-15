@@ -2,8 +2,6 @@ package dev.diamond.luafy.script;
 
 import dev.diamond.luafy.registry.LuafyRegistries;
 import dev.diamond.luafy.script.event.ScriptEvent;
-import net.minecraft.util.Identifier;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
@@ -11,6 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
+import net.minecraft.resources.Identifier;
 
 public class ScriptManager {
 

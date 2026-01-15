@@ -6,9 +6,9 @@ import dev.diamond.luafy.autodoc.ScriptApiBuilder;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.script.LuaScript;
+import net.minecraft.resources.Identifier;
 import dev.diamond.luafy.autodoc.Argtypes;
 import dev.diamond.luafy.lua.MetamethodImpl;
-import net.minecraft.util.Identifier;
 import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
@@ -26,7 +26,7 @@ public class LuafyApi extends AbstractScriptApi {
                 String script = MetamethodImpl.tostring(args.arg1());
                 LuaTable context = args.arg(2).isnil() ? LuaTable.tableOf() : args.arg(2).checktable();
 
-                var future = Luafy.SCRIPT_MANAGER.get(Identifier.of(script)).execute(this.script.getSource().getServer().getCommandSource(), context);
+                var future = Luafy.SCRIPT_MANAGER.get(Identifier.parse(script)).execute(this.script.getSource().getServer().createCommandSourceStack(), context);
                 return LuaTableBuilder.provide(b -> ScriptObjects.SCRIPT_RESULT.toTable(future, b, this.script));
             }, "Executes the script with the given identifier, and awaits its completion. Returns future result, that can be awaited if needed.", args -> {
                 args.add("script", Argtypes.STRING, "Identifier of script to be executed.");

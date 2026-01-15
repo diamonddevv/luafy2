@@ -4,12 +4,12 @@ import dev.diamond.luafy.autodoc.Argtypes;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.script.ScriptExecutionResult;
-import net.minecraft.server.command.ServerCommandSource;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import net.minecraft.commands.CommandSourceStack;
 
 public class ScriptResultScriptObject extends AbstractScriptObject<Future<ScriptExecutionResult>> {
 
@@ -68,7 +68,7 @@ public class ScriptResultScriptObject extends AbstractScriptObject<Future<Script
     }
 
     @Override
-    public Future<ScriptExecutionResult> toThing(LuaTable table, ServerCommandSource src, LuaScript script) {
+    public Future<ScriptExecutionResult> toThing(LuaTable table, CommandSourceStack src, LuaScript script) {
         // technically, this probably isn't needed. i doubt variables of this type would ever be passed around, but just in case, i guess.
         int idx = table.get(PROP_INDEX).toint();
         return script.getUnserializableData(idx, DummyFutureLuaScriptResultWrapper.class);

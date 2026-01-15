@@ -3,8 +3,8 @@ package dev.diamond.luafy.script.object.game;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.script.object.AbstractScriptObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.world.item.ItemStack;
 import org.luaj.vm2.LuaTable;
 
 
@@ -21,7 +21,7 @@ public class ItemStackScriptObject extends AbstractScriptObject<ItemStack> {
     }
 
     @Override
-    public ItemStack toThing(LuaTable table, ServerCommandSource src, LuaScript script) {
+    public ItemStack toThing(LuaTable table, CommandSourceStack src, LuaScript script) {
         return null;
     }
 

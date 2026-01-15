@@ -7,8 +7,6 @@ import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.registry.LuafyRegistries;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.script.ScriptExecutionResult;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.luaj.vm2.LuaTable;
 
@@ -17,6 +15,8 @@ import java.util.Collection;
 import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.resources.Identifier;
 
 public class ScriptEvent<T> implements SimpleAutodocumentable {
     private final ArrayList<ScriptEntry> entries;
@@ -36,7 +36,7 @@ public class ScriptEvent<T> implements SimpleAutodocumentable {
 
     }
 
-    public void trigger(@NotNull ServerCommandSource src, T context) {
+    public void trigger(@NotNull CommandSourceStack src, T context) {
         LuaTableBuilder builder = new LuaTableBuilder();
         ctxBuilder.accept(context, builder);
         LuaTable ctx = builder.build();
@@ -64,7 +64,7 @@ public class ScriptEvent<T> implements SimpleAutodocumentable {
     public String generateAutodocString() {
         StringBuilder s = new StringBuilder();
 
-        Identifier id = LuafyRegistries.SCRIPT_EVENTS.getId(this);
+        Identifier id = LuafyRegistries.SCRIPT_EVENTS.getKey(this);
         s.append(id);
         s.append("\n");
         s.append(this.desc);

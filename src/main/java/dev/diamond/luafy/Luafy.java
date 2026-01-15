@@ -11,8 +11,8 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.impl.resource.loader.ResourceManagerHelperImpl;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.PackType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,8 +42,8 @@ public class Luafy implements ModInitializer {
 
 		LuafyRegistries.register();
 		CommandRegistrationCallback.EVENT.register(LuafyCommand::register);
-		ResourceManagerHelperImpl.get(ResourceType.SERVER_DATA).registerReloadListener(SCRIPT_RESOURCE_LOADER);
-		ResourceManagerHelperImpl.get(ResourceType.SERVER_DATA).registerReloadListener(SCRIPT_EVENT_RESOURCE_LOADER);
+		ResourceManagerHelperImpl.get(PackType.SERVER_DATA).registerReloadListener(SCRIPT_RESOURCE_LOADER);
+		ResourceManagerHelperImpl.get(PackType.SERVER_DATA).registerReloadListener(SCRIPT_EVENT_RESOURCE_LOADER);
 
 		ScriptPlugins.registerAll();
 		ScriptEnums.registerAll();
@@ -59,10 +59,10 @@ public class Luafy implements ModInitializer {
 	}
 
 	public static Identifier id(String path) {
-		return Identifier.of(MOD_ID, path);
+		return Identifier.fromNamespaceAndPath(MOD_ID, path);
 	}
 
 	public static Identifier id_luaj(String path) {
-		return Identifier.of("luaj", path);
+		return Identifier.fromNamespaceAndPath("luaj", path);
 	}
 }

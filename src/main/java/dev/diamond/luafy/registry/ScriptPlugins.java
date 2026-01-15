@@ -7,7 +7,7 @@ import dev.diamond.luafy.script.api.FabricApi;
 import dev.diamond.luafy.script.api.LuafyApi;
 import dev.diamond.luafy.script.api.MathApi;
 import dev.diamond.luafy.script.api.MinecraftApi;
-import net.minecraft.registry.Registry;
+import net.minecraft.core.Registry;
 import org.luaj.vm2.LoadState;
 import org.luaj.vm2.compiler.LuaC;
 import org.luaj.vm2.lib.Bit32Lib;

@@ -2,8 +2,8 @@ package dev.diamond.luafy.script;
 
 import dev.diamond.luafy.Luafy;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.ResourceManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
@@ -20,20 +20,20 @@ public class ScriptResourceLoader implements SimpleSynchronousResourceReloadList
     }
 
     @Override
-    public void reload(ResourceManager manager) {
+    public void onResourceManagerReload(ResourceManager manager) {
         Luafy.SCRIPT_MANAGER.clearScriptsCache();
         int count = 0;
 
-        for (Identifier loc : manager.findResources(PATH, p -> true).keySet()) {
+        for (Identifier loc : manager.listResources(PATH, p -> true).keySet()) {
             if (manager.getResource(loc).isPresent()) {
-                try (InputStream stream = manager.getResource(loc).get().getInputStream()) {
+                try (InputStream stream = manager.getResource(loc).get().open()) {
                     // Consume stream
                     byte[] bytes = stream.readAllBytes();
                     String s = new String(bytes, StandardCharsets.UTF_8);
 
 
                     String fixedPath = loc.getPath().substring(PATH.length() + 1, loc.getPath().length() - EXT.length());
-                    Identifier id = Identifier.of(loc.getNamespace(), fixedPath);
+                    Identifier id = Identifier.fromNamespaceAndPath(loc.getNamespace(), fixedPath);
 
                     // get script
                     Luafy.SCRIPT_MANAGER.loadScript(id, new LuaScript(s));

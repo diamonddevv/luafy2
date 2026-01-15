@@ -4,7 +4,7 @@ import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.script.enumeration.Note;
 import dev.diamond.luafy.script.enumeration.Instrument;
 import dev.diamond.luafy.script.enumeration.ScriptEnum;
-import net.minecraft.registry.Registry;
+import net.minecraft.core.Registry;
 
 public class ScriptEnums {
 
