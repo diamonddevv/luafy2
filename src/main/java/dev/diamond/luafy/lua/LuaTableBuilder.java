@@ -1,5 +1,7 @@
 package dev.diamond.luafy.lua;
 
+import dev.diamond.luafy.script.LuaScript;
+import dev.diamond.luafy.script.object.AbstractScriptObject;
 import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
@@ -78,6 +80,10 @@ public class LuaTableBuilder {
         var b = new LuaTableBuilder();
         table.accept(b);
         return b.build();
+    }
+
+    public static <T> LuaTable provide(AbstractScriptObject<T> obj, T t, LuaScript script) {
+        return provide(b -> obj.toTable(t, b, script));
     }
 
     public static LuaTable fromNbtCompound(CompoundTag compound) {

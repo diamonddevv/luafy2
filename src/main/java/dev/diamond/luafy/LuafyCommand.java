@@ -10,6 +10,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import dev.diamond.luafy.autodoc.SimpleAutodocumentable;
 import dev.diamond.luafy.autodoc.generator.AbstractAutodocGenerator;
 import dev.diamond.luafy.lua.LuaTableBuilder;
+import dev.diamond.luafy.lua.MetamethodImpl;
 import dev.diamond.luafy.registry.LuafyRegistries;
 import dev.diamond.luafy.script.ApiScriptPlugin;
 import dev.diamond.luafy.script.LuaScript;
@@ -172,7 +173,14 @@ public class LuafyCommand {
 
     private static int value(CommandContext<CommandSourceStack> ctx) {
         String src = StringArgumentType.getString(ctx, "src");
-        return execScript(ctx, new LuaScript("minecraft.get_player_from_selector(\"@s\").tell(" + src + ")"), "", null, false);
+
+        try {
+            ScriptExecutionResult value = new LuaScript("return " + src).execute(ctx.getSource()).get();
+            ctx.getSource().sendSystemMessage(Component.literal(MetamethodImpl.tostring(value.getResult())));
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+        return 1;
     }
 
 

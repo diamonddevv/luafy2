@@ -26,6 +26,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.Vec3;
 import org.luaj.vm2.LuaBoolean;
@@ -125,7 +126,7 @@ public class MinecraftApi extends AbstractScriptApi {
                     }
 
                     ServerPlayer player = s.findSinglePlayer(script.getSource());
-                    return LuaTableBuilder.provide(b -> ScriptObjects.PLAYER.toTable(player, b, this.script));
+                    return LuaTableBuilder.provide(ScriptObjects.PLAYER, player, this.script);
                 } catch (CommandSyntaxException e) {
                     throw new RuntimeException(e);
                 }
@@ -144,7 +145,7 @@ public class MinecraftApi extends AbstractScriptApi {
                     }
 
                     Entity e = s.findSingleEntity(script.getSource());
-                    return LuaTableBuilder.provide(b -> ScriptObjects.ENTITY.toTable(e, b, this.script));
+                    return LuaTableBuilder.provide(ScriptObjects.ENTITY, e, this.script);
                 } catch (CommandSyntaxException e) {
                     throw new RuntimeException(e);
                 }
@@ -160,9 +161,7 @@ public class MinecraftApi extends AbstractScriptApi {
                     List<? extends Entity> es = s.findEntities(script.getSource());
                     return LuaTableBuilder.ofArrayTables(
                             es.stream().map(
-                                    e -> LuaTableBuilder.provide(
-                                            b -> ScriptObjects.ENTITY.toTable(e, b, this.script)
-                                    )
+                                    e -> LuaTableBuilder.provide(ScriptObjects.ENTITY, e, this.script)
                             ).toList()
                     );
                 } catch (CommandSyntaxException e) {
@@ -178,7 +177,7 @@ public class MinecraftApi extends AbstractScriptApi {
             builder.add("item", args -> {
                 Identifier id = Identifier.parse(MetamethodImpl.tostring(args.arg1()));
                 Item item = BuiltInRegistries.ITEM.getValue(id);
-                return LuaTableBuilder.provide(b -> ScriptObjects.ITEM.toTable(item, b, script));
+                return LuaTableBuilder.provide(ScriptObjects.ITEM, item, script);
             }, "Fetches an item type from the registry.", args -> {
                 args.add("id", Argtypes.STRING, "Identifier of the item type.");
             }, ScriptObjects.ITEM);
@@ -186,10 +185,25 @@ public class MinecraftApi extends AbstractScriptApi {
             builder.add("block", args -> {
                 Identifier id = Identifier.parse(MetamethodImpl.tostring(args.arg1()));
                 Block block = BuiltInRegistries.BLOCK.getValue(id);
-                return LuaTableBuilder.provide(b -> ScriptObjects.BLOCK.toTable(block, b, script));
+                return LuaTableBuilder.provide(ScriptObjects.BLOCK, block, script);
             }, "Fetches an block type from the registry.", args -> {
                 args.add("id", Argtypes.STRING, "Identifier of the block type.");
             }, ScriptObjects.BLOCK);
+
+        });
+
+        apiBuilder.addGroup("object", builder -> {
+
+            builder.add("itemstack", args -> {
+                Item item = ScriptObjects.ITEM.toThing(args.arg1().checktable(), script.getSource(), script);
+                int count = args.arg(2).toint();
+                ItemStack stack = new ItemStack(item, count);
+                return LuaTableBuilder.provide(ScriptObjects.ITEM_STACK, stack, script);
+            }, "Creates an ItemStack from an item and count.", args -> {
+                args.add("item", ScriptObjects.ITEM, "Item type.");
+                args.add("count", Argtypes.INTEGER, "Count.");
+            }, ScriptObjects.ITEM_STACK);
+
 
         });
     }

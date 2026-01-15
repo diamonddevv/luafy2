@@ -2,6 +2,8 @@ package dev.diamond.luafy.script.object;
 
 import dev.diamond.luafy.autodoc.Argtypes;
 import dev.diamond.luafy.lua.LuaTableBuilder;
+import dev.diamond.luafy.lua.MetamethodImpl;
+import dev.diamond.luafy.lua.MetamethodNames;
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.script.ScriptExecutionResult;
 import org.luaj.vm2.LuaTable;
@@ -64,6 +66,14 @@ public class ScriptResultScriptObject extends AbstractScriptObject<Future<Script
         builder.add(FUNC_RELEASE, args -> {
             script.releaseUnserializableData(idx);
             return LuaValue.NIL;
+        });
+
+        builder.addMetamethod(MetamethodNames.TO_STRING, args -> {
+            try {
+                return LuaValue.valueOf(MetamethodImpl.tostring(obj.get().getResult()));
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 

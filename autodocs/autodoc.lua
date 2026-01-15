@@ -2,7 +2,7 @@
 
 --#region Information
 -- GENERATED AUTODOC
--- Generated: 2026-01-14T12:53:05.734402500
+-- Generated: 2026-01-15T15:24:24.626639200
 -- Luafy Version: 2.0.0
 -- Format: Lua LS library file
 --#endregion
@@ -104,13 +104,19 @@ function ScriptResult.release() end
 
 --- An entity.
 ---@class Entity
----@field name string Entity's name.
----@field uuid string Entity's uuid.
 local Entity = {}
 
 --- Gets the entity's current position.
 ---@return Vec3d
 function Entity.get_pos() end
+
+--- Gets the entity's UUID.
+---@return string
+function Entity.get_uuid() end
+
+--- Gets the entity's name.
+---@return string
+function Entity.get_name() end
 
 --- Returns true if this entity is a LivingEntity.
 ---@return boolean
@@ -161,6 +167,11 @@ local Player = {}
 ---@return nil
 function Player.tell(msg) end
 
+--- Gives this player this stack.
+---@param stack ItemStack Stack to give.
+---@return nil
+function Player.give_stack(stack) end
+
 
 --- A block type.
 ---@class Block
@@ -180,6 +191,23 @@ function Item.create_stack(count) end
 --- An item stack.
 ---@class ItemStack
 local ItemStack = {}
+
+--- Gets the number of items in this stack.
+---@return integer
+function ItemStack.get_count() end
+
+--- Sets the number of items in this stack.
+---@param count integer Count to set.
+---@return nil
+function ItemStack.set_count(count) end
+
+--- Gets the item type of this stack.
+---@return Item
+function ItemStack.get_item_type() end
+
+--- Gets the item id of this stack.
+---@return string
+function ItemStack.get_item_id() end
 
 
 --#endregion
@@ -247,6 +275,16 @@ function entities.get_entity_from_selector(selector) end
 function entities.get_entities_from_selector(selector) end
 
 minecraft.entities = entities
+
+local object = {}
+
+--- Creates an ItemStack from an item and count.
+---@param item Item Item type.
+---@param count integer Count.
+---@return ItemStack
+function object.itemstack(item, count) end
+
+minecraft.object = object
 
 luafy = {}
 
