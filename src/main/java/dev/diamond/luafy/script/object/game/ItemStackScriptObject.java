@@ -1,5 +1,6 @@
 package dev.diamond.luafy.script.object.game;
 
+import com.mojang.serialization.DataResult;
 import dev.diamond.luafy.autodoc.Argtypes;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.lua.MetamethodImpl;
@@ -7,8 +8,11 @@ import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.script.object.AbstractScriptObject;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.luaj.vm2.LuaTable;
@@ -35,9 +39,9 @@ public class ItemStackScriptObject extends AbstractScriptObject<ItemStack> {
             doc.addFunction(FUNC_ITEM_TYPE, "Gets the item type of this stack.", args -> {}, ScriptObjects.ITEM);
             doc.addFunction(FUNC_ITEM_ID, "Gets the item id of this stack.", args -> {}, Argtypes.STRING);
 
-            doc.addFunction(FUNC_COMPONENT, "Gets a component from this stack.", args -> {
+            doc.addFunction(FUNC_COMPONENT, "Gets a component from this stack as NBT.", args -> {
                 args.add("component_id", Argtypes.STRING, "The id of the component to fetch.");
-            }, Argtypes.VALUE);
+            }, Argtypes.TABLE);
         });
     }
 
@@ -55,9 +59,19 @@ public class ItemStackScriptObject extends AbstractScriptObject<ItemStack> {
         builder.add(FUNC_ITEM_ID, args -> LuaValue.valueOf(BuiltInRegistries.ITEM.getId(obj.getItem())));
 
         builder.add(FUNC_COMPONENT, args -> {
-           String key = MetamethodImpl.tostring(args.arg1());
-           var type = BuiltInRegistries.DATA_COMPONENT_TYPE.get(Identifier.parse(key));
-           
+            String key = MetamethodImpl.tostring(args.arg1());
+
+            // get the component
+            DataComponentType<?> type = BuiltInRegistries.DATA_COMPONENT_TYPE.get(Identifier.parse(key)).orElseThrow().value();
+            Object component = obj.getComponents().get(type);
+
+            // convert component object to nbt and then to a lua table.
+            // codecs are ass bro
+
+            // how do i both know what type component is and not????
+            DataResult<Tag> result = type.codecOrThrow().encodeStart(NbtOps.INSTANCE, component);
+
+            return LuaTableBuilder.fromNbtCompound();
         });
     }
 
@@ -71,4 +85,5 @@ public class ItemStackScriptObject extends AbstractScriptObject<ItemStack> {
     public String getArgtypeString() {
         return "ItemStack";
     }
+
 }
