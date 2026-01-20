@@ -16,6 +16,7 @@ public class ScriptObjects {
     public static Vec3dScriptObject VEC3D = new Vec3dScriptObject();
     public static ModScriptObject MOD = new ModScriptObject();
     public static ScriptResultScriptObject SCRIPT_RESULT = new ScriptResultScriptObject();
+    public static NbtTableScriptObject NBT_TABLE = new NbtTableScriptObject();
 
     // entities
     public static EntityScriptObject ENTITY = new EntityScriptObject();
@@ -31,6 +32,7 @@ public class ScriptObjects {
         Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("vec3d"), VEC3D);
         Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("mod"), MOD);
         Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("script_result"), SCRIPT_RESULT);
+        Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("nbt_table"), NBT_TABLE);
 
         Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("entity"), ENTITY);
         Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("living_entity"), LIVING_ENTITY);
