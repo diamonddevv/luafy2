@@ -87,7 +87,7 @@ public class ItemStackScriptObject extends AbstractScriptObject<ItemStack> {
             // get the component
             DataComponentType<Object> type = (DataComponentType<Object>) BuiltInRegistries.DATA_COMPONENT_TYPE.get(Identifier.parse(key)).orElseThrow().value();
 
-            CompoundTag nbt = LuaTableBuilder.toNbtCompound();
+            CompoundTag nbt = LuaTableBuilder.toNbtCompound(data);
 
             return LuaValue.NIL;
         });

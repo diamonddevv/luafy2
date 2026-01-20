@@ -30,7 +30,8 @@ public class NbtTableScriptObject extends AbstractScriptObject<CompoundTag> {
 
     @Override
     public CompoundTag toThing(LuaTable table, CommandSourceStack src, LuaScript script) {
-        return null;
+        LuaTable backing = table.get(PROP_TABLE).checktable();
+        return LuaTableBuilder.toNbtCompound(backing);
     }
 
     @Override

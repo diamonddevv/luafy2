@@ -2,20 +2,19 @@ package dev.diamond.luafy.lua;
 
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.script.object.AbstractScriptObject;
-import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.*;
 import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
 import org.luaj.vm2.lib.VarArgFunction;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 
 public class LuaTableBuilder {
     private final LuaTable table;
@@ -144,12 +143,35 @@ public class LuaTableBuilder {
         };
     }
 
+    public static CompoundTag toNbtCompound(LuaTable table) {
+        CompoundTag nbt = new CompoundTag();
+        for (LuaValue key : table.keys()) {
+            toNbt(table.get(key)).ifPresent(value -> nbt.put(MetamethodImpl.tostring(key), value));
+        }
+        return nbt;
+    }
 
-    private static Tag toNbt(LuaValue value) {
+    private static Optional<Tag> toNbt(LuaValue value) {
         return switch (value.type()) {
-            case LuaValue.TINT ->
+            case LuaValue.TINT ->       Optional.of(IntTag.valueOf(value.toint()));
+            case LuaValue.TNUMBER ->    Optional.of(FloatTag.valueOf(value.tofloat()));
+            case LuaValue.TBOOLEAN ->   Optional.of(ByteTag.valueOf(value.toboolean()));
+            case LuaValue.TSTRING ->    Optional.of(StringTag.valueOf(MetamethodImpl.tostring(value)));
+            case LuaValue.TTABLE ->     {
+                LuaTable table = value.checktable();
 
-            default -> new CompoundTag();
+                if (Arrays.stream(table.keys()).allMatch(k -> k.type() == LuaValue.TINT)) {
+                    ListTag list = new ListTag();
+                    for (LuaValue key : table.keys()) {
+                        toNbt(table.get(key)).ifPresent(list::add);
+                    }
+                    yield Optional.of(list);
+                } else {
+                    yield Optional.of(toNbtCompound(table));
+                }
+            }
+
+            default -> Optional.empty();
         };
     }
 }

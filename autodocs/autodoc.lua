@@ -2,7 +2,7 @@
 
 --#region Information
 -- GENERATED AUTODOC
--- Generated: 2026-01-20T10:55:53.180503
+-- Generated: 2026-01-20T18:25:29.060359500
 -- Luafy Version: 2.0.0
 -- Format: Lua LS library file
 --#endregion
@@ -100,6 +100,11 @@ function ScriptResult.await_error() end
 --- Releases the internal Result Java object from the cache. Using this object after this has been called may result in an error.
 ---@return nil
 function ScriptResult.release() end
+
+
+--- NBT Compound Tag
+---@class NbtTable
+local NbtTable = {}
 
 
 --- An entity.
@@ -210,9 +215,15 @@ function ItemStack.get_item_type() end
 function ItemStack.get_item_id() end
 
 --- Gets a component from this stack as NBT.
----@param component_id string The id of the component to fetch.
+---@param component_id string The id of the component type to fetch.
 ---@return table
 function ItemStack.get_component(component_id) end
+
+--- Sets a component from this stack as NBT.
+---@param component_id string The id of the component type.
+---@param nbt table The data to write. Will be encoded into the item stack.
+---@return nil
+function ItemStack.set_component(component_id, nbt) end
 
 
 --#endregion
@@ -310,6 +321,11 @@ function luafy.provide_hello_world() end
 --- Returns the version of LuaJ used by the mod.
 ---@return string
 function luafy.get_luaj_version() end
+
+--- temp; convert table to nbt
+---@param table table table
+---@return NbtTable
+function luafy.nbt(table) end
 
 math = {}
 

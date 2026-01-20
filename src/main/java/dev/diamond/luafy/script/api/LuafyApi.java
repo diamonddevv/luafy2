@@ -46,6 +46,14 @@ public class LuafyApi extends AbstractScriptApi {
             builder.add("get_luaj_version", args -> {
                 return LuaString.valueOf(Luafy.LUAJ_VER);
             }, "Returns the version of LuaJ used by the mod.", args -> {}, Argtypes.STRING);
+
+
+
+            builder.add("nbt", args -> {
+                return LuaTableBuilder.provide(ScriptObjects.NBT_TABLE, LuaTableBuilder.toNbtCompound(args.arg1().checktable()), script);
+            }, "temp; convert table to nbt", args -> {
+                args.add("table", Argtypes.TABLE, "table");
+            }, ScriptObjects.NBT_TABLE);
         });
 
     }
