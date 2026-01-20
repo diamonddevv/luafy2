@@ -40,8 +40,12 @@ public class ItemStackScriptObject extends AbstractScriptObject<ItemStack> {
             doc.addFunction(FUNC_ITEM_ID, "Gets the item id of this stack.", args -> {}, Argtypes.STRING);
 
             doc.addFunction(FUNC_COMPONENT, "Gets a component from this stack as NBT.", args -> {
-                args.add("component_id", Argtypes.STRING, "The id of the component to fetch.");
+                args.add("component_id", Argtypes.STRING, "The id of the component type to fetch.");
             }, Argtypes.TABLE);
+            doc.addFunction(FUNC_COMPONENT_SET, "Sets a component from this stack as NBT.", args -> {
+                args.add("component_id", Argtypes.STRING, "The id of the component type.");
+                args.add("nbt", Argtypes.TABLE, "The data to write. Will be encoded into the item stack.");
+            }, Argtypes.NIL);
         });
     }
 
@@ -74,6 +78,18 @@ public class ItemStackScriptObject extends AbstractScriptObject<ItemStack> {
             CompoundTag tag = result.getOrThrow().asCompound().orElse(new CompoundTag());
 
             return LuaTableBuilder.fromNbtCompound(tag);
+        });
+
+        builder.add(FUNC_COMPONENT_SET, args -> {
+            String key = MetamethodImpl.tostring(args.arg1());
+            LuaTable data = args.arg(2).checktable();
+
+            // get the component
+            DataComponentType<Object> type = (DataComponentType<Object>) BuiltInRegistries.DATA_COMPONENT_TYPE.get(Identifier.parse(key)).orElseThrow().value();
+
+            CompoundTag nbt = LuaTableBuilder.toNbtCompound();
+
+            return LuaValue.NIL;
         });
     }
 

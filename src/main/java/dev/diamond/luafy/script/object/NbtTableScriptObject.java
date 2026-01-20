@@ -35,6 +35,6 @@ public class NbtTableScriptObject extends AbstractScriptObject<CompoundTag> {
 
     @Override
     public String getArgtypeString() {
-        return "";
+        return "NbtTable";
     }
 }

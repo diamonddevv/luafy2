@@ -2,13 +2,13 @@ package dev.diamond.luafy.lua;
 
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.script.object.AbstractScriptObject;
+import net.minecraft.nbt.IntTag;
 import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
 import org.luaj.vm2.lib.VarArgFunction;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
@@ -92,13 +92,13 @@ public class LuaTableBuilder {
         for (var key : compound.keySet()) {
             Tag element = compound.get(key);
             assert element != null;
-            builder.addInternal(key, fromNbtElement(element));
+            builder.addInternal(key, fromNbt(element));
         }
 
         return builder.build();
     }
 
-    private static LuaValue fromNbtElement(Tag element) {
+    private static LuaValue fromNbt(Tag element) {
         return switch (element.getId()) {
             case Tag.TAG_BYTE -> LuaValue.valueOf(element.asByte().orElseThrow());
             case Tag.TAG_SHORT -> LuaValue.valueOf(element.asShort().orElseThrow());
@@ -119,7 +119,7 @@ public class LuaTableBuilder {
                 ListTag list = element.asList().orElseThrow();
                 LuaValue[] values = new LuaValue[list.size()];
                 for (int i = 0; i < list.size(); i++) {
-                    values[i] = fromNbtElement(list.get(i));
+                    values[i] = fromNbt(list.get(i));
                 }
                 yield LuaTable.listOf(values);
             }
@@ -141,6 +141,15 @@ public class LuaTableBuilder {
                 yield LuaTable.listOf(arr);
             }
             default -> LuaValue.NIL;
+        };
+    }
+
+
+    private static Tag toNbt(LuaValue value) {
+        return switch (value.type()) {
+            case LuaValue.TINT ->
+
+            default -> new CompoundTag();
         };
     }
 }
