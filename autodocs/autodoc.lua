@@ -2,7 +2,7 @@
 
 --#region Information
 -- GENERATED AUTODOC
--- Generated: 2026-01-15T15:24:24.626639200
+-- Generated: 2026-01-20T10:55:53.180503
 -- Luafy Version: 2.0.0
 -- Format: Lua LS library file
 --#endregion
@@ -208,6 +208,11 @@ function ItemStack.get_item_type() end
 --- Gets the item id of this stack.
 ---@return string
 function ItemStack.get_item_id() end
+
+--- Gets a component from this stack as NBT.
+---@param component_id string The id of the component to fetch.
+---@return table
+function ItemStack.get_component(component_id) end
 
 
 --#endregion

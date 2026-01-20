@@ -62,16 +62,18 @@ public class ItemStackScriptObject extends AbstractScriptObject<ItemStack> {
             String key = MetamethodImpl.tostring(args.arg1());
 
             // get the component
-            DataComponentType<?> type = BuiltInRegistries.DATA_COMPONENT_TYPE.get(Identifier.parse(key)).orElseThrow().value();
+            DataComponentType<Object> type = (DataComponentType<Object>) BuiltInRegistries.DATA_COMPONENT_TYPE.get(Identifier.parse(key)).orElseThrow().value();
+            // holy cursed programming
+
             Object component = obj.getComponents().get(type);
 
             // convert component object to nbt and then to a lua table.
             // codecs are ass bro
 
-            // how do i both know what type component is and not????
             DataResult<Tag> result = type.codecOrThrow().encodeStart(NbtOps.INSTANCE, component);
+            CompoundTag tag = result.getOrThrow().asCompound().orElse(new CompoundTag());
 
-            return LuaTableBuilder.fromNbtCompound();
+            return LuaTableBuilder.fromNbtCompound(tag);
         });
     }
 
