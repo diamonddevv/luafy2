@@ -13,6 +13,8 @@ import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
+import java.util.function.Function;
+
 public class LuafyApi extends AbstractScriptApi {
     public LuafyApi(LuaScript script) {
         super("luafy", script);
@@ -47,14 +49,35 @@ public class LuafyApi extends AbstractScriptApi {
                 return LuaString.valueOf(Luafy.LUAJ_VER);
             }, "Returns the version of LuaJ used by the mod.", args -> {}, Argtypes.STRING);
 
+            builder.add("dump", args -> {
+               LuaTable table = args.arg1().checktable();
 
-
-            builder.add("nbt", args -> {
-                return LuaTableBuilder.provide(ScriptObjects.NBT_TABLE, LuaTableBuilder.toNbtCompound(args.arg1().checktable()), script);
-            }, "temp; convert table to nbt", args -> {
-                args.add("table", Argtypes.TABLE, "table");
-            }, ScriptObjects.NBT_TABLE);
+               return LuaValue.valueOf(dumpTable(table));
+            }, "Dump a table to a string.", args -> {
+                args.add("table", Argtypes.TABLE, "Table to dump.");
+            }, Argtypes.STRING);
         });
 
+    }
+
+
+    private static String dumpTable(LuaTable t) {
+        StringBuilder b = new StringBuilder();
+
+        b.append("{");
+        for (LuaValue key : t.keys()) {
+            LuaValue v = t.get(key);
+            b.append(MetamethodImpl.tostring(key));
+            b.append(":");
+            if (v.istable()) {
+                b.append(dumpTable(v.checktable()));
+            } else {
+                b.append(MetamethodImpl.tostring(v));
+            }
+            b.append(",");
+        }
+        b.append("}");
+
+        return b.toString();
     }
 }

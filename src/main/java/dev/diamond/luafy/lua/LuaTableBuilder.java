@@ -152,6 +152,7 @@ public class LuaTableBuilder {
     }
 
     private static Optional<Tag> toNbt(LuaValue value) {
+
         return switch (value.type()) {
             case LuaValue.TINT ->       Optional.of(IntTag.valueOf(value.toint()));
             case LuaValue.TNUMBER ->    Optional.of(FloatTag.valueOf(value.tofloat()));
@@ -160,7 +161,7 @@ public class LuaTableBuilder {
             case LuaValue.TTABLE ->     {
                 LuaTable table = value.checktable();
 
-                if (Arrays.stream(table.keys()).allMatch(k -> k.type() == LuaValue.TINT)) {
+                if (Arrays.stream(table.keys()).allMatch(LuaValue::isint)) {
                     ListTag list = new ListTag();
                     for (LuaValue key : table.keys()) {
                         toNbt(table.get(key)).ifPresent(list::add);

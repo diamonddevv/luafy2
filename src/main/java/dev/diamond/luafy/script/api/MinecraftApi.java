@@ -31,6 +31,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.Vec3;
 import org.luaj.vm2.LuaBoolean;
 import org.luaj.vm2.LuaString;
+import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
 import java.util.List;
@@ -203,7 +204,6 @@ public class MinecraftApi extends AbstractScriptApi {
                 args.add("item", ScriptObjects.ITEM, "Item type.");
                 args.add("count", Argtypes.INTEGER, "Count.");
             }, ScriptObjects.ITEM_STACK);
-
 
         });
     }

@@ -2,7 +2,7 @@
 
 --#region Information
 -- GENERATED AUTODOC
--- Generated: 2026-01-20T18:25:29.060359500
+-- Generated: 2026-01-21T10:19:56.649403100
 -- Luafy Version: 2.0.0
 -- Format: Lua LS library file
 --#endregion
@@ -100,11 +100,6 @@ function ScriptResult.await_error() end
 --- Releases the internal Result Java object from the cache. Using this object after this has been called may result in an error.
 ---@return nil
 function ScriptResult.release() end
-
-
---- NBT Compound Tag
----@class NbtTable
-local NbtTable = {}
 
 
 --- An entity.
@@ -322,10 +317,10 @@ function luafy.provide_hello_world() end
 ---@return string
 function luafy.get_luaj_version() end
 
---- temp; convert table to nbt
----@param table table table
----@return NbtTable
-function luafy.nbt(table) end
+--- Dump a table to a string.
+---@param table table Table to dump.
+---@return string
+function luafy.dump(table) end
 
 math = {}
 
