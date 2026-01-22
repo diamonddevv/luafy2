@@ -6,9 +6,15 @@ import dev.diamond.luafy.lua.MetamethodImpl;
 import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.script.object.AbstractScriptObject;
+import net.minecraft.commands.arguments.SlotArgument;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.SlotAccess;
+import net.minecraft.world.inventory.SlotRanges;
+import net.minecraft.world.item.ItemStack;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
+import java.util.Objects;
 import java.util.Optional;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.registries.Registries;
@@ -31,6 +37,7 @@ public class LivingEntityScriptObject extends AbstractScriptObject<LivingEntity>
     public static final String FUNC_HURT = "hurt";
     public static final String FUNC_KILL = "kill";
     public static final String FUNC_TELEPORT = "teleport";
+    public static final String FUNC_GET_ITEMSTACK = "get_stack";
 
     public LivingEntityScriptObject() {
         super("A living entity.", doc -> {
@@ -51,6 +58,9 @@ public class LivingEntityScriptObject extends AbstractScriptObject<LivingEntity>
                 args.add("retain_velocity", Argtypes.maybe(Argtypes.BOOLEAN), "If true, the entity will retain their velocity after teleporting. Defaults to true.");
                 args.add("dimension_id", Argtypes.maybe(Argtypes.STRING), "Identifier of dimension to teleport to. Defaults to the entities current dimension.");
             }, Argtypes.NIL);
+            doc.addFunction(FUNC_GET_ITEMSTACK, "Gets an itemstack from this entities inventory by an inventory slot reference.", args -> {
+                args.add("slot_reference", Argtypes.STRING, "Reference to the slot to get the stack from.");
+            }, ScriptObjects.ITEM_STACK);
         });
     }
 
@@ -114,6 +124,13 @@ public class LivingEntityScriptObject extends AbstractScriptObject<LivingEntity>
                     e -> {}
             ));
             return LuaValue.NIL;
+        });
+
+        builder.add(FUNC_GET_ITEMSTACK, args -> {
+            String reference = MetamethodImpl.tostring(args.arg1());
+            SlotAccess access = obj.getSlot(Objects.requireNonNull(SlotRanges.nameToIds(reference)).slots().getFirst());
+            ItemStack stack = access != null ? access.get() : ItemStack.EMPTY;
+            return LuaTableBuilder.provide(ScriptObjects.ITEM_STACK, stack, script);
         });
 
         makeReadonly(builder);

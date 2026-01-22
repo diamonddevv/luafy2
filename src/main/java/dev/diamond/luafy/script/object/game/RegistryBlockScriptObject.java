@@ -8,8 +8,8 @@ import net.minecraft.world.level.block.Block;
 import org.luaj.vm2.LuaTable;
 
 
-public class BlockScriptObject extends AbstractScriptObject<Block> {
-    public BlockScriptObject() {
+public class RegistryBlockScriptObject extends AbstractScriptObject<Block> {
+    public RegistryBlockScriptObject() {
         super("A block type.", doc -> {
 
         });

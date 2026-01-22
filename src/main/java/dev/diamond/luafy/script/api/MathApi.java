@@ -17,7 +17,7 @@ public class MathApi extends AbstractScriptApi {
         apiBuilder.addGroupless(builder -> {
             builder.add("vec3d", args -> {
                 var b = new LuaTableBuilder();
-                ScriptObjects.VEC3D.toTable(new Vec3(args.arg(1).tofloat(), args.arg(2).tofloat(), args.arg(3).tofloat()), b, this.script);
+                ScriptObjects.VEC3D.toTable(new Vec3(args.nextFloat(), args.nextFloat(), args.nextFloat()), b, this.script);
                 return b.build();
             }, "Creates a 3-component vector object.", b -> {
                 b.add("x", Argtypes.NUMBER, "x component");

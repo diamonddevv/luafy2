@@ -15,11 +15,11 @@ import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
 
-public class ItemScriptObject extends AbstractScriptObject<Item> {
+public class RegistryItemScriptObject extends AbstractScriptObject<Item> {
     public static final String PROP_ID = "_id";
     public static final String FUNC_CREATE_STACK = "create_stack";
 
-    public ItemScriptObject() {
+    public RegistryItemScriptObject() {
         super("An item type.", doc -> {
 
             doc.addFunction(FUNC_CREATE_STACK, "Creates an items stack of this item type.", args -> {

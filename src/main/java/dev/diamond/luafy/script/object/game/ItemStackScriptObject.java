@@ -22,22 +22,25 @@ import org.luaj.vm2.LuaValue;
 public class ItemStackScriptObject extends AbstractScriptObject<ItemStack> {
     public static final String PROP_UNSERIALIZABLE_POINTER = "_ptr";
 
-    public static final String FUNC_COUNT = "get_count";
-    public static final String FUNC_COUNT_SET = "set_count";
     public static final String FUNC_ITEM_TYPE = "get_item_type";
     public static final String FUNC_ITEM_ID = "get_item_id";
+
+    public static final String FUNC_COUNT = "get_count";
+    public static final String FUNC_COUNT_SET = "set_count";
 
     public static final String FUNC_COMPONENT = "get_component";
     public static final String FUNC_COMPONENT_SET = "set_component";
 
     public ItemStackScriptObject() {
         super("An item stack.", doc -> {
+
+            doc.addFunction(FUNC_ITEM_TYPE, "Gets the item type of this stack.", args -> {}, ScriptObjects.ITEM);
+            doc.addFunction(FUNC_ITEM_ID, "Gets the item id of this stack.", args -> {}, Argtypes.STRING);
+
             doc.addFunction(FUNC_COUNT, "Gets the number of items in this stack.", args -> {}, Argtypes.INTEGER);
             doc.addFunction(FUNC_COUNT_SET, "Sets the number of items in this stack.", args -> {
                 args.add("count", Argtypes.INTEGER, "Count to set.");
             }, Argtypes.NIL);
-            doc.addFunction(FUNC_ITEM_TYPE, "Gets the item type of this stack.", args -> {}, ScriptObjects.ITEM);
-            doc.addFunction(FUNC_ITEM_ID, "Gets the item id of this stack.", args -> {}, Argtypes.STRING);
 
             doc.addFunction(FUNC_COMPONENT, "Gets a component from this stack as NBT.", args -> {
                 args.add("component_id", Argtypes.STRING, "The id of the component type to fetch.");
@@ -46,6 +49,7 @@ public class ItemStackScriptObject extends AbstractScriptObject<ItemStack> {
                 args.add("component_id", Argtypes.STRING, "The id of the component type.");
                 args.add("nbt", Argtypes.TABLE, "The data to write. Will be encoded into the item stack.");
             }, Argtypes.NIL);
+
         });
     }
 
@@ -92,6 +96,7 @@ public class ItemStackScriptObject extends AbstractScriptObject<ItemStack> {
 
             return LuaValue.NIL;
         });
+
     }
 
     @Override

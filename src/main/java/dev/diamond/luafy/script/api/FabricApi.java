@@ -31,7 +31,8 @@ public class FabricApi extends AbstractScriptApi {
             }, Argtypes.STRING);
 
             builder.add("has_mod", args -> {
-                String modid = MetamethodImpl.tostring(args.arg1());
+                String modid = args.nextString();
+
                 Optional<ModContainer> mod = FabricLoader.getInstance().getModContainer(modid);
                 return LuaBoolean.valueOf(mod.isPresent());
             }, "Returns true if the specified mod exists.", args -> {
@@ -39,7 +40,7 @@ public class FabricApi extends AbstractScriptApi {
             }, Argtypes.BOOLEAN);
 
             builder.add("get_mod", args -> {
-                String modid = MetamethodImpl.tostring(args.arg1());
+                String modid = args.nextString();
 
                 Optional<ModContainer> mod = FabricLoader.getInstance().getModContainer(modid);
                 if (mod.isPresent()) {

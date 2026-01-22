@@ -6,13 +6,11 @@ import dev.diamond.luafy.autodoc.SimpleAutodocumentable;
 import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.registry.LuafyRegistries;
 import dev.diamond.luafy.lua.LuaTableBuilder;
-import dev.diamond.luafy.script.ScriptExecutionResult;
 import org.jetbrains.annotations.NotNull;
 import org.luaj.vm2.LuaTable;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import net.minecraft.commands.CommandSourceStack;

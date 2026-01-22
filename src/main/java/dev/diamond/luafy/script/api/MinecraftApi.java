@@ -52,7 +52,7 @@ public class MinecraftApi extends AbstractScriptApi {
             }, "Returns the current Minecraft version string.", args -> {}, Argtypes.STRING);
 
             builder.add("say", args -> {
-                String s = MetamethodImpl.tostring(args.arg1());
+                String s = args.nextString();
 
                 for (ServerPlayer spe : script.getSource().getServer().getPlayerList().getPlayers()) {
                     spe.sendSystemMessage(Component.literal(s), false);
@@ -67,7 +67,7 @@ public class MinecraftApi extends AbstractScriptApi {
             }, Argtypes.NIL);
 
             builder.add("command", args -> {
-                String s = MetamethodImpl.tostring(args.arg1());
+                String s = args.nextString();
                 var source = script.getSource().getServer().createCommandSourceStack();
                 var cmd = parseCommand(s, source);
                 int result = executeCommand(cmd, source);
@@ -77,10 +77,10 @@ public class MinecraftApi extends AbstractScriptApi {
             }, Argtypes.INTEGER);
 
             builder.add("note", args -> {
-                Note note = ScriptEnums.NOTE.fromKey(MetamethodImpl.tostring(args.arg(1)));
-                Instrument instrument = ScriptEnums.INSTRUMENT.fromKey(MetamethodImpl.tostring(args.arg(2)));
-                Vec3 pos = ScriptObjects.VEC3D.toThing(args.arg(3).checktable(), script.getSource(), this.script);
-                boolean particle = args.arg(4).or(LuaBoolean.TRUE).checkboolean();
+                Note note = ScriptEnums.NOTE.fromKey(args.nextString());
+                Instrument instrument = ScriptEnums.INSTRUMENT.fromKey(args.nextString());
+                Vec3 pos = ScriptObjects.VEC3D.toThing(args.nextTable(), script.getSource(), this.script);
+                boolean particle = args.nextBoolean(true);
 
                 ServerLevel world = script.getSource().getLevel();
 
@@ -102,7 +102,7 @@ public class MinecraftApi extends AbstractScriptApi {
             }, Argtypes.NIL);
 
             builder.add("sleep", args -> {
-                float seconds = args.arg1().tofloat();
+                float seconds = args.nextFloat();
                 try {
                     Thread.sleep((long) (seconds * 1000));
                 } catch (InterruptedException e) {
@@ -117,7 +117,7 @@ public class MinecraftApi extends AbstractScriptApi {
 
         apiBuilder.addGroup("entities", builder -> {
             builder.add("get_player_from_selector", args -> {
-                String selector = MetamethodImpl.tostring(args.arg1());
+                String selector = args.nextString();
                 EntitySelectorParser reader = new EntitySelectorParser(new StringReader(selector), true);
                 try {
                     EntitySelector s = reader.parse();
@@ -136,7 +136,7 @@ public class MinecraftApi extends AbstractScriptApi {
             }, ScriptObjects.PLAYER);
 
             builder.add("get_entity_from_selector", args -> {
-                String selector = MetamethodImpl.tostring(args.arg1());
+                String selector = args.nextString();
                 EntitySelectorParser reader = new EntitySelectorParser(new StringReader(selector), true);
                 try {
                     EntitySelector s = reader.parse();
@@ -155,7 +155,7 @@ public class MinecraftApi extends AbstractScriptApi {
             }, ScriptObjects.ENTITY);
 
             builder.add("get_entities_from_selector", args -> {
-                String selector = MetamethodImpl.tostring(args.arg1());
+                String selector = args.nextString();
                 EntitySelectorParser reader = new EntitySelectorParser(new StringReader(selector), true);
                 try {
                     EntitySelector s = reader.parse();
@@ -176,7 +176,7 @@ public class MinecraftApi extends AbstractScriptApi {
         apiBuilder.addGroup("registry", builder -> {
 
             builder.add("item", args -> {
-                Identifier id = Identifier.parse(MetamethodImpl.tostring(args.arg1()));
+                Identifier id = Identifier.parse(args.nextString());
                 Item item = BuiltInRegistries.ITEM.getValue(id);
                 return LuaTableBuilder.provide(ScriptObjects.ITEM, item, script);
             }, "Fetches an item type from the registry.", args -> {
@@ -184,7 +184,7 @@ public class MinecraftApi extends AbstractScriptApi {
             }, ScriptObjects.ITEM);
 
             builder.add("block", args -> {
-                Identifier id = Identifier.parse(MetamethodImpl.tostring(args.arg1()));
+                Identifier id = Identifier.parse(args.nextString());
                 Block block = BuiltInRegistries.BLOCK.getValue(id);
                 return LuaTableBuilder.provide(ScriptObjects.BLOCK, block, script);
             }, "Fetches an block type from the registry.", args -> {
@@ -196,8 +196,8 @@ public class MinecraftApi extends AbstractScriptApi {
         apiBuilder.addGroup("object", builder -> {
 
             builder.add("itemstack", args -> {
-                Item item = ScriptObjects.ITEM.toThing(args.arg1().checktable(), script.getSource(), script);
-                int count = args.arg(2).toint();
+                Item item = args.nextScriptObject(ScriptObjects.ITEM, script.getSource(), script);
+                int count = args.nextInt();
                 ItemStack stack = new ItemStack(item, count);
                 return LuaTableBuilder.provide(ScriptObjects.ITEM_STACK, stack, script);
             }, "Creates an ItemStack from an item and count.", args -> {

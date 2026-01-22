@@ -2,8 +2,8 @@ package dev.diamond.luafy.registry;
 
 import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.script.object.*;
-import dev.diamond.luafy.script.object.game.BlockScriptObject;
-import dev.diamond.luafy.script.object.game.ItemScriptObject;
+import dev.diamond.luafy.script.object.game.RegistryBlockScriptObject;
+import dev.diamond.luafy.script.object.game.RegistryItemScriptObject;
 import dev.diamond.luafy.script.object.game.ItemStackScriptObject;
 import dev.diamond.luafy.script.object.game.entity.EntityScriptObject;
 import dev.diamond.luafy.script.object.game.entity.LivingEntityScriptObject;
@@ -23,8 +23,8 @@ public class ScriptObjects {
     public static PlayerScriptObject PLAYER = new PlayerScriptObject();
 
     // game objects
-    public static BlockScriptObject BLOCK = new BlockScriptObject();
-    public static ItemScriptObject ITEM = new ItemScriptObject();
+    public static RegistryBlockScriptObject BLOCK = new RegistryBlockScriptObject();
+    public static RegistryItemScriptObject ITEM = new RegistryItemScriptObject();
     public static ItemStackScriptObject ITEM_STACK = new ItemStackScriptObject();
 
     public static void registerAll() {

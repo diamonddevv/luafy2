@@ -25,8 +25,8 @@ public class LuafyApi extends AbstractScriptApi {
 
         apiBuilder.addGroupless(builder -> {
             builder.add("script", args -> {
-                String script = MetamethodImpl.tostring(args.arg1());
-                LuaTable context = args.arg(2).isnil() ? LuaTable.tableOf() : args.arg(2).checktable();
+                String script = args.nextString();
+                LuaTable context = args.nextTable(LuaValue.tableOf());
 
                 var future = Luafy.SCRIPT_MANAGER.get(Identifier.parse(script)).execute(this.script.getSource().getServer().createCommandSourceStack(), context);
                 return LuaTableBuilder.provide(b -> ScriptObjects.SCRIPT_RESULT.toTable(future, b, this.script));
@@ -50,7 +50,7 @@ public class LuafyApi extends AbstractScriptApi {
             }, "Returns the version of LuaJ used by the mod.", args -> {}, Argtypes.STRING);
 
             builder.add("dump", args -> {
-               LuaTable table = args.arg1().checktable();
+               LuaTable table = args.nextTable();
 
                return LuaValue.valueOf(dumpTable(table));
             }, "Dump a table to a string.", args -> {

@@ -37,7 +37,7 @@ public class LuaTableBuilder {
     public void add(String key, float f) { addInternal(key, LuaValue.valueOf(f)); }
     public void add(String key, double d) { addInternal(key, LuaValue.valueOf(d)); }
     public void add(String key, LuaTable tbl) { addInternal(key, tbl); }
-    public void add(String key, Function<Varargs, LuaValue> function) { addInternal(key, new VarArgFunction() {
+    public void add(String key, ScriptFunction function) { addInternal(key, new VarArgFunction() {
         @Override
         public Varargs invoke(Varargs args) {
             return function.apply(args);

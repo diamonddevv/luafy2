@@ -22,9 +22,9 @@ this mod uses the FiguraMC implementation of Lua.
     - [x] threaded
   - [x] events
 - APIs / game interfaces
-  - [ ] entity
-  - [ ] block
-  - [ ] item
+  - [x] entity
+  - [x] block
+  - [x] item
   - [ ] world/server
   - [x] math (vectors, mainly)
 - other

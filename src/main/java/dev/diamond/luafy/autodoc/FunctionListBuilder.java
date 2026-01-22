@@ -1,8 +1,8 @@
 package dev.diamond.luafy.autodoc;
 
+import dev.diamond.luafy.lua.ScriptFunction;
 import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaTable;
-import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
 import org.luaj.vm2.lib.VarArgFunction;
 
@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class FunctionListBuilder {
     private final HashMap<String, LuaFunction> functions;
@@ -21,7 +20,7 @@ public class FunctionListBuilder {
         this.documentation = new ArrayList<>();
     }
 
-    public void add(String name, Function<Varargs, LuaValue> function, String desc, Consumer<ArglistBuilder> arglistBuilder, Argtype returnType) {
+    public void add(String name, ScriptFunction function, String desc, Consumer<ArglistBuilder> arglistBuilder, Argtype returnType) {
         this.functions.put(name, new VarArgFunction() {
             @Override
             public Varargs invoke(Varargs args) {
