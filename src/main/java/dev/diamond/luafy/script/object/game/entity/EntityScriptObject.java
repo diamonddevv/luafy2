@@ -31,6 +31,7 @@ public class EntityScriptObject extends AbstractScriptObject<Entity> {
         });
     }
 
+
     @Override
     public void toTable(Entity obj, LuaTableBuilder builder, LuaScript script) {
         builder.add(PROP_UUID, obj.getStringUUID());
@@ -45,6 +46,11 @@ public class EntityScriptObject extends AbstractScriptObject<Entity> {
     @Override
     public Entity toThing(LuaTable table, CommandSourceStack src, LuaScript script) {
         return src.getLevel().getEntity(java.util.UUID.fromString(table.get(PROP_UUID).tojstring()));
+    }
+
+    @Override
+    public Class<Entity> getType() {
+        return Entity.class;
     }
 
     @Override

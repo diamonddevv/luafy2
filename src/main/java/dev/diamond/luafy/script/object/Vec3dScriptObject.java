@@ -12,27 +12,35 @@ import org.luaj.vm2.LuaTable;
 
 public class Vec3dScriptObject extends AbstractScriptObject<Vec3> {
 
+    public static final String PROP_X = "x";
+    public static final String PROP_Y = "y";
+    public static final String PROP_Z = "z";
 
     public Vec3dScriptObject() {
         super("Mathematical 3D Vector", doc -> {
-            doc.addProperty("x", Argtypes.NUMBER, "x component");
-            doc.addProperty("y", Argtypes.NUMBER, "y component");
-            doc.addProperty("z", Argtypes.NUMBER, "z component");
+            doc.addProperty(PROP_X, Argtypes.NUMBER, "x component");
+            doc.addProperty(PROP_Y, Argtypes.NUMBER, "y component");
+            doc.addProperty(PROP_Z, Argtypes.NUMBER, "z component");
         });
     }
 
     @Override
     public void toTable(Vec3 obj, LuaTableBuilder builder, LuaScript script) {
-        builder.add("x", obj.x);
-        builder.add("y", obj.y);
-        builder.add("z", obj.z);
+        builder.add(PROP_X, obj.x);
+        builder.add(PROP_Y, obj.y);
+        builder.add(PROP_Z, obj.z);
 
         builder.addMetamethod(MetamethodNames.TO_STRING, args -> LuaString.valueOf(Vec3dScriptObject.toString(obj)));
     }
 
     @Override
     public Vec3 toThing(LuaTable table, CommandSourceStack src, LuaScript script) {
-        return new Vec3(table.get("x").tofloat(), table.get("y").tofloat(), table.get("z").tofloat());
+        return new Vec3(table.get(PROP_X).tofloat(), table.get(PROP_Y).tofloat(), table.get(PROP_Z).tofloat());
+    }
+
+    @Override
+    public Class<Vec3> getType() {
+        return Vec3.class;
     }
 
     @Override

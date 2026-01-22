@@ -26,6 +26,11 @@ public class RegistryBlockScriptObject extends AbstractScriptObject<Block> {
     }
 
     @Override
+    public Class<Block> getType() {
+        return Block.class;
+    }
+
+    @Override
     public String getArgtypeString() {
         return "Block";
     }

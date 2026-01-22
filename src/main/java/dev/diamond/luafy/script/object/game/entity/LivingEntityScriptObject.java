@@ -68,12 +68,11 @@ public class LivingEntityScriptObject extends AbstractScriptObject<LivingEntity>
     public void toTable(LivingEntity obj, LuaTableBuilder builder, LuaScript script) {
         applyInheritanceToTable(obj, builder, script);
 
-        builder.add(FUNC_GET_HEALTH, args -> LuaValue.valueOf(obj.getHealth()));
+        builder.add(FUNC_GET_HEALTH, args -> obj.getHealth());
         builder.add(FUNC_HURT, args -> {
-            Identifier damageTypeId = Identifier.parse(MetamethodImpl.tostring(args.arg(1)));
-            float amount = args.arg(2).tofloat();
-            Optional<Entity> e = args.arg(3).isnil() ?
-                    Optional.empty() : Optional.of(ScriptObjects.ENTITY.toThing(args.arg(3).checktable(), script.getSource(), script));
+            Identifier damageTypeId = Identifier.parse(args.nextString());
+            float amount = args.nextFloat();
+            Optional<Entity> e = Optional.ofNullable(args.nextScriptObject(ScriptObjects.ENTITY, script.getSource(), script, null));
 
             ServerLevel world = script.getSource().getLevel();
             DamageType type = world.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getValue(damageTypeId);
@@ -81,13 +80,11 @@ public class LivingEntityScriptObject extends AbstractScriptObject<LivingEntity>
 
             obj.hurtServer(world, source, amount);
 
-            return LuaValue.NIL;
+            return null;
         });
         builder.add(FUNC_KILL, args -> {
-            Optional<Identifier> damageTypeId = args.arg(1).isnil() ?
-                    Optional.empty() : Optional.of(Identifier.parse(MetamethodImpl.tostring(args.arg(1))));
-            Optional<Entity> e = args.arg(2).isnil() ?
-                    Optional.empty() : Optional.of(ScriptObjects.ENTITY.toThing(args.arg(2).checktable(), script.getSource(), script));
+            Optional<Identifier> damageTypeId = Optional.ofNullable(args.nextString(null)).map(Identifier::parse);
+            Optional<Entity> e = Optional.ofNullable(args.nextScriptObject(ScriptObjects.ENTITY, script.getSource(), script, null));
 
             ServerLevel world = script.getSource().getLevel();
             DamageType type;
@@ -104,13 +101,15 @@ public class LivingEntityScriptObject extends AbstractScriptObject<LivingEntity>
             return LuaValue.NIL;
         });
         builder.add(FUNC_TELEPORT, args -> {
-            Vec3 pos = ScriptObjects.VEC3D.toThing(args.arg(1).checktable(), script.getSource(), script);
-            float yaw = args.arg(2).or(LuaValue.valueOf(obj.getYRot())).tofloat();
-            float pitch = args.arg(3).or(LuaValue.valueOf(obj.getXRot())).tofloat();
-            boolean retainVel = args.arg(4).or(LuaValue.valueOf(true)).toboolean();
+            Vec3 pos = args.nextScriptObject(ScriptObjects.VEC3D, script.getSource(), script);
+            float yaw = args.nextFloat(obj.getYRot());
+            float pitch = args.nextFloat(obj.getXRot());
+            boolean retainVel = args.nextBoolean(true);
 
-            ResourceKey<Level> registryKey = args.arg(5).isnil() ?
-                    obj.level().dimension() : ResourceKey.create(Registries.DIMENSION, Identifier.parse(MetamethodImpl.tostring(args.arg(5))));
+            ResourceKey<Level> registryKey = Optional
+                    .ofNullable(args.nextString(null))
+                    .map(s -> ResourceKey.create(Registries.DIMENSION, Identifier.parse(s)))
+                    .orElse(obj.level().dimension());
 
             ServerLevel serverWorld = script.getSource().getServer().getLevel(registryKey);
 
@@ -127,7 +126,7 @@ public class LivingEntityScriptObject extends AbstractScriptObject<LivingEntity>
         });
 
         builder.add(FUNC_GET_ITEMSTACK, args -> {
-            String reference = MetamethodImpl.tostring(args.arg1());
+            String reference = args.nextString();
             SlotAccess access = obj.getSlot(Objects.requireNonNull(SlotRanges.nameToIds(reference)).slots().getFirst());
             ItemStack stack = access != null ? access.get() : ItemStack.EMPTY;
             return LuaTableBuilder.provide(ScriptObjects.ITEM_STACK, stack, script);
@@ -139,6 +138,11 @@ public class LivingEntityScriptObject extends AbstractScriptObject<LivingEntity>
     @Override
     public LivingEntity toThing(LuaTable table, CommandSourceStack src, LuaScript script) {
         return (LivingEntity) ScriptObjects.ENTITY.toThing(table, src, script);
+    }
+
+    @Override
+    public Class<LivingEntity> getType() {
+        return LivingEntity.class;
     }
 
     @Override

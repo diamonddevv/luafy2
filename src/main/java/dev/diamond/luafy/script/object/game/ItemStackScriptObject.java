@@ -106,6 +106,11 @@ public class ItemStackScriptObject extends AbstractScriptObject<ItemStack> {
     }
 
     @Override
+    public Class<ItemStack> getType() {
+        return ItemStack.class;
+    }
+
+    @Override
     public String getArgtypeString() {
         return "ItemStack";
     }

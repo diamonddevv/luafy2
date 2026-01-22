@@ -23,7 +23,7 @@ public class RegistryItemScriptObject extends AbstractScriptObject<Item> {
         super("An item type.", doc -> {
 
             doc.addFunction(FUNC_CREATE_STACK, "Creates an items stack of this item type.", args -> {
-                args.add("count", Argtypes.INTEGER, "The number of items to create a stack of.");
+                args.add("count", Argtypes.maybe(Argtypes.INTEGER), "The number of items to create a stack of. Defaults to 1.");
             }, ScriptObjects.ITEM_STACK);
 
         });
@@ -34,9 +34,9 @@ public class RegistryItemScriptObject extends AbstractScriptObject<Item> {
         builder.add(PROP_ID, BuiltInRegistries.ITEM.getKey(obj).toString());
 
         builder.add(FUNC_CREATE_STACK, args -> {
-            int count = args.arg1().toint();
+            int count = args.nextInt(1);
             ItemStack stack = new ItemStack(obj, count);
-            return LuaTableBuilder.provide(b -> ScriptObjects.ITEM_STACK.toTable(stack, b, script));
+            return LuaTableBuilder.provide(ScriptObjects.ITEM_STACK, stack, script);
         });
 
         builder.addMetamethod(MetamethodNames.TO_STRING, args -> LuaValue.valueOf(BuiltInRegistries.ITEM.getKey(obj).toString()));
@@ -45,6 +45,11 @@ public class RegistryItemScriptObject extends AbstractScriptObject<Item> {
     @Override
     public Item toThing(LuaTable table, CommandSourceStack src, LuaScript script) {
         return BuiltInRegistries.ITEM.getValue(Identifier.parse(table.get(PROP_ID).tojstring()));
+    }
+
+    @Override
+    public Class<Item> getType() {
+        return Item.class;
     }
 
     @Override

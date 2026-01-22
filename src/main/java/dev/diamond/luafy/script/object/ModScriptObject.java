@@ -10,27 +10,32 @@ import org.luaj.vm2.LuaTable;
 
 public class ModScriptObject extends AbstractScriptObject<ModContainer> {
 
-    public static final String PROP_MODID = "modid";
-    public static final String PROP_VERSION = "version";
+    public static final String FUNC_MODID = "get_mod_id";
+    public static final String FUNC_VERSION = "get_version";
 
     public ModScriptObject() {
         super("An object representing a mod installed on the server.", doc -> {
-            doc.addProperty(PROP_MODID, Argtypes.STRING, "The id of this mod.");
-            doc.addProperty(PROP_VERSION, Argtypes.STRING, "The version of the mod currently installed.");
+            doc.addFunction(FUNC_MODID, "Gets the id of this mod.", args -> {},  Argtypes.STRING);
+            doc.addFunction(FUNC_VERSION, "The version of the mod currently installed.", args -> {},  Argtypes.STRING);
         });
     }
 
     @Override
     public void toTable(ModContainer obj, LuaTableBuilder builder, LuaScript script) {
-        builder.add(PROP_MODID, obj.getMetadata().getId());
-        builder.add(PROP_VERSION, obj.getMetadata().getVersion().getFriendlyString());
+        builder.add(FUNC_MODID, args -> obj.getMetadata().getId());
+        builder.add(FUNC_VERSION, args -> obj.getMetadata().getVersion().getFriendlyString());
 
         makeReadonly(builder);
     }
 
     @Override
     public ModContainer toThing(LuaTable table, CommandSourceStack src, LuaScript script) {
-        return FabricLoader.getInstance().getModContainer(table.get(PROP_MODID).tojstring()).orElseThrow();
+        return FabricLoader.getInstance().getModContainer(table.get(FUNC_MODID).tojstring()).orElseThrow();
+    }
+
+    @Override
+    public Class<ModContainer> getType() {
+        return ModContainer.class;
     }
 
     @Override
@@ -38,3 +43,4 @@ public class ModScriptObject extends AbstractScriptObject<ModContainer> {
         return "Mod";
     }
 }
+

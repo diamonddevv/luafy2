@@ -38,11 +38,11 @@ public class PlayerScriptObject extends AbstractScriptObject<ServerPlayer> {
         applyInheritanceToTable(obj, builder, script);
 
         builder.add(FUNC_TELL, args -> {
-            obj.sendSystemMessage(Component.literal(MetamethodImpl.tostring(args.arg1())), false);
+            obj.sendSystemMessage(Component.literal(args.nextString()), false);
             return LuaValue.NIL;
         });
         builder.add(FUNC_GIVE_STACK, args -> {
-            ItemStack stack = ScriptObjects.ITEM_STACK.toThing(args.arg1().checktable(), script.getSource(), script);
+            ItemStack stack = args.nextScriptObject(ScriptObjects.ITEM_STACK, script.getSource(), script);
             obj.getInventory().add(stack);
            return LuaValue.NIL;
         });
@@ -60,6 +60,11 @@ public class PlayerScriptObject extends AbstractScriptObject<ServerPlayer> {
     @Override
     public ServerPlayer toThing(LuaTable table, CommandSourceStack src, LuaScript script) {
         return src.getServer().getPlayerList().getPlayer(java.util.UUID.fromString(table.get(EntityScriptObject.PROP_UUID).tojstring()));
+    }
+
+    @Override
+    public Class<ServerPlayer> getType() {
+        return ServerPlayer.class;
     }
 
     @Override
