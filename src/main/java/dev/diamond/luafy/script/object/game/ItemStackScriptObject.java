@@ -60,14 +60,14 @@ public class ItemStackScriptObject extends AbstractScriptObject<ItemStack> {
 
         builder.add(FUNC_COUNT, args -> LuaValue.valueOf(obj.getCount()));
         builder.add(FUNC_COUNT_SET, args -> {
-            obj.setCount(args.arg1().toint());
+            obj.setCount(args.nextInt());
             return LuaValue.NIL;
         });
         builder.add(FUNC_ITEM_TYPE, args -> LuaTableBuilder.provide(b -> ScriptObjects.ITEM.toTable(obj.getItem(), b, script)));
         builder.add(FUNC_ITEM_ID, args -> LuaValue.valueOf(BuiltInRegistries.ITEM.getId(obj.getItem())));
 
         builder.add(FUNC_COMPONENT, args -> {
-            String key = MetamethodImpl.tostring(args.arg1());
+            String key = args.nextString();
 
             // get the component
             DataComponentType<Object> type = (DataComponentType<Object>) BuiltInRegistries.DATA_COMPONENT_TYPE.get(Identifier.parse(key)).orElseThrow().value();
@@ -85,8 +85,8 @@ public class ItemStackScriptObject extends AbstractScriptObject<ItemStack> {
         });
 
         builder.add(FUNC_COMPONENT_SET, args -> {
-            String key = MetamethodImpl.tostring(args.arg1());
-            LuaTable data = args.arg(2).checktable();
+            String key = args.nextString();
+            LuaTable data = args.nextTable();
 
             // get the component
             DataComponentType<Object> type = (DataComponentType<Object>) BuiltInRegistries.DATA_COMPONENT_TYPE.get(Identifier.parse(key)).orElseThrow().value();

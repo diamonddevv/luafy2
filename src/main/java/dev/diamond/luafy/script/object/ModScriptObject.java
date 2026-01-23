@@ -7,6 +7,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.commands.CommandSourceStack;
 import org.luaj.vm2.LuaTable;
+import org.luaj.vm2.LuaValue;
 
 public class ModScriptObject extends AbstractScriptObject<ModContainer> {
 
@@ -22,8 +23,8 @@ public class ModScriptObject extends AbstractScriptObject<ModContainer> {
 
     @Override
     public void toTable(ModContainer obj, LuaTableBuilder builder, LuaScript script) {
-        builder.add(FUNC_MODID, args -> obj.getMetadata().getId());
-        builder.add(FUNC_VERSION, args -> obj.getMetadata().getVersion().getFriendlyString());
+        builder.add(FUNC_MODID, args -> LuaValue.valueOf(obj.getMetadata().getId()));
+        builder.add(FUNC_VERSION, args -> LuaValue.valueOf(obj.getMetadata().getVersion().getFriendlyString()));
 
         makeReadonly(builder);
     }

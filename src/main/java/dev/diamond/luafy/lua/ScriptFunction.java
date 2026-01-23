@@ -1,66 +1,20 @@
 package dev.diamond.luafy.lua;
 
-import dev.diamond.luafy.registry.LuafyRegistries;
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.script.object.AbstractScriptObject;
 import net.minecraft.commands.CommandSourceStack;
 import org.luaj.vm2.*;
 
-import java.lang.reflect.Array;
 import java.util.function.Function;
 
 @FunctionalInterface
 public interface ScriptFunction extends Function<Varargs, LuaValue> {
 
-    Object call(ArgumentSupplier args);
+    LuaValue call(ArgumentSupplier args);
 
     @Override
     default LuaValue apply(Varargs args) {
-        Object obj = call(new ArgumentSupplier(args));
-        return ScriptFunction.adapt(obj);
-    }
-
-    static LuaValue adapt(Object obj) {
-
-        if (obj instanceof LuaValue val) {
-            return val;
-
-        } else if (obj == null) {
-            return LuaValue.NIL;
-        } else if (obj instanceof Integer i) { // primitives + string
-            return LuaValue.valueOf(i);
-        } else if (obj instanceof Byte b) {
-            return LuaValue.valueOf(b);
-        } else if (obj instanceof Long l) {
-            return LuaValue.valueOf(l);
-        } else if (obj instanceof Float f) {
-            return LuaValue.valueOf(f);
-        } else if (obj instanceof Double d) {
-            return LuaValue.valueOf(d);
-        } else if (obj instanceof Boolean bl) {
-            return LuaValue.valueOf(bl);
-        } else if (obj instanceof String s) {
-            return LuaValue.valueOf(s);
-        } else if (obj instanceof Short sh) {
-            return LuaValue.valueOf(sh);
-        } else if (obj.getClass().isArray()) { // should probably be avoided anyway
-            Object[] arr = (Object[]) obj;
-            LuaValue[] luaArr = new LuaValue[arr.length];
-            for (int i = 0; i < arr.length; i++) luaArr[i] = adapt(arr[i]);
-            return LuaTable.tableOf(luaArr);
-        } else { // script objects
-
-            for (var asco : LuafyRegistries.SCRIPT_OBJECTS) {
-                if (obj.getClass() == asco.getType()) {
-                    return LuaTableBuilder.provide(asco, obj, script);
-                }
-            }
-
-        }
-
-
-        throw new RuntimeException("Couldn't adapt some JVM value to a value returnable to Lua " +
-                "(It might not be registered)");
+        return call(new ArgumentSupplier(args));
     }
 
     class ArgumentSupplier {

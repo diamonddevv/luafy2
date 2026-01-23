@@ -2,12 +2,9 @@ package dev.diamond.luafy.script.object.game.entity;
 
 import dev.diamond.luafy.autodoc.Argtypes;
 import dev.diamond.luafy.lua.LuaTableBuilder;
-import dev.diamond.luafy.lua.MetamethodImpl;
 import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.script.object.AbstractScriptObject;
-import net.minecraft.commands.arguments.SlotArgument;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.inventory.SlotRanges;
 import net.minecraft.world.item.ItemStack;
@@ -68,7 +65,7 @@ public class LivingEntityScriptObject extends AbstractScriptObject<LivingEntity>
     public void toTable(LivingEntity obj, LuaTableBuilder builder, LuaScript script) {
         applyInheritanceToTable(obj, builder, script);
 
-        builder.add(FUNC_GET_HEALTH, args -> obj.getHealth());
+        builder.add(FUNC_GET_HEALTH, args -> LuaValue.valueOf(obj.getHealth()));
         builder.add(FUNC_HURT, args -> {
             Identifier damageTypeId = Identifier.parse(args.nextString());
             float amount = args.nextFloat();
