@@ -3,7 +3,6 @@ package dev.diamond.luafy.script.object.game;
 import com.mojang.serialization.DataResult;
 import dev.diamond.luafy.autodoc.Argtypes;
 import dev.diamond.luafy.lua.LuaTableBuilder;
-import dev.diamond.luafy.lua.MetamethodImpl;
 import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.script.object.AbstractScriptObject;
@@ -63,7 +62,7 @@ public class ItemStackScriptObject extends AbstractScriptObject<ItemStack> {
             obj.setCount(args.nextInt());
             return LuaValue.NIL;
         });
-        builder.add(FUNC_ITEM_TYPE, args -> LuaTableBuilder.provide(b -> ScriptObjects.ITEM.toTable(obj.getItem(), b, script)));
+        builder.add(FUNC_ITEM_TYPE, args -> LuaTableBuilder.provide(ScriptObjects.ITEM, obj.getItem(), script));
         builder.add(FUNC_ITEM_ID, args -> LuaValue.valueOf(BuiltInRegistries.ITEM.getId(obj.getItem())));
 
         builder.add(FUNC_COMPONENT, args -> {
@@ -103,11 +102,6 @@ public class ItemStackScriptObject extends AbstractScriptObject<ItemStack> {
     public ItemStack toThing(LuaTable table, CommandSourceStack src, LuaScript script) {
         int ptr = table.get(PROP_UNSERIALIZABLE_POINTER).toint();
         return script.getUnserializableData(ptr, ItemStack.class);
-    }
-
-    @Override
-    public Class<ItemStack> getType() {
-        return ItemStack.class;
     }
 
     @Override

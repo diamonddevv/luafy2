@@ -138,11 +138,6 @@ public class LivingEntityScriptObject extends AbstractScriptObject<LivingEntity>
     }
 
     @Override
-    public Class<LivingEntity> getType() {
-        return LivingEntity.class;
-    }
-
-    @Override
     public Optional<AbstractScriptObject<? super LivingEntity>> getParentType() {
         return Optional.of(ScriptObjects.ENTITY);
     }

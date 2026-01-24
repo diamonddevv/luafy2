@@ -5,6 +5,7 @@ import dev.diamond.luafy.script.object.*;
 import dev.diamond.luafy.script.object.game.RegistryBlockScriptObject;
 import dev.diamond.luafy.script.object.game.RegistryItemScriptObject;
 import dev.diamond.luafy.script.object.game.ItemStackScriptObject;
+import dev.diamond.luafy.script.object.game.TextComponentScriptObject;
 import dev.diamond.luafy.script.object.game.entity.EntityScriptObject;
 import dev.diamond.luafy.script.object.game.entity.LivingEntityScriptObject;
 import dev.diamond.luafy.script.object.game.entity.PlayerScriptObject;
@@ -26,6 +27,7 @@ public class ScriptObjects {
     public static RegistryBlockScriptObject BLOCK = new RegistryBlockScriptObject();
     public static RegistryItemScriptObject ITEM = new RegistryItemScriptObject();
     public static ItemStackScriptObject ITEM_STACK = new ItemStackScriptObject();
+    public static TextComponentScriptObject TEXT_COMPONENT = new TextComponentScriptObject();
 
     public static void registerAll() {
         Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("vec3d"), VEC3D);
@@ -39,6 +41,7 @@ public class ScriptObjects {
         Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("block"), BLOCK);
         Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("item"), ITEM);
         Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("item_stack"), ITEM_STACK);
+        Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("text_component"), TEXT_COMPONENT);
 
         // this has to be deferred so that objects can reference each other in their docs
         AbstractScriptObject.buildAllDocs();

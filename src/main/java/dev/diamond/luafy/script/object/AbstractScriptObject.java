@@ -31,7 +31,6 @@ public abstract class AbstractScriptObject<T> implements SimpleAutodocumentable,
 
     public abstract void toTable(T obj, LuaTableBuilder builder, LuaScript script);
     public abstract T toThing(LuaTable table, CommandSourceStack src, LuaScript script);
-    public abstract Class<T> getType();
 
     public Optional<AbstractScriptObject<? super T>> getParentType() {
         return Optional.empty();

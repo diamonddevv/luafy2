@@ -24,14 +24,14 @@ public class LuaScript {
     private String compilationError;
     private CommandSourceStack src;
     private final HashMap<Integer, Object> unserializableDataReferences;
-    private int nextUnserializableDataReferenceIndex;
+    private int nextUnserializableDataReferencePtr;
 
     public LuaScript(String source) {
         this.globals = new Globals();
         injectSources();
 
         this.unserializableDataReferences = new HashMap<>();
-        this.nextUnserializableDataReferenceIndex = 0;
+        this.nextUnserializableDataReferencePtr = 0;
 
         try {
             this.script = this.globals.load(source);
@@ -43,12 +43,12 @@ public class LuaScript {
     }
 
     public int addUnserializableData(Object o) {
-        unserializableDataReferences.put(nextUnserializableDataReferenceIndex, o);
-        return nextUnserializableDataReferenceIndex++;
+        unserializableDataReferences.put(nextUnserializableDataReferencePtr, o);
+        return nextUnserializableDataReferencePtr++;
     }
 
-    public <T> T getUnserializableData(int idx, Class<T> clazz) {
-        return clazz.cast(unserializableDataReferences.get(idx));
+    public <T> T getUnserializableData(int ptr, Class<T> clazz) {
+        return clazz.cast(unserializableDataReferences.get(ptr));
     }
 
     public void releaseUnserializableData(int idx) {

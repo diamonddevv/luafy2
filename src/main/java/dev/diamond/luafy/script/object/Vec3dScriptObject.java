@@ -39,11 +39,6 @@ public class Vec3dScriptObject extends AbstractScriptObject<Vec3> {
     }
 
     @Override
-    public Class<Vec3> getType() {
-        return Vec3.class;
-    }
-
-    @Override
     public String getArgtypeString() {
         return "Vec3d";
     }

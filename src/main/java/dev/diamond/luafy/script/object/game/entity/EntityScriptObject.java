@@ -49,11 +49,6 @@ public class EntityScriptObject extends AbstractScriptObject<Entity> {
     }
 
     @Override
-    public Class<Entity> getType() {
-        return Entity.class;
-    }
-
-    @Override
     public String getArgtypeString() {
         return "Entity";
     }

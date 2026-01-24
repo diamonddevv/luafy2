@@ -48,11 +48,6 @@ public class RegistryItemScriptObject extends AbstractScriptObject<Item> {
     }
 
     @Override
-    public Class<Item> getType() {
-        return Item.class;
-    }
-
-    @Override
     public String getArgtypeString() {
         return "Item";
     }

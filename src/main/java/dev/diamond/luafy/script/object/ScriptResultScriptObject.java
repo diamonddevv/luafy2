@@ -85,12 +85,6 @@ public class ScriptResultScriptObject extends AbstractScriptObject<Future<Script
     }
 
     @Override
-    public Class<Future<ScriptExecutionResult>> getType() {
-        // HOLY CURSED
-        return (Class<Future<ScriptExecutionResult>>) DummyFutureLuaScriptResultWrapper.class.getInterfaces()[0];
-    }
-
-    @Override
     public String getArgtypeString() {
         return "ScriptResult";
     }

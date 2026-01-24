@@ -1,7 +1,6 @@
 package dev.diamond.luafy.script.object.game.entity;
 
 import dev.diamond.luafy.autodoc.Argtypes;
-import dev.diamond.luafy.lua.MetamethodImpl;
 import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.script.LuaScript;
@@ -60,11 +59,6 @@ public class PlayerScriptObject extends AbstractScriptObject<ServerPlayer> {
     @Override
     public ServerPlayer toThing(LuaTable table, CommandSourceStack src, LuaScript script) {
         return src.getServer().getPlayerList().getPlayer(java.util.UUID.fromString(table.get(EntityScriptObject.PROP_UUID).tojstring()));
-    }
-
-    @Override
-    public Class<ServerPlayer> getType() {
-        return ServerPlayer.class;
     }
 
     @Override

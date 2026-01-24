@@ -35,11 +35,6 @@ public class ModScriptObject extends AbstractScriptObject<ModContainer> {
     }
 
     @Override
-    public Class<ModContainer> getType() {
-        return ModContainer.class;
-    }
-
-    @Override
     public String getArgtypeString() {
         return "Mod";
     }
