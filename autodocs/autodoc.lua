@@ -2,7 +2,7 @@
 
 --#region Information
 -- GENERATED AUTODOC
--- Generated: 2026-01-21T10:19:56.649403100
+-- Generated: 2026-01-24T19:31:15.033038100
 -- Luafy Version: 2.0.0
 -- Format: Lua LS library file
 --#endregion
@@ -76,9 +76,15 @@ local Vec3d = {}
 
 --- An object representing a mod installed on the server.
 ---@class Mod
----@field modid string The id of this mod.
----@field version string The version of the mod currently installed.
 local Mod = {}
+
+--- Gets the id of this mod.
+---@return string
+function Mod.get_mod_id() end
+
+--- The version of the mod currently installed.
+---@return string
+function Mod.get_version() end
 
 
 --- Object representing the potential result of a script execution. Since scripts run asynchronously, this object allows for a result to be awaited if needed.
@@ -157,6 +163,11 @@ function LivingEntity.kill(damage_type, source) end
 ---@return nil
 function LivingEntity.teleport(pos, yaw, pitch, retain_velocity, dimension_id) end
 
+--- Gets an itemstack from this entities inventory by an inventory slot reference.
+---@param slot_reference string Reference to the slot to get the stack from.
+---@return ItemStack
+function LivingEntity.get_stack(slot_reference) end
+
 
 --- A player.
 ---@class Player: LivingEntity
@@ -183,7 +194,7 @@ local Block = {}
 local Item = {}
 
 --- Creates an items stack of this item type.
----@param count integer The number of items to create a stack of.
+---@param count integer | nil The number of items to create a stack of. Defaults to 1.
 ---@return ItemStack
 function Item.create_stack(count) end
 
@@ -191,6 +202,14 @@ function Item.create_stack(count) end
 --- An item stack.
 ---@class ItemStack
 local ItemStack = {}
+
+--- Gets the item type of this stack.
+---@return Item
+function ItemStack.get_item_type() end
+
+--- Gets the item id of this stack.
+---@return string
+function ItemStack.get_item_id() end
 
 --- Gets the number of items in this stack.
 ---@return integer
@@ -200,14 +219,6 @@ function ItemStack.get_count() end
 ---@param count integer Count to set.
 ---@return nil
 function ItemStack.set_count(count) end
-
---- Gets the item type of this stack.
----@return Item
-function ItemStack.get_item_type() end
-
---- Gets the item id of this stack.
----@return string
-function ItemStack.get_item_id() end
 
 --- Gets a component from this stack as NBT.
 ---@param component_id string The id of the component type to fetch.
@@ -219,6 +230,37 @@ function ItemStack.get_component(component_id) end
 ---@param nbt table The data to write. Will be encoded into the item stack.
 ---@return nil
 function ItemStack.set_component(component_id, nbt) end
+
+
+--- Text component.
+---@class TextComponent
+local TextComponent = {}
+
+--- Serialises this text component to a JSON string.
+---@return string
+function TextComponent.serialise() end
+
+--- Appends as literal text.
+---@param string string Literal text.
+---@return nil
+function TextComponent.append_literal(string) end
+
+--- Appends as translatable text.
+---@param string string Translatable text.
+---@param args TextComponent[] | nil Components to pass as objects.
+---@return nil
+function TextComponent.append_translatable(string, args) end
+
+--- Appends a sprite.
+---@param atlas string Sprite atlas.
+---@param id string Sprite identifer.
+---@return nil
+function TextComponent.append_sprite(atlas, id) end
+
+--- Appends as a playerhead sprite.
+---@param username string Player username.
+---@return nil
+function TextComponent.append_sprite_player(username) end
 
 
 --#endregion
