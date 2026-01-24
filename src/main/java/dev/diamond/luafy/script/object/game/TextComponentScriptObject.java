@@ -10,8 +10,11 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
+
+import java.util.ArrayList;
 
 public class TextComponentScriptObject extends AbstractScriptObject<MutableComponent> {
 
@@ -67,10 +70,10 @@ public class TextComponentScriptObject extends AbstractScriptObject<MutableCompo
 
         builder.add(FUNC_APPEND_TRANSLATABLE, args -> {
             String key = args.nextString();
+            ArrayList<MutableComponent> components = args.nextArray(v ->
+                    args.getScriptObject(ScriptObjects.TEXT_COMPONENT, v, script.getSource(), script), new ArrayList<>());
 
-
-
-            obj.append(Component.translatable(key));
+            obj.append(MutableComponent.create(new TranslatableContents(key, null, components.toArray())));
             return LuaValue.NIL;
         });
 

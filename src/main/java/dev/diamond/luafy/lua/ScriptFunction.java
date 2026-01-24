@@ -35,55 +35,57 @@ public interface ScriptFunction extends Function<Varargs, LuaValue> {
             return idx(this.argIdx++);
         }
 
-
-
-        public LuaTable getTable(LuaValue val, LuaTable def) {
-            return val.opttable(def);
+        private <T> T optionalVal(LuaValue val, T def, Function<LuaValue, T> func) {
+            if (val.isnil()) return def;
+            else return func.apply(val);
         }
 
-        public int getInt(LuaValue val, int def) {
-            return val.optint(def);
+
+        public LuaTable getTable(LuaValue val) {
+            return val.checktable();
         }
 
-        public float getFloat(LuaValue val, float def) {
-            return (float) val.optdouble(def);
+        public int getInt(LuaValue val) {
+            return val.checkint();
         }
 
-        public boolean getBoolean(LuaValue val, boolean def) {
-            return val.optboolean(def);
+        public float getFloat(LuaValue val) {
+            return (float) val.checkdouble();
         }
 
-        public String getString(LuaValue val, String def) {
-            return MetamethodImpl.tostring(val.optstring(LuaString.valueOf(def)));
+        public boolean getBoolean(LuaValue val) {
+            return val.checkboolean();
         }
 
-        public LuaValue getLuaValue(LuaValue val, LuaValue def) {
-            return val.optvalue(def);
+        public String getString(LuaValue val) {
+            return MetamethodImpl.tostring(val);
         }
 
-        public LuaFunction getFunction(LuaValue val, LuaFunction def) {
-            return val.optfunction(def);
+        public LuaValue getLuaValue(LuaValue val) {
+            return val;
         }
 
-        public <T> T getScriptObject(AbstractScriptObject<T> obj, LuaValue val, CommandSourceStack src, LuaScript script, T def) {
-            LuaTable table = val.checktable();
-            if (table.isnil()) {
-                return def;
-            } else {
-                return obj.toThing(table, src, script);
-            }
+        public LuaFunction getFunction(LuaValue val) {
+            return val.checkfunction();
         }
 
-        public <T> ArrayList<T> getArray(int idx, BiFunction<LuaValue, T, T> getter) {
-            LuaTable table = getTable(idx);
+        public <T> T getScriptObject(AbstractScriptObject<T> obj, LuaValue val, CommandSourceStack src, LuaScript script) {
+            return obj.toThing(val.checktable(), src, script);
+        }
+
+        public <T> ArrayList<T> getArray(LuaValue val, Function<LuaValue, T> getter) {
+            LuaTable table = getTable(val);
             ArrayList<T> ts = new ArrayList<>();
 
             for (LuaValue key : table.keys()) {
                 var luaValue = table.get(key);
+                ts.add(getter.apply(luaValue));
             }
 
+            return ts;
         }
 
+        // nexts, no def
 
         public LuaTable nextTable() {
             return getTable(next());
@@ -117,38 +119,46 @@ public interface ScriptFunction extends Function<Varargs, LuaValue> {
             return getScriptObject(obj, next(), src, script);
         }
 
-        // defaults
+        public <T> ArrayList<T> nextArray(Function<LuaValue, T> getter) {
+            return getArray(next(), getter);
+        }
+
+        // nexts with defs
 
         public LuaTable nextTable(LuaTable def) {
-            return getTable(next(), def);
+            return optionalVal(next(), def, this::getTable);
         }
 
         public int nextInt(int def) {
-            return getInt(next(), def);
+            return optionalVal(next(), def, this::getInt);
         }
 
         public float nextFloat(float def) {
-            return getFloat(next(), def);
+            return optionalVal(next(), def, this::getFloat);
         }
 
         public boolean nextBoolean(boolean def) {
-            return getBoolean(next(), def);
+            return optionalVal(next(), def, this::getBoolean);
         }
 
         public String nextString(String def) {
-            return getString(next(), def);
+            return optionalVal(next(), def, this::getString);
         }
 
         public LuaValue nextLuaValue(LuaValue def) {
-            return getLuaValue(next(), def);
+            return optionalVal(next(), def, this::getLuaValue);
         }
 
         public LuaFunction nextFunction(LuaFunction def) {
-            return getFunction(next(), def);
+            return optionalVal(next(), def, this::getFunction);
         }
 
         public <T> T nextScriptObject(AbstractScriptObject<T> obj, CommandSourceStack src, LuaScript script, T def) {
-            return getScriptObject(obj, next(), src, script, def);
+            return optionalVal(next(), def, val -> getScriptObject(obj, val, src, script));
+        }
+
+        public <T> ArrayList<T> nextArray(Function<LuaValue, T> getter, ArrayList<T> def) {
+            return optionalVal(next(), def, val -> getArray(val, getter));
         }
 
     }
