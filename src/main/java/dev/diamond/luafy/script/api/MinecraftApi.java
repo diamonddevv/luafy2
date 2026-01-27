@@ -12,6 +12,7 @@ import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.lua.MetamethodImpl;
 import dev.diamond.luafy.script.enumeration.Instrument;
 import dev.diamond.luafy.script.enumeration.Note;
+import dev.diamond.luafy.script.object.game.TextComponentScriptObject;
 import net.minecraft.SharedConstants;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -205,6 +206,7 @@ public class MinecraftApi extends AbstractScriptApi {
                 args.add("count", Argtypes.INTEGER, "Count.");
             }, ScriptObjects.ITEM_STACK);
 
+            TextComponentScriptObject.addStaticTextComponentBuilderMethods(builder, script);
         });
     }
 

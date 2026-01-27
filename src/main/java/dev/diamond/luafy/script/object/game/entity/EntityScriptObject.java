@@ -1,9 +1,11 @@
 package dev.diamond.luafy.script.object.game.entity;
 
+import com.mojang.brigadier.Command;
 import dev.diamond.luafy.autodoc.Argtypes;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.script.LuaScript;
+import dev.diamond.luafy.script.api.MinecraftApi;
 import dev.diamond.luafy.script.object.AbstractScriptObject;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.world.entity.Entity;
@@ -20,6 +22,7 @@ public class EntityScriptObject extends AbstractScriptObject<Entity> {
     public static final String FUNC_GET_NAME = "get_name";
     public static final String FUNC_IS_LIVING = "is_living";
     public static final String FUNC_AS_LIVING = "as_living";
+    public static final String FUNC_EXECUTE_AS = "execute_as";
 
     public EntityScriptObject() {
         super("An entity.", doc -> {
@@ -28,6 +31,9 @@ public class EntityScriptObject extends AbstractScriptObject<Entity> {
             doc.addFunction(FUNC_GET_NAME, "Gets the entity's name.", args -> {}, Argtypes.STRING);
             doc.addFunction(FUNC_IS_LIVING, "Returns true if this entity is a LivingEntity.", args -> {}, Argtypes.BOOLEAN);
             doc.addFunction(FUNC_AS_LIVING, "Return this entity as a LivingEntity.", args -> {}, ScriptObjects.LIVING_ENTITY);
+            doc.addFunction(FUNC_EXECUTE_AS, "Execute a commmand as this entity.", args -> {
+                args.add("command", Argtypes.STRING, "The command to execute.");
+            }, Argtypes.INTEGER);
         });
     }
 
@@ -41,6 +47,14 @@ public class EntityScriptObject extends AbstractScriptObject<Entity> {
         builder.add(FUNC_GET_NAME, args -> LuaValue.valueOf(obj.getPlainTextName()));
         builder.add(FUNC_IS_LIVING, args -> LuaValue.valueOf(obj instanceof LivingEntity));
         builder.add(FUNC_AS_LIVING, args -> LuaTableBuilder.provide(b -> ScriptObjects.LIVING_ENTITY.toTable((LivingEntity) obj, b, script)));
+        builder.add(FUNC_EXECUTE_AS, args -> {
+            String s = args.nextString();
+            var source = script.getSource().withEntity(obj);
+
+            var cmd = MinecraftApi.parseCommand(s, source);
+            int result = MinecraftApi.executeCommand(cmd, source);
+            return LuaValue.valueOf(result);
+        });
     }
 
     @Override

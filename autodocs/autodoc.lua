@@ -2,7 +2,7 @@
 
 --#region Information
 -- GENERATED AUTODOC
--- Generated: 2026-01-24T19:31:15.033038100
+-- Generated: 2026-01-26T12:06:42.067590900
 -- Luafy Version: 2.0.0
 -- Format: Lua LS library file
 --#endregion
@@ -336,6 +336,10 @@ local object = {}
 ---@param count integer Count.
 ---@return ItemStack
 function object.itemstack(item, count) end
+
+--- Creates an empty text component.
+---@return TextComponent
+function object.empty_text() end
 
 minecraft.object = object
 
