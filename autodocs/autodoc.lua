@@ -2,7 +2,7 @@
 
 --#region Information
 -- GENERATED AUTODOC
--- Generated: 2026-01-26T12:06:42.067590900
+-- Generated: 2026-01-28T10:54:53.955274400
 -- Luafy Version: 2.0.0
 -- Format: Lua LS library file
 --#endregion
@@ -60,6 +60,26 @@ Instrument = {
 	HARP = "HARP",
 	COWBELL = "COWBELL",
 	FLUTE = "FLUTE",
+}
+
+---@enum (key) TextComponentColor
+TextComponentColor = {
+	GOLD = "GOLD",
+	GRAY = "GRAY",
+	AQUA = "AQUA",
+	WHITE = "WHITE",
+	BLUE = "BLUE",
+	DARK_AQUA = "DARK_AQUA",
+	DARK_BLUE = "DARK_BLUE",
+	GREEN = "GREEN",
+	RED = "RED",
+	DARK_PURPLE = "DARK_PURPLE",
+	DARK_RED = "DARK_RED",
+	LIGHT_PURPLE = "LIGHT_PURPLE",
+	BLACK = "BLACK",
+	DARK_GREEN = "DARK_GREEN",
+	YELLOW = "YELLOW",
+	DARK_GRAY = "DARK_GRAY",
 }
 
 --#endregion
@@ -131,6 +151,11 @@ function Entity.is_living() end
 --- Return this entity as a LivingEntity.
 ---@return LivingEntity
 function Entity.as_living() end
+
+--- Execute a commmand as this entity.
+---@param command string The command to execute.
+---@return integer
+function Entity.execute_as(command) end
 
 
 --- A living entity.
@@ -240,27 +265,45 @@ local TextComponent = {}
 ---@return string
 function TextComponent.serialise() end
 
---- Appends as literal text.
----@param string string Literal text.
----@return nil
-function TextComponent.append_literal(string) end
+--- Sets the text's color.
+---@param color integer Color as an integer.
+---@return TextComponent
+function TextComponent.color(color) end
 
---- Appends as translatable text.
----@param string string Translatable text.
----@param args TextComponent[] | nil Components to pass as objects.
----@return nil
-function TextComponent.append_translatable(string, args) end
+--- Sets the text's color.
+---@param color TextComponentColor Predefined color.
+---@return TextComponent
+function TextComponent.color_predefined(color) end
 
---- Appends a sprite.
----@param atlas string Sprite atlas.
----@param id string Sprite identifer.
----@return nil
-function TextComponent.append_sprite(atlas, id) end
+--- Sets the text's font.
+---@param font string Identifier of a Font to use.
+---@return TextComponent
+function TextComponent.font(font) end
 
---- Appends as a playerhead sprite.
----@param username string Player username.
----@return nil
-function TextComponent.append_sprite_player(username) end
+--- Emboldens the text.
+---@param flag boolean If true, emboldens the text.
+---@return TextComponent
+function TextComponent.bold(flag) end
+
+--- Italicises the text.
+---@param flag boolean If true, italicises the text.
+---@return TextComponent
+function TextComponent.italic(flag) end
+
+--- Underlines the text.
+---@param flag boolean If true, underlines the text.
+---@return TextComponent
+function TextComponent.underline(flag) end
+
+--- Strikes through the text.
+---@param flag boolean If true, strikes through the text.
+---@return TextComponent
+function TextComponent.strikethrough(flag) end
+
+--- Obfuscates the text.
+---@param flag boolean If true, obfuscates the text.
+---@return TextComponent
+function TextComponent.obfuscated(flag) end
 
 
 --#endregion
@@ -337,10 +380,6 @@ local object = {}
 ---@return ItemStack
 function object.itemstack(item, count) end
 
---- Creates an empty text component.
----@return TextComponent
-function object.empty_text() end
-
 minecraft.object = object
 
 luafy = {}
@@ -396,6 +435,35 @@ function fabric.get_mod(modid) end
 --- Returns a list of all the mods that are installed.
 ---@return string[]
 function fabric.get_mods() end
+
+text = {}
+
+--- Creates a literal text component.
+---@param literal string Literal text.
+---@return TextComponent
+function text.literal(literal) end
+
+--- Creates a translatable text component.
+---@param translatable string Translation key
+---@param components TextComponent[] | nil Optional list of components to use as placeholders.
+---@return TextComponent
+function text.translatable(translatable, components) end
+
+--- Creates a player sprite text component.
+---@param player Player Player to use.
+---@return TextComponent
+function text.player_sprite(player) end
+
+--- Creates a atlas-source sprite text component.
+---@param atlas string Atlas to use.
+---@param sprite string Sprite to use.
+---@return TextComponent
+function text.atlas_sprite(atlas, sprite) end
+
+--- Creates a text component by concatenating several elements together.
+---@param elements TextComponent[] Elements to concatenate together.
+---@return TextComponent
+function text.compound(elements) end
 
 --#endregion
 

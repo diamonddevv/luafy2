@@ -1,12 +1,13 @@
 package dev.diamond.luafy.lua;
 
+import com.mojang.datafixers.util.Either;
 import dev.diamond.luafy.script.LuaScript;
+import dev.diamond.luafy.script.enumeration.ScriptEnum;
 import dev.diamond.luafy.script.object.AbstractScriptObject;
 import net.minecraft.commands.CommandSourceStack;
 import org.luaj.vm2.*;
 
 import java.util.ArrayList;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 @FunctionalInterface
@@ -69,6 +70,10 @@ public interface ScriptFunction extends Function<Varargs, LuaValue> {
             return val.checkfunction();
         }
 
+        public <T extends Enum<T>> T getEnumKey(ScriptEnum<T> scriptEnum, LuaValue val) {
+            return scriptEnum.fromKey(getString(val));
+        }
+
         public <T> T getScriptObject(AbstractScriptObject<T> obj, LuaValue val, CommandSourceStack src, LuaScript script) {
             return obj.toThing(val.checktable(), src, script);
         }
@@ -115,6 +120,10 @@ public interface ScriptFunction extends Function<Varargs, LuaValue> {
             return getFunction(next());
         }
 
+        public <T extends Enum<T>> T nextEnumKey(ScriptEnum<T> scriptEnum) {
+            return getEnumKey(scriptEnum, next());
+        }
+
         public <T> T nextScriptObject(AbstractScriptObject<T> obj, CommandSourceStack src, LuaScript script) {
             return getScriptObject(obj, next(), src, script);
         }
@@ -151,6 +160,10 @@ public interface ScriptFunction extends Function<Varargs, LuaValue> {
 
         public LuaFunction nextFunction(LuaFunction def) {
             return optionalVal(next(), def, this::getFunction);
+        }
+
+        public <T extends Enum<T>> T nextEnumKey(ScriptEnum<T> scriptEnum, T def) {
+            return optionalVal(next(), def, v -> getEnumKey(scriptEnum, v));
         }
 
         public <T> T nextScriptObject(AbstractScriptObject<T> obj, CommandSourceStack src, LuaScript script, T def) {

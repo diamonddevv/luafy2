@@ -205,8 +205,6 @@ public class MinecraftApi extends AbstractScriptApi {
                 args.add("item", ScriptObjects.ITEM, "Item type.");
                 args.add("count", Argtypes.INTEGER, "Count.");
             }, ScriptObjects.ITEM_STACK);
-
-            TextComponentScriptObject.addStaticTextComponentBuilderMethods(builder, script);
         });
     }
 

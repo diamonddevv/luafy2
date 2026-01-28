@@ -23,6 +23,7 @@ public class EntityScriptObject extends AbstractScriptObject<Entity> {
     public static final String FUNC_IS_LIVING = "is_living";
     public static final String FUNC_AS_LIVING = "as_living";
     public static final String FUNC_EXECUTE_AS = "execute_as";
+    public static final String FUNC_GET_NBT = "get_nbt";
 
     public EntityScriptObject() {
         super("An entity.", doc -> {
@@ -34,6 +35,7 @@ public class EntityScriptObject extends AbstractScriptObject<Entity> {
             doc.addFunction(FUNC_EXECUTE_AS, "Execute a commmand as this entity.", args -> {
                 args.add("command", Argtypes.STRING, "The command to execute.");
             }, Argtypes.INTEGER);
+            //doc.addFunction(FUNC_GET_NBT, "Get this entity's NBT data.", args -> {}, Argtypes.TABLE);
         });
     }
 

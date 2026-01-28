@@ -61,6 +61,13 @@ public class LuaTableBuilder {
         return this.table;
     }
 
+    public LuaTable futureSelf() {
+        if (this.table.isnil()) {
+            throw new RuntimeException("Tried to return self before it exists!");
+        }
+        return this.table;
+    }
+
     private static <T extends LuaValue> LuaTable ofArray(List<T> values) {
         LuaValue[] arr = new LuaValue[values.size()];
         for (int i = 0; i < values.size(); i++) {

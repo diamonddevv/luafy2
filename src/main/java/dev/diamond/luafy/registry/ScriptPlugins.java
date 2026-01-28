@@ -3,10 +3,7 @@ package dev.diamond.luafy.registry;
 import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.script.ApiScriptPlugin;
 import dev.diamond.luafy.script.ScriptPlugin;
-import dev.diamond.luafy.script.api.FabricApi;
-import dev.diamond.luafy.script.api.LuafyApi;
-import dev.diamond.luafy.script.api.MathApi;
-import dev.diamond.luafy.script.api.MinecraftApi;
+import dev.diamond.luafy.script.api.*;
 import net.minecraft.core.Registry;
 import org.luaj.vm2.LoadState;
 import org.luaj.vm2.compiler.LuaC;
@@ -35,6 +32,7 @@ public class ScriptPlugins {
     public static ApiScriptPlugin<LuafyApi> LUAFY = new ApiScriptPlugin<>(LuafyApi::new);
     public static ApiScriptPlugin<MathApi> MATH = new ApiScriptPlugin<>(MathApi::new);
     public static ApiScriptPlugin<FabricApi> FABRIC = new ApiScriptPlugin<>(FabricApi::new);
+    public static ApiScriptPlugin<TextApi> TEXT = new ApiScriptPlugin<>(TextApi::new);
 
     public static void registerAll() {
         Registry.register(LuafyRegistries.SCRIPT_PLUGINS, Luafy.id_luaj("jse_base"), LUAJ_JSE_BASE);
@@ -54,5 +52,6 @@ public class ScriptPlugins {
         Registry.register(LuafyRegistries.SCRIPT_PLUGINS, Luafy.id("luafy"), LUAFY);
         Registry.register(LuafyRegistries.SCRIPT_PLUGINS, Luafy.id("math"), MATH);
         Registry.register(LuafyRegistries.SCRIPT_PLUGINS, Luafy.id("fabric"), FABRIC);
+        Registry.register(LuafyRegistries.SCRIPT_PLUGINS, Luafy.id("text"), TEXT);
     }
 }
