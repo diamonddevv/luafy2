@@ -128,7 +128,11 @@ public class LuaLanguageServerAutodocGenerator extends AbstractAutodocGenerator 
 
     @Override
     public void addScriptEvent(StringBuilder doc, ScriptEvent<?> event) {
-        addComment(doc, LuafyRegistries.SCRIPT_EVENTS.getKey(event) + ": " + event.getDesc() + " ; this generator does not currently provide additional information.");
+        addComment(doc, LuafyRegistries.SCRIPT_EVENTS.getKey(event) + " | " + event.getDesc() + ";");
+        for (var arg : event.getArgList()) {
+            addComment(doc, "\t" + arg.argName() + ": " + arg.argType().getArgtypeString() + " -> " + arg.argDesc());
+        }
+        addComment(doc, "");
     }
 
     @Override

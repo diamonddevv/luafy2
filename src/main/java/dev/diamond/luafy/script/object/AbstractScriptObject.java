@@ -41,6 +41,10 @@ public abstract class AbstractScriptObject<T> implements SimpleAutodocumentable,
         parent.ifPresent(abstractScriptObject -> abstractScriptObject.toTable(obj, builder, script));
     }
 
+    public LuaTable provideTable(T obj, LuaScript script) {
+        return LuaTableBuilder.provide(this, obj, script);
+    }
+
     public static void makeReadonly(LuaTableBuilder builder) {
         builder.addMetamethod(MetamethodNames.NEW_INDEX, args -> {
             Luafy.LOGGER.error("Tried to write to a readonly object!");

@@ -2,7 +2,7 @@
 
 --#region Information
 -- GENERATED AUTODOC
--- Generated: 2026-01-28T10:54:53.955274400
+-- Generated: 2026-01-28T14:45:03.339480400
 -- Luafy Version: 2.0.0
 -- Format: Lua LS library file
 --#endregion
@@ -469,7 +469,21 @@ function text.compound(elements) end
 
 --#region Script Event
 
--- luafy:load: Executes after a reload. ; this generator does not currently provide additional information.
--- luafy:tick: Executes every server tick. ; this generator does not currently provide additional information.
+-- luafy:load | Executes after a reload.;
+-- 
+-- luafy:tick | Executes every server tick.;
+-- 
+-- luafy:entity_takes_damage | Executes after an entity takes damage.;
+-- 	entity: LivingEntity | Living Entity that took damage.
+-- 	attacker: Entity | Entity that dealt damage.
+-- 	damage_taken: number | Damage taken.
+-- 	source: string | Identifier of Damage Source.
+-- 	was_blocked: boolean | If true, the damage was blocked.
+-- 
+-- luafy:entity_dies | Executes after an entity dies.;
+-- 	entity: LivingEntity | Living Entity that died.
+-- 	attacker: Entity | Entity that killed this one.
+-- 	source: string | Identifier of Damage Source.
+-- 
 --#endregion
 

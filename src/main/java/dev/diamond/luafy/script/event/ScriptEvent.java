@@ -6,6 +6,7 @@ import dev.diamond.luafy.autodoc.SimpleAutodocumentable;
 import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.registry.LuafyRegistries;
 import dev.diamond.luafy.lua.LuaTableBuilder;
+import dev.diamond.luafy.script.LuaScript;
 import org.jetbrains.annotations.NotNull;
 import org.luaj.vm2.LuaTable;
 
@@ -18,11 +19,11 @@ import net.minecraft.resources.Identifier;
 
 public class ScriptEvent<T> implements SimpleAutodocumentable {
     private final ArrayList<ScriptEntry> entries;
-    private final BiConsumer<T, LuaTableBuilder> ctxBuilder;
+    private final ContextBuilder<T> ctxBuilder;
     private final String desc;
     private final ArrayList<ArgDocInfo> argList;
 
-    public ScriptEvent(String desc, Consumer<ArglistBuilder> arglistBuilder, BiConsumer<T, LuaTableBuilder> ctxBuilder) {
+    public ScriptEvent(String desc, Consumer<ArglistBuilder> arglistBuilder, ContextBuilder<T> ctxBuilder) {
         this.entries = new ArrayList<>();
         this.ctxBuilder = ctxBuilder;
 
@@ -35,13 +36,15 @@ public class ScriptEvent<T> implements SimpleAutodocumentable {
     }
 
     public void trigger(@NotNull CommandSourceStack src, T context) {
-        LuaTableBuilder builder = new LuaTableBuilder();
-        ctxBuilder.accept(context, builder);
-        LuaTable ctx = builder.build();
 
         for (ScriptEntry entry : entries) {
             if (entry.canExecute()) {
-                entry.setLastResult(Luafy.SCRIPT_MANAGER.get(entry.id).execute(src, ctx));
+                LuaScript script = Luafy.SCRIPT_MANAGER.get(entry.id);
+                LuaTableBuilder builder = new LuaTableBuilder();
+                ctxBuilder.build(builder, context, script);
+                LuaTable ctx = builder.build();
+
+                entry.setLastResult(script.execute(src, ctx));
             }
         }
     }
@@ -56,6 +59,10 @@ public class ScriptEvent<T> implements SimpleAutodocumentable {
 
     public String getDesc() {
         return this.desc;
+    }
+
+    public ArrayList<ArgDocInfo> getArgList() {
+        return this.argList;
     }
 
     @Override
