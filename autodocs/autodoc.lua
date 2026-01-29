@@ -2,7 +2,7 @@
 
 --#region Information
 -- GENERATED AUTODOC
--- Generated: 2026-01-29T12:14:59.199722800
+-- Generated: 2026-01-29T15:36:57.191277400
 -- Luafy Version: 2.0.0
 -- Format: Lua LS library file
 --#endregion
@@ -241,6 +241,25 @@ local Item = {}
 function Item.create_stack(count) end
 
 
+--- An entity type.
+---@class EntityType
+local EntityType = {}
+
+--- Returns true if this entity can exist in peaceful difficulty.
+---@return boolean
+function EntityType.can_exist_in_peaceful() end
+
+--- Returns true if this entity is immune to fire.
+---@return boolean
+function EntityType.is_fire_immune() end
+
+--- Spawns a new instance of this entity.
+---@param pos Vec3d Position to spawn at.
+---@param dimension string Id of dimension to spawn in.
+---@return Entity
+function EntityType.spawn(pos, dimension) end
+
+
 --- An item stack.
 ---@class ItemStack
 local ItemStack = {}
@@ -372,6 +391,11 @@ function registry.item(id) end
 ---@param id string Identifier of the block type.
 ---@return Block
 function registry.block(id) end
+
+--- Fetches an entity type from the registry.
+---@param id string Identifier of the entity type.
+---@return EntityType
+function registry.entity_type(id) end
 
 minecraft.registry = registry
 

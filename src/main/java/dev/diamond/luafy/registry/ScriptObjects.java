@@ -2,8 +2,9 @@ package dev.diamond.luafy.registry;
 
 import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.script.object.*;
-import dev.diamond.luafy.script.object.game.RegistryBlockScriptObject;
-import dev.diamond.luafy.script.object.game.RegistryItemScriptObject;
+import dev.diamond.luafy.script.object.game.registry.RegistryBlockScriptObject;
+import dev.diamond.luafy.script.object.game.registry.RegistryEntityTypeScriptObject;
+import dev.diamond.luafy.script.object.game.registry.RegistryItemScriptObject;
 import dev.diamond.luafy.script.object.game.ItemStackScriptObject;
 import dev.diamond.luafy.script.object.game.TextComponentScriptObject;
 import dev.diamond.luafy.script.object.game.entity.EntityScriptObject;
@@ -23,9 +24,12 @@ public class ScriptObjects {
     public static LivingEntityScriptObject LIVING_ENTITY = new LivingEntityScriptObject();
     public static PlayerScriptObject PLAYER = new PlayerScriptObject();
 
+    // registry objects
+    public static RegistryBlockScriptObject REGISTRY_BLOCK = new RegistryBlockScriptObject();
+    public static RegistryItemScriptObject REGISTRY_ITEM = new RegistryItemScriptObject();
+    public static RegistryEntityTypeScriptObject REGISTRY_ENTITY_TYPE = new RegistryEntityTypeScriptObject();
+
     // game objects
-    public static RegistryBlockScriptObject BLOCK = new RegistryBlockScriptObject();
-    public static RegistryItemScriptObject ITEM = new RegistryItemScriptObject();
     public static ItemStackScriptObject ITEM_STACK = new ItemStackScriptObject();
     public static TextComponentScriptObject TEXT_COMPONENT = new TextComponentScriptObject();
 
@@ -38,8 +42,10 @@ public class ScriptObjects {
         Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("living_entity"), LIVING_ENTITY);
         Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("player"), PLAYER);
 
-        Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("block"), BLOCK);
-        Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("item"), ITEM);
+        Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("registry_block"), REGISTRY_BLOCK);
+        Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("registry_item"), REGISTRY_ITEM);
+        Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("registry_entity_type"), REGISTRY_ENTITY_TYPE);
+
         Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("item_stack"), ITEM_STACK);
         Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("text_component"), TEXT_COMPONENT);
 

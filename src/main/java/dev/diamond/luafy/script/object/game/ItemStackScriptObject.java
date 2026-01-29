@@ -33,7 +33,7 @@ public class ItemStackScriptObject extends AbstractScriptObject<ItemStack> {
     public ItemStackScriptObject() {
         super("An item stack.", doc -> {
 
-            doc.addFunction(FUNC_ITEM_TYPE, "Gets the item type of this stack.", args -> {}, ScriptObjects.ITEM);
+            doc.addFunction(FUNC_ITEM_TYPE, "Gets the item type of this stack.", args -> {}, ScriptObjects.REGISTRY_ITEM);
             doc.addFunction(FUNC_ITEM_ID, "Gets the item id of this stack.", args -> {}, Argtypes.STRING);
 
             doc.addFunction(FUNC_COUNT, "Gets the number of items in this stack.", args -> {}, Argtypes.INTEGER);
@@ -62,7 +62,7 @@ public class ItemStackScriptObject extends AbstractScriptObject<ItemStack> {
             obj.setCount(args.nextInt());
             return LuaValue.NIL;
         });
-        builder.add(FUNC_ITEM_TYPE, args -> LuaTableBuilder.provide(ScriptObjects.ITEM, obj.getItem(), script));
+        builder.add(FUNC_ITEM_TYPE, args -> LuaTableBuilder.provide(ScriptObjects.REGISTRY_ITEM, obj.getItem(), script));
         builder.add(FUNC_ITEM_ID, args -> LuaValue.valueOf(BuiltInRegistries.ITEM.getId(obj.getItem())));
 
         builder.add(FUNC_COMPONENT, args -> {

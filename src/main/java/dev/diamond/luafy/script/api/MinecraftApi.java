@@ -9,10 +9,8 @@ import dev.diamond.luafy.registry.ScriptEnums;
 import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.lua.LuaTableBuilder;
-import dev.diamond.luafy.lua.MetamethodImpl;
 import dev.diamond.luafy.script.enumeration.Instrument;
 import dev.diamond.luafy.script.enumeration.Note;
-import dev.diamond.luafy.script.object.game.TextComponentScriptObject;
 import net.minecraft.SharedConstants;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -26,13 +24,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.Vec3;
-import org.luaj.vm2.LuaBoolean;
 import org.luaj.vm2.LuaString;
-import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
 import java.util.List;
@@ -194,30 +191,38 @@ public class MinecraftApi extends AbstractScriptApi {
             builder.add("item", args -> {
                 Identifier id = Identifier.parse(args.nextString());
                 Item item = BuiltInRegistries.ITEM.getValue(id);
-                return LuaTableBuilder.provide(ScriptObjects.ITEM, item, script);
+                return LuaTableBuilder.provide(ScriptObjects.REGISTRY_ITEM, item, script);
             }, "Fetches an item type from the registry.", args -> {
                 args.add("id", Argtypes.STRING, "Identifier of the item type.");
-            }, ScriptObjects.ITEM);
+            }, ScriptObjects.REGISTRY_ITEM);
 
             builder.add("block", args -> {
                 Identifier id = Identifier.parse(args.nextString());
                 Block block = BuiltInRegistries.BLOCK.getValue(id);
-                return LuaTableBuilder.provide(ScriptObjects.BLOCK, block, script);
+                return LuaTableBuilder.provide(ScriptObjects.REGISTRY_BLOCK, block, script);
             }, "Fetches an block type from the registry.", args -> {
                 args.add("id", Argtypes.STRING, "Identifier of the block type.");
-            }, ScriptObjects.BLOCK);
+            }, ScriptObjects.REGISTRY_BLOCK);
+
+            builder.add("entity_type", args -> {
+                Identifier id = Identifier.parse(args.nextString());
+                EntityType<?> e = BuiltInRegistries.ENTITY_TYPE.getValue(id);
+                return LuaTableBuilder.provide(ScriptObjects.REGISTRY_ENTITY_TYPE, e, script);
+            }, "Fetches an entity type from the registry.", args -> {
+                args.add("id", Argtypes.STRING, "Identifier of the entity type.");
+            }, ScriptObjects.REGISTRY_ENTITY_TYPE);
 
         });
 
         apiBuilder.addGroup("object", builder -> {
 
             builder.add("itemstack", args -> {
-                Item item = args.nextScriptObject(ScriptObjects.ITEM, script.getSource(), script);
+                Item item = args.nextScriptObject(ScriptObjects.REGISTRY_ITEM, script.getSource(), script);
                 int count = args.nextInt();
                 ItemStack stack = new ItemStack(item, count);
                 return LuaTableBuilder.provide(ScriptObjects.ITEM_STACK, stack, script);
             }, "Creates an ItemStack from an item and count.", args -> {
-                args.add("item", ScriptObjects.ITEM, "Item type.");
+                args.add("item", ScriptObjects.REGISTRY_ITEM, "Item type.");
                 args.add("count", Argtypes.INTEGER, "Count.");
             }, ScriptObjects.ITEM_STACK);
         });

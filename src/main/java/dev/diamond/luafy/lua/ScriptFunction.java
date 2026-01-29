@@ -174,5 +174,21 @@ public interface ScriptFunction extends Function<Varargs, LuaValue> {
             return optionalVal(next(), def, val -> getArray(val, getter));
         }
 
+
+
+        // other stuff
+
+        public <T, X> T map(LuaValue value, T def, Function<LuaValue, X> getter, Function<X, T> convert) {
+            if (value.isnil()) {
+                return def;
+            } else {
+                return convert.apply(getter.apply(value));
+            }
+        }
+
+        public <T, X> T nextMap(T def, Function<LuaValue, X> getter, Function<X, T> convert) {
+            return map(next(), def, getter, convert);
+        }
+
     }
 }

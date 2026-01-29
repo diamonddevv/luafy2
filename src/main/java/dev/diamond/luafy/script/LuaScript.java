@@ -4,6 +4,9 @@ import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.registry.LuafyRegistries;
 import dev.diamond.luafy.script.enumeration.ScriptEnum;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.luaj.vm2.Globals;
@@ -65,6 +68,14 @@ public class LuaScript {
 
     public CommandSourceStack getSource() {
         return src;
+    }
+
+    public <T> Registry<T> getRegistry(ResourceKey<Registry<T>> key) {
+        return src.registryAccess().lookupOrThrow(key);
+    }
+
+    public <T> T lookupRegistry(ResourceKey<Registry<T>> key, Identifier id) {
+        return src.registryAccess().lookupOrThrow(key).getValue(id);
     }
 
     public Globals getGlobals() {

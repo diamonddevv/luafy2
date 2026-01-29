@@ -1,4 +1,4 @@
-package dev.diamond.luafy.script.object.game;
+package dev.diamond.luafy.script.object.game.registry;
 
 import dev.diamond.luafy.autodoc.Argtypes;
 import dev.diamond.luafy.lua.LuaTableBuilder;
