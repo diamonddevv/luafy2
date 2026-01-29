@@ -12,6 +12,7 @@ import net.fabricmc.fabric.impl.resource.loader.ResourceManagerHelperImpl;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.PackType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

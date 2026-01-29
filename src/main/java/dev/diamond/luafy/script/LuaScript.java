@@ -71,6 +71,9 @@ public class LuaScript {
         return globals;
     }
 
+    public void setSource(@NotNull CommandSourceStack src) {
+        this.src = src.withSuppressedOutput();
+    }
 
     private void injectSources() {
         for (ScriptPlugin plugin : LuafyRegistries.SCRIPT_PLUGINS) {
@@ -89,7 +92,7 @@ public class LuaScript {
             return new ScriptExecutionResult(LuaValue.NIL, compilationError);
         }
         try {
-            this.src = src.withSuppressedOutput();
+            this.setSource(src);
             if (ctx == null) {
                 ctx = LuaTable.tableOf();
             }

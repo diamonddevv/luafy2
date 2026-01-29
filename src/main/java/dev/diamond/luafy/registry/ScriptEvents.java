@@ -6,11 +6,13 @@ import dev.diamond.luafy.script.event.ScriptEvent;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
+import org.luaj.vm2.LuaTable;
+import org.luaj.vm2.LuaValue;
+
 
 public class ScriptEvents {
 
@@ -26,46 +28,30 @@ public class ScriptEvents {
 
     public static ScriptEvent<EntityTakesDamage> ENTITY_TAKES_DAMAGE = new ScriptEvent<>("Executes after an entity takes damage.", b -> {
         b.add("entity", ScriptObjects.LIVING_ENTITY, "Living Entity that took damage.");
-        b.add("attacker", ScriptObjects.ENTITY, "Entity that dealt damage.");
+        b.add("attacker", Argtypes.maybe(ScriptObjects.ENTITY), "Entity that dealt damage.");
         b.add("damage_taken", Argtypes.NUMBER, "Damage taken.");
-        b.add("source", Argtypes.STRING, "Identifier of Damage Source.");
         b.add("was_blocked", Argtypes.BOOLEAN, "If true, the damage was blocked.");
     }, (b, ctx, script) -> {
         b.add("entity", ScriptObjects.LIVING_ENTITY.provideTable(ctx.e, script));
-        b.add("attacker", ScriptObjects.ENTITY.provideTable(ctx.src.getDirectEntity(), script));
+        b.add("attacker", ctx.src.getEntity() == null ?
+                LuaValue.NIL :
+                ScriptObjects.ENTITY.provideTable(ctx.src.getEntity(), script)
+        );
         b.add("damage_taken", ctx.damageTaken);
 
-        var v = script
-                .getSource()
-                .getServer()
-                .registryAccess()
-                .get(Registries.DAMAGE_TYPE)
-                .orElseThrow()
-                .value()
-                .getKey(ctx.src.type());
-
-        b.add("source", v.toString());
         b.add("was_blocked", ctx.damageTaken);
     });
 
     public static ScriptEvent<EntityDies> ENTITY_DIES = new ScriptEvent<>("Executes after an entity dies.", b -> {
         b.add("entity", ScriptObjects.LIVING_ENTITY, "Living Entity that died.");
-        b.add("attacker", ScriptObjects.ENTITY, "Entity that killed this one.");
-        b.add("source", Argtypes.STRING, "Identifier of Damage Source.");
+        b.add("attacker", Argtypes.maybe(ScriptObjects.ENTITY), "Entity that killed this one.");
     }, (b, ctx, script) -> {
         b.add("entity", ScriptObjects.LIVING_ENTITY.provideTable(ctx.e, script));
-        b.add("attacker", ScriptObjects.ENTITY.provideTable(ctx.src.getDirectEntity(), script));
+        b.add("attacker", ctx.src.getEntity() == null ?
+                LuaValue.NIL :
+                ScriptObjects.ENTITY.provideTable(ctx.src.getEntity(), script)
+        );
 
-        var v = script
-                .getSource()
-                .getServer()
-                .registryAccess()
-                .get(Registries.DAMAGE_TYPE)
-                .orElseThrow()
-                .value()
-                .getKey(ctx.src.type());
-
-        b.add("source", v.toString());
     });
 
 
@@ -95,22 +81,15 @@ public class ScriptEvents {
 
         // damage
         ServerLivingEntityEvents.AFTER_DAMAGE.register((e, src, baseDmgTaken, dmgTaken, isBlocked) -> {
-            ENTITY_TAKES_DAMAGE.trigger(getCommandSourceStack(e), new ScriptEvents.EntityTakesDamage(e, src, dmgTaken, isBlocked));
+            ENTITY_TAKES_DAMAGE.trigger(e.level().getServer().createCommandSourceStack(), new ScriptEvents.EntityTakesDamage(e, src, dmgTaken, isBlocked));
         });
 
         ServerLivingEntityEvents.AFTER_DEATH.register((e, src) -> {
-            ENTITY_DIES.trigger(getCommandSourceStack(e), new ScriptEvents.EntityDies(e, src));
+            ENTITY_DIES.trigger(e.level().getServer().createCommandSourceStack(), new ScriptEvents.EntityDies(e, src));
         });
 
 
 
-    }
-
-    public static CommandSourceStack getCommandSourceStack(LivingEntity le) {
-        if (le.level().getServer() == null) {
-            throw new RuntimeException("Tried to get the server of an entity that is not in the server (??)");
-        }
-        return le.level().getServer().createCommandSourceStack();
     }
 
     public record EntityTakesDamage(LivingEntity e, DamageSource src, float damageTaken, boolean blocked) {}

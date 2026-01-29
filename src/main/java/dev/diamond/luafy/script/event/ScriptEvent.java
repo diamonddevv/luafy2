@@ -22,9 +22,11 @@ public class ScriptEvent<T> implements SimpleAutodocumentable {
     private final ContextBuilder<T> ctxBuilder;
     private final String desc;
     private final ArrayList<ArgDocInfo> argList;
+    private boolean isEmpty;
 
     public ScriptEvent(String desc, Consumer<ArglistBuilder> arglistBuilder, ContextBuilder<T> ctxBuilder) {
         this.entries = new ArrayList<>();
+        this.isEmpty = true;
         this.ctxBuilder = ctxBuilder;
 
         this.desc = desc;
@@ -36,11 +38,13 @@ public class ScriptEvent<T> implements SimpleAutodocumentable {
     }
 
     public void trigger(@NotNull CommandSourceStack src, T context) {
+        if (isEmpty) return;
 
         for (ScriptEntry entry : entries) {
             if (entry.canExecute()) {
                 LuaScript script = Luafy.SCRIPT_MANAGER.get(entry.id);
                 LuaTableBuilder builder = new LuaTableBuilder();
+                script.setSource(src);
                 ctxBuilder.build(builder, context, script);
                 LuaTable ctx = builder.build();
 
@@ -50,11 +54,13 @@ public class ScriptEvent<T> implements SimpleAutodocumentable {
     }
 
     public void register(Collection<ScriptEntry> entries) {
+        this.isEmpty = false;
         this.entries.addAll(entries);
     }
 
     public void clear() {
-        entries.clear();
+        this.isEmpty = true;
+        this.entries.clear();
     }
 
     public String getDesc() {

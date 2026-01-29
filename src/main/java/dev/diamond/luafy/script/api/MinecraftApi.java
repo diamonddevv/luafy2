@@ -52,7 +52,7 @@ public class MinecraftApi extends AbstractScriptApi {
                 return LuaString.valueOf(SharedConstants.getCurrentVersion().name());
             }, "Returns the current Minecraft version string.", args -> {}, Argtypes.STRING);
 
-            builder.add("say", args -> {
+            builder.add("print", args -> {
                 String s = args.nextString();
 
                 for (ServerPlayer spe : script.getSource().getServer().getPlayerList().getPlayers()) {
@@ -64,6 +64,21 @@ public class MinecraftApi extends AbstractScriptApi {
 
                 return LuaValue.NIL;
             }, "Prints an unformatted line to the server chat, visible to all players. (similar to /tellraw). Also prints to the console.", args -> {
+                args.add("message", Argtypes.STRING, "Message to be printed.");
+            }, Argtypes.NIL);
+
+            builder.add("print_component", args -> {
+                Component c = args.nextScriptObject(ScriptObjects.TEXT_COMPONENT, script.getSource(), script);
+
+                for (ServerPlayer spe : script.getSource().getServer().getPlayerList().getPlayers()) {
+                    spe.sendSystemMessage(c, false);
+                }
+
+                script.getGlobals().STDOUT.print(c.getString());
+                script.getGlobals().STDOUT.print('\n');
+
+                return LuaValue.NIL;
+            }, "Prints a text component to the server chat, visible to all players. (similar to /tellraw). Also prints the raw string to the console.", args -> {
                 args.add("message", Argtypes.STRING, "Message to be printed.");
             }, Argtypes.NIL);
 

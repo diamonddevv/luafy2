@@ -17,6 +17,7 @@ import net.minecraft.server.level.ServerPlayer;
 public class PlayerScriptObject extends AbstractScriptObject<ServerPlayer> {
 
     public static final String FUNC_TELL = "tell";
+    public static final String FUNC_TELL_COMPONENT = "tell_component";
     public static final String FUNC_GIVE_STACK = "give_stack";
 
     public PlayerScriptObject() {
@@ -24,6 +25,9 @@ public class PlayerScriptObject extends AbstractScriptObject<ServerPlayer> {
 
             doc.addFunction(FUNC_TELL, "Prints a line to this player's chat.", args -> {
                 args.add("msg", Argtypes.STRING, "String to display.");
+            }, Argtypes.NIL);
+            doc.addFunction(FUNC_TELL, "Prints a text component to this player's chat.", args -> {
+                args.add("msg", ScriptObjects.TEXT_COMPONENT, "Component to display.");
             }, Argtypes.NIL);
             doc.addFunction(FUNC_GIVE_STACK, "Gives this player this stack.", args -> {
                 args.add("stack", ScriptObjects.ITEM_STACK, "Stack to give.");
@@ -38,6 +42,10 @@ public class PlayerScriptObject extends AbstractScriptObject<ServerPlayer> {
 
         builder.add(FUNC_TELL, args -> {
             obj.sendSystemMessage(Component.literal(args.nextString()), false);
+            return LuaValue.NIL;
+        });
+        builder.add(FUNC_TELL_COMPONENT, args -> {
+            obj.sendSystemMessage(args.nextScriptObject(ScriptObjects.TEXT_COMPONENT, script.getSource(), script), false);
             return LuaValue.NIL;
         });
         builder.add(FUNC_GIVE_STACK, args -> {

@@ -2,7 +2,7 @@
 
 --#region Information
 -- GENERATED AUTODOC
--- Generated: 2026-01-28T14:45:03.339480400
+-- Generated: 2026-01-29T12:14:59.199722800
 -- Luafy Version: 2.0.0
 -- Format: Lua LS library file
 --#endregion
@@ -144,6 +144,10 @@ function Entity.get_uuid() end
 ---@return string
 function Entity.get_name() end
 
+--- Gets the id of the entity type that this entity is.
+---@return string
+function Entity.get_type_id() end
+
 --- Returns true if this entity is a LivingEntity.
 ---@return boolean
 function Entity.is_living() end
@@ -151,6 +155,14 @@ function Entity.is_living() end
 --- Return this entity as a LivingEntity.
 ---@return LivingEntity
 function Entity.as_living() end
+
+--- Returns true if this entity is a PlayerEntity.
+---@return LivingEntity
+function Entity.is_player() end
+
+--- Return this entity as a PlayerEntity.
+---@return LivingEntity
+function Entity.as_player() end
 
 --- Execute a commmand as this entity.
 ---@param command string The command to execute.
@@ -200,6 +212,11 @@ local Player = {}
 
 --- Prints a line to this player's chat.
 ---@param msg string String to display.
+---@return nil
+function Player.tell(msg) end
+
+--- Prints a text component to this player's chat.
+---@param msg TextComponent Component to display.
 ---@return nil
 function Player.tell(msg) end
 
@@ -319,7 +336,12 @@ function minecraft.get_version() end
 --- Prints an unformatted line to the server chat, visible to all players. (similar to /tellraw). Also prints to the console.
 ---@param message string Message to be printed.
 ---@return nil
-function minecraft.say(message) end
+function minecraft.print(message) end
+
+--- Prints a text component to the server chat, visible to all players. (similar to /tellraw). Also prints the raw string to the console.
+---@param message string Message to be printed.
+---@return nil
+function minecraft.print_component(message) end
 
 --- Executes the given command from the server command source. Returns the result of the command.
 ---@param command string Command to be executed.
@@ -474,16 +496,14 @@ function text.compound(elements) end
 -- luafy:tick | Executes every server tick.;
 -- 
 -- luafy:entity_takes_damage | Executes after an entity takes damage.;
--- 	entity: LivingEntity | Living Entity that took damage.
--- 	attacker: Entity | Entity that dealt damage.
--- 	damage_taken: number | Damage taken.
--- 	source: string | Identifier of Damage Source.
--- 	was_blocked: boolean | If true, the damage was blocked.
+-- 	entity: LivingEntity -> Living Entity that took damage.
+-- 	attacker: Entity | nil -> Entity that dealt damage.
+-- 	damage_taken: number -> Damage taken.
+-- 	was_blocked: boolean -> If true, the damage was blocked.
 -- 
 -- luafy:entity_dies | Executes after an entity dies.;
--- 	entity: LivingEntity | Living Entity that died.
--- 	attacker: Entity | Entity that killed this one.
--- 	source: string | Identifier of Damage Source.
+-- 	entity: LivingEntity -> Living Entity that died.
+-- 	attacker: Entity | nil -> Entity that killed this one.
 -- 
 --#endregion
 
