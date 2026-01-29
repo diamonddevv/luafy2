@@ -33,6 +33,7 @@ public class ScriptPlugins {
     public static ApiScriptPlugin<MathApi> MATH = new ApiScriptPlugin<>(MathApi::new);
     public static ApiScriptPlugin<FabricApi> FABRIC = new ApiScriptPlugin<>(FabricApi::new);
     public static ApiScriptPlugin<TextApi> TEXT = new ApiScriptPlugin<>(TextApi::new);
+    public static ApiScriptPlugin<NbtStorageApi> NBT_STORAGE = new ApiScriptPlugin<>(NbtStorageApi::new);
 
     public static void registerAll() {
         Registry.register(LuafyRegistries.SCRIPT_PLUGINS, Luafy.id_luaj("jse_base"), LUAJ_JSE_BASE);
@@ -53,5 +54,6 @@ public class ScriptPlugins {
         Registry.register(LuafyRegistries.SCRIPT_PLUGINS, Luafy.id("math"), MATH);
         Registry.register(LuafyRegistries.SCRIPT_PLUGINS, Luafy.id("fabric"), FABRIC);
         Registry.register(LuafyRegistries.SCRIPT_PLUGINS, Luafy.id("text"), TEXT);
+        Registry.register(LuafyRegistries.SCRIPT_PLUGINS, Luafy.id("nbt_storage"), NBT_STORAGE);
     }
 }

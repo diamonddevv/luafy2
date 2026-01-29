@@ -2,7 +2,7 @@
 
 --#region Information
 -- GENERATED AUTODOC
--- Generated: 2026-01-29T15:36:57.191277400
+-- Generated: 2026-01-29T20:35:30.443182800
 -- Luafy Version: 2.0.0
 -- Format: Lua LS library file
 --#endregion
@@ -148,6 +148,10 @@ function Entity.get_name() end
 ---@return string
 function Entity.get_type_id() end
 
+--- Gets the the entity type that this entity is.
+---@return EntityType
+function Entity.get_type() end
+
 --- Returns true if this entity is a LivingEntity.
 ---@return boolean
 function Entity.is_living() end
@@ -157,11 +161,11 @@ function Entity.is_living() end
 function Entity.as_living() end
 
 --- Returns true if this entity is a PlayerEntity.
----@return LivingEntity
+---@return boolean
 function Entity.is_player() end
 
 --- Return this entity as a PlayerEntity.
----@return LivingEntity
+---@return Player
 function Entity.as_player() end
 
 --- Execute a commmand as this entity.
@@ -218,7 +222,7 @@ function Player.tell(msg) end
 --- Prints a text component to this player's chat.
 ---@param msg TextComponent Component to display.
 ---@return nil
-function Player.tell(msg) end
+function Player.tell_component(msg) end
 
 --- Gives this player this stack.
 ---@param stack ItemStack Stack to give.
@@ -255,9 +259,13 @@ function EntityType.is_fire_immune() end
 
 --- Spawns a new instance of this entity.
 ---@param pos Vec3d Position to spawn at.
----@param dimension string Id of dimension to spawn in.
+---@param dimension string | nil Id of dimension to spawn in.
 ---@return Entity
 function EntityType.spawn(pos, dimension) end
+
+--- Returns the id of this entity type.
+---@return string
+function EntityType.get_id() end
 
 
 --- An item stack.
@@ -352,15 +360,15 @@ minecraft = {}
 ---@return string
 function minecraft.get_version() end
 
---- Prints an unformatted line to the server chat, visible to all players. (similar to /tellraw). Also prints to the console.
+--- Prints an unformatted line to the command source.
 ---@param message string Message to be printed.
 ---@return nil
-function minecraft.print(message) end
+function minecraft.feedback(message) end
 
---- Prints a text component to the server chat, visible to all players. (similar to /tellraw). Also prints the raw string to the console.
+--- Prints a text component to the command source.
 ---@param message string Message to be printed.
 ---@return nil
-function minecraft.print_component(message) end
+function minecraft.feedback_component(message) end
 
 --- Executes the given command from the server command source. Returns the result of the command.
 ---@param command string Command to be executed.
@@ -510,6 +518,19 @@ function text.atlas_sprite(atlas, sprite) end
 ---@param elements TextComponent[] Elements to concatenate together.
 ---@return TextComponent
 function text.compound(elements) end
+
+nbtstorage = {}
+
+--- Reads abstract NBT data from storage.
+---@param id string Storage id to read.
+---@return table
+function nbtstorage.read(id) end
+
+--- Writes abstract NBT data to storage.
+---@param id string Storage id to write to.
+---@param table table Data to write.
+---@return nil
+function nbtstorage.write(id, table) end
 
 --#endregion
 

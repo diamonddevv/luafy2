@@ -26,7 +26,7 @@ public class PlayerScriptObject extends AbstractScriptObject<ServerPlayer> {
             doc.addFunction(FUNC_TELL, "Prints a line to this player's chat.", args -> {
                 args.add("msg", Argtypes.STRING, "String to display.");
             }, Argtypes.NIL);
-            doc.addFunction(FUNC_TELL, "Prints a text component to this player's chat.", args -> {
+            doc.addFunction(FUNC_TELL_COMPONENT, "Prints a text component to this player's chat.", args -> {
                 args.add("msg", ScriptObjects.TEXT_COMPONENT, "Component to display.");
             }, Argtypes.NIL);
             doc.addFunction(FUNC_GIVE_STACK, "Gives this player this stack.", args -> {

@@ -190,5 +190,13 @@ public interface ScriptFunction extends Function<Varargs, LuaValue> {
             return map(next(), def, getter, convert);
         }
 
+        public <T, X> T map(LuaValue value, Function<LuaValue, X> getter, Function<X, T> convert) {
+            return convert.apply(getter.apply(value));
+        }
+
+        public <T, X> T nextMap(Function<LuaValue, X> getter, Function<X, T> convert) {
+            return map(next(), getter, convert);
+        }
+
     }
 }

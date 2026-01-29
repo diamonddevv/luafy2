@@ -26,6 +26,7 @@ public class RegistryEntityTypeScriptObject extends AbstractScriptObject<EntityT
     public static final String FUNC_CAN_EXIST_IN_PEACEFUL = "can_exist_in_peaceful";
     public static final String FUNC_FIRE_IMMUNE = "is_fire_immune";
     public static final String FUNC_SPAWN = "spawn";
+    public static final String FUNC_GET_ID = "get_id";
 
     public RegistryEntityTypeScriptObject() {
         super("An entity type.", doc -> {
@@ -37,6 +38,8 @@ public class RegistryEntityTypeScriptObject extends AbstractScriptObject<EntityT
                 args.add("pos", ScriptObjects.VEC3D, "Position to spawn at.");
                 args.add("dimension", Argtypes.maybe(Argtypes.STRING), "Id of dimension to spawn in.");
             }, ScriptObjects.ENTITY);
+            doc.addFunction(FUNC_GET_ID, "Returns the id of this entity type.",
+                    args -> {}, Argtypes.STRING);
         });
     }
 
@@ -61,6 +64,8 @@ public class RegistryEntityTypeScriptObject extends AbstractScriptObject<EntityT
 
             return ScriptObjects.ENTITY.provideTable(e, script);
         });
+
+        builder.add(FUNC_GET_ID, args -> LuaValue.valueOf(BuiltInRegistries.ENTITY_TYPE.getKey(obj).toString()));
     }
 
     @Override

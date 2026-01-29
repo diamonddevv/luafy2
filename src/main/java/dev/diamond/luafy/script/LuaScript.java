@@ -2,18 +2,24 @@ package dev.diamond.luafy.script;
 
 import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.lua.LuaTableBuilder;
+import dev.diamond.luafy.mixin.CommandSourceStackAccessor;
 import dev.diamond.luafy.registry.LuafyRegistries;
+import dev.diamond.luafy.resource.ScriptResourceLoader;
 import dev.diamond.luafy.script.enumeration.ScriptEnum;
 import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.luaj.vm2.Globals;
-import org.luaj.vm2.LuaError;
-import org.luaj.vm2.LuaTable;
-import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.*;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.concurrent.Future;
 import net.minecraft.commands.CommandSourceStack;
@@ -23,6 +29,8 @@ public class LuaScript {
     public static final String CONTEXT_KEY = "ctx";
 
     private final Globals globals;
+    private final String source;
+    public boolean onLibPath;
     private LuaValue script;
     private String compilationError;
     private CommandSourceStack src;
@@ -31,6 +39,8 @@ public class LuaScript {
 
     public LuaScript(String source) {
         this.globals = new Globals();
+        this.onLibPath = false;
+        this.source = source;
         injectSources();
 
         this.unserializableDataReferences = new HashMap<>();
@@ -86,10 +96,21 @@ public class LuaScript {
         this.src = src.withSuppressedOutput();
     }
 
+    public void sendSourceMessage(Component c) {
+        ServerPlayer serverPlayer = this.src.getPlayer();
+        if (serverPlayer != null) {
+            serverPlayer.sendSystemMessage(c);
+        } else {
+            ((CommandSourceStackAccessor)this.src).accessCommandSource().sendSystemMessage(c);
+        }
+    }
+
     private void injectSources() {
         for (ScriptPlugin plugin : LuafyRegistries.SCRIPT_PLUGINS) {
             plugin.apply(this);
         }
+
+        modifyRequire(this);
 
         for (ScriptEnum<?> e : LuafyRegistries.SCRIPT_ENUMS) {
             this.globals.set(e.getArgtypeString(), LuaTableBuilder.provide(b -> {
@@ -114,6 +135,14 @@ public class LuaScript {
             Luafy.LOGGER.error(error);
             return new ScriptExecutionResult(LuaValue.NIL, error);
         }
+    }
+
+    private static void modifyRequire(LuaScript script) {
+        script.globals.finder = s -> {
+            String namespace = ""; // todo get somehow
+            Identifier id = ScriptResourceLoader.idFromBadPath(s, namespace);
+            return new ByteArrayInputStream(Luafy.SCRIPT_MANAGER.get(id).source.getBytes(StandardCharsets.UTF_8));
+        };
     }
 
 

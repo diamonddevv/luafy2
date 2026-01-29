@@ -25,7 +25,8 @@ public class ScriptManager {
         return this.scriptExecutor.submit(scriptExecution);
     }
 
-    public void loadScript(Identifier id, LuaScript script) {
+    public void loadScript(Identifier id, LuaScript script, boolean libraryPath) {
+        script.onLibPath = libraryPath;
         this.scripts.put(id, script);
     }
 

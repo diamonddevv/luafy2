@@ -219,6 +219,7 @@ public class LuafyCommand {
         public CompletableFuture<Suggestions> getSuggestions(CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder) throws CommandSyntaxException {
 
             for (String id : Luafy.SCRIPT_MANAGER.getScriptIdStrings()) {
+                if (Luafy.SCRIPT_MANAGER.get(Identifier.parse(id)).onLibPath) continue; // dont suggest libraries
                 builder.suggest(id);
             }
 
