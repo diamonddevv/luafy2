@@ -28,7 +28,7 @@ this mod uses the FiguraMC implementation of Lua.
   - [x] math (vectors, mainly)
 - other
   - [x] autogen documentation (actively working on)
-  - [ ] support `require` function (and therefore libraries)
+  - [x] support `require` function (and therefore libraries)
 
 ## what im not worried about right now
 - scripting language independence; im just focusing on lua

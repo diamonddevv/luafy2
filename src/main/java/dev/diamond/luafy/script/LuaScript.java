@@ -22,7 +22,11 @@ import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.concurrent.Future;
+import java.util.regex.Matcher;
+
 import net.minecraft.commands.CommandSourceStack;
+import org.luaj.vm2.lib.BaseLib;
+import org.luaj.vm2.lib.VarArgFunction;
 
 public class LuaScript {
 
@@ -138,10 +142,36 @@ public class LuaScript {
     }
 
     private static void modifyRequire(LuaScript script) {
+        var oldFunc = script.globals.get("require");
+
+        script.globals.set("require", new VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                String out;
+                String path = args.arg1().tojstring();
+                if (args.narg() == 2) {
+                    String namespace = args.arg(2).tojstring();
+                    out = namespace + ":" + path;
+                } else {
+                    out = path;
+                }
+
+                return oldFunc.call(LuaValue.valueOf(out));
+            }
+        });
+
         script.globals.finder = s -> {
-            String namespace = ""; // todo get somehow
-            Identifier id = ScriptResourceLoader.idFromBadPath(s, namespace);
-            return new ByteArrayInputStream(Luafy.SCRIPT_MANAGER.get(id).source.getBytes(StandardCharsets.UTF_8));
+            if (s.contains(":")) {
+                String[] splits = s.split(":");
+                String namespace = splits[0];
+                String path = splits[1];
+                String fixedPath = path.substring(0, path.length() - ScriptResourceLoader.EXT.length());
+                fixedPath = fixedPath.replaceAll(Matcher.quoteReplacement("\\"), "/");
+                Identifier id = Identifier.fromNamespaceAndPath(namespace, fixedPath);
+                return new ByteArrayInputStream(Luafy.SCRIPT_MANAGER.get(id).source.getBytes(StandardCharsets.UTF_8));
+            } else {
+                return BaseLib.class.getResourceAsStream(s.startsWith("/") ? s : "/" + s);
+            }
         };
     }
 

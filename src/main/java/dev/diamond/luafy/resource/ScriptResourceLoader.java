@@ -12,9 +12,9 @@ import java.nio.charset.StandardCharsets;
 
 public class ScriptResourceLoader implements SimpleSynchronousResourceReloadListener {
 
-    private static final String PATH = "luafy/scripts";
+    public static final String PATH = "luafy/scripts";
     private static final String LIBRARY_PATH = "lib";
-    private static final String EXT = ".lua";
+    public static final String EXT = ".lua";
 
     @Override
     public @NotNull Identifier getFabricId() {
@@ -34,7 +34,8 @@ public class ScriptResourceLoader implements SimpleSynchronousResourceReloadList
                     String s = new String(bytes, StandardCharsets.UTF_8);
 
 
-                    Identifier id = idFromBadPath(loc.getPath(), loc.getNamespace());
+                    String fixedPath = loc.getPath().substring(PATH.length() + 1, loc.getPath().length() - EXT.length());
+                    Identifier id = Identifier.fromNamespaceAndPath(loc.getNamespace(), fixedPath);
 
 
                     // get script
@@ -48,10 +49,5 @@ public class ScriptResourceLoader implements SimpleSynchronousResourceReloadList
         }
 
         Luafy.LOGGER.info("Loaded {} scripts", count);
-    }
-
-    public static Identifier idFromBadPath(String badPath, String namespace) {
-        String fixedPath = badPath.substring(PATH.length() + 1, badPath.length() - EXT.length());
-        return Identifier.fromNamespaceAndPath(namespace, fixedPath);
     }
 }
