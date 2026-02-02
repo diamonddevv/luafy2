@@ -1,4 +1,4 @@
-package dev.diamond.luafy;
+package dev.diamond.luafy.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -7,6 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.autodoc.SimpleAutodocumentable;
 import dev.diamond.luafy.autodoc.generator.AbstractAutodocGenerator;
 import dev.diamond.luafy.lua.LuaTableBuilder;
@@ -41,7 +42,7 @@ public class LuafyCommand {
 
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher,
-                                CommandBuildContext access, Commands.CommandSelection environment)
+                                CommandBuildContext buildCtx, Commands.CommandSelection selection)
     {
         dispatcher.register(
           literal("luafy").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))

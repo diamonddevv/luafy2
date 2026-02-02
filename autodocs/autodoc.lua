@@ -2,13 +2,23 @@
 
 --#region Information
 -- GENERATED AUTODOC
--- Generated: 2026-01-30T10:10:00.200472100
+-- Generated: 2026-01-30T13:06:47.943709500
 -- Luafy Version: 2.0.0
 -- Format: Lua LS library file
 --#endregion
 
 ---@type table
 ctx = {}
+
+--#region Default Overrides
+
+--- Load a module. To use default Lua behaviour, ignore the second argument. To load a module from within a datapack, add the namespace of the target datapack as the second argument.
+---@param modname string Module name to load.
+---@param namespace string | nil Namespace of datapack to load from. Leave blank to use default Lua require behaviour, which probably won't work.
+---@return table
+function require(modname, namespace) end
+
+--#endregion
 
 --#region Enums
 

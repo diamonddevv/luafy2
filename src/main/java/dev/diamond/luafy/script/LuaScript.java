@@ -168,6 +168,7 @@ public class LuaScript {
                 String fixedPath = path.substring(0, path.length() - ScriptResourceLoader.EXT.length());
                 fixedPath = fixedPath.replaceAll(Matcher.quoteReplacement("\\"), "/");
                 Identifier id = Identifier.fromNamespaceAndPath(namespace, fixedPath);
+
                 return new ByteArrayInputStream(Luafy.SCRIPT_MANAGER.get(id).source.getBytes(StandardCharsets.UTF_8));
             } else {
                 return BaseLib.class.getResourceAsStream(s.startsWith("/") ? s : "/" + s);

@@ -1,6 +1,8 @@
 package dev.diamond.luafy;
 
 import dev.diamond.luafy.autodoc.generator.AbstractAutodocGenerator;
+import dev.diamond.luafy.command.LuafyCommand;
+import dev.diamond.luafy.command.HotCommand;
 import dev.diamond.luafy.registry.*;
 import dev.diamond.luafy.resource.ScriptEventResourceLoader;
 import dev.diamond.luafy.script.ScriptManager;
@@ -12,7 +14,6 @@ import net.fabricmc.fabric.impl.resource.loader.ResourceManagerHelperImpl;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.PackType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,7 @@ public class Luafy implements ModInitializer {
 
 		LuafyRegistries.register();
 		CommandRegistrationCallback.EVENT.register(LuafyCommand::register);
+		CommandRegistrationCallback.EVENT.register(HotCommand::register);
 		ResourceManagerHelperImpl.get(PackType.SERVER_DATA).registerReloadListener(SCRIPT_RESOURCE_LOADER);
 		ResourceManagerHelperImpl.get(PackType.SERVER_DATA).registerReloadListener(SCRIPT_EVENT_RESOURCE_LOADER);
 

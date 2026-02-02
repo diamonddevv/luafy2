@@ -1,6 +1,7 @@
 package dev.diamond.luafy.autodoc.generator;
 
 import dev.diamond.luafy.Luafy;
+import dev.diamond.luafy.autodoc.FunctionDocInfo;
 import dev.diamond.luafy.autodoc.ScriptApiBuilder;
 import dev.diamond.luafy.registry.LuafyRegistries;
 import dev.diamond.luafy.script.ApiScriptPlugin;
@@ -158,5 +159,29 @@ public class LuaLanguageServerAutodocGenerator extends AbstractAutodocGenerator 
     @Override
     public void endRegion(StringBuilder doc, String regionTitle) {
         doc.append("--#endregion\n\n");
+    }
+
+    @Override
+    public void addExtraOverriddenFunction(StringBuilder doc, FunctionDocInfo function) {
+        doc.append("--- ").append(function.funcDesc()).append("\n");
+        for (var arg : function.args()) {
+            doc.append("---@param ");
+            doc.append(arg.argName()).append(" ");
+            doc.append(arg.argType().getArgtypeString()).append(" ");
+            doc.append(arg.argDesc()).append("\n");
+        }
+        doc.append("---@return ");
+        doc.append(function.returnType().getArgtypeString()).append("\n");
+
+        doc.append("function ");
+        doc.append(function.funcName());
+        doc.append("(");
+        for (int i = 0; i < function.args().size(); i++) {
+            doc.append(function.args().get(i).argName());
+            if (i < function.args().size() - 1) {
+                doc.append(", ");
+            }
+        }
+        doc.append(") end\n\n");
     }
 }

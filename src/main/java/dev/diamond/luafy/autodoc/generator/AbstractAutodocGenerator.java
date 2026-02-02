@@ -1,6 +1,9 @@
 package dev.diamond.luafy.autodoc.generator;
 
 import dev.diamond.luafy.Luafy;
+import dev.diamond.luafy.autodoc.ArglistBuilder;
+import dev.diamond.luafy.autodoc.Argtypes;
+import dev.diamond.luafy.autodoc.FunctionDocInfo;
 import dev.diamond.luafy.autodoc.FunctionListBuilder;
 import dev.diamond.luafy.registry.LuafyRegistries;
 import dev.diamond.luafy.script.ApiScriptPlugin;
@@ -15,6 +18,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 
 public abstract class AbstractAutodocGenerator {
     public final String fileExtension;
@@ -23,6 +27,7 @@ public abstract class AbstractAutodocGenerator {
     private static final String REGION_SCRIPT_OBJECT = "Script Object";
     private static final String REGION_SCRIPT_API = "Script Api";
     private static final String REGION_SCRIPT_EVENT = "Script Event";
+    private static final String REGION_DEFAULT_OVERRIDES = "Default Overrides";
 
     public AbstractAutodocGenerator(String fileExtension) {
         this.fileExtension = fileExtension;
@@ -36,7 +41,7 @@ public abstract class AbstractAutodocGenerator {
     public abstract void addComment(StringBuilder doc, String comment);
     public abstract void startRegion(StringBuilder doc, String regionTitle);
     public abstract void endRegion(StringBuilder doc, String regionTitle);
-
+    public abstract void addExtraOverriddenFunction(StringBuilder doc, FunctionDocInfo function);
 
     public String buildOutput(File file) {
         Luafy.LOGGER.info("Generating autodoc (Generator class: '{}')..", this.getClass().getSimpleName());
@@ -46,6 +51,21 @@ public abstract class AbstractAutodocGenerator {
         StringBuilder doc = new StringBuilder();
 
         addFileHeader(doc);
+
+        startRegion(doc, REGION_DEFAULT_OVERRIDES);
+        addExtraOverriddenFunction(doc, new FunctionDocInfo(
+                "require",
+                "Load a module. To use default Lua behaviour, ignore the second argument. " +
+                        "To load a module from within a datapack, add the namespace of the target " +
+                        "datapack as the second argument.",
+                new ArglistBuilder()
+                        .add("modname", Argtypes.STRING, "Module name to load.")
+                        .add("namespace", Argtypes.maybe(Argtypes.STRING), "Namespace of datapack to load from. Leave blank to use default Lua require behaviour, which probably won't work.")
+                        .build(),
+                Argtypes.TABLE
+        )); // require
+        Luafy.LOGGER.info("Added default override functions.");
+        endRegion(doc, REGION_DEFAULT_OVERRIDES);
 
 
         startRegion(doc, REGION_SCRIPT_ENUM);

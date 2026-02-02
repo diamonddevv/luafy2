@@ -31,6 +31,7 @@ public class ScriptManager {
     }
 
     public LuaScript get(Identifier id) {
+        if (!this.has(id)) throw new ScriptNotFoundException(id);
         return this.scripts.get(id);
     }
 
