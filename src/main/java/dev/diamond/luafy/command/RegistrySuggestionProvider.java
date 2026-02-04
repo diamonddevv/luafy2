@@ -17,7 +17,7 @@ public record RegistrySuggestionProvider<T>(Registry<T> registry) implements Sug
     public CompletableFuture<Suggestions> getSuggestions(CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder) throws CommandSyntaxException {
 
         for (var thing : registry) {
-            builder.suggest(registry.getId(thing));
+            builder.suggest(registry.getKey(thing).toString());
         }
 
         // Lock the suggestions after we've modified them.

@@ -2,7 +2,7 @@
 
 --#region Information
 -- GENERATED AUTODOC
--- Generated: 2026-02-04T09:55:52.319589400
+-- Generated: 2026-02-04T12:26:49.916698700
 -- Luafy Version: 2.0.0
 -- Format: Lua LS library file
 --#endregion

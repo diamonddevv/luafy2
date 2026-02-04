@@ -140,7 +140,7 @@ public class HotCommand {
             }
 
             var branch = literal(bean.root).then(last);
-            
+
             // register
             dispatcher.register(branch);
             Luafy.LOGGER.info("Registered hot-command branch '{}'.", bean.root);
