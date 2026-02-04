@@ -1,18 +1,26 @@
 package dev.diamond.luafy.script.object.game.entity;
 
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 import dev.diamond.luafy.autodoc.Argtypes;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.script.api.MinecraftApi;
 import dev.diamond.luafy.script.object.AbstractScriptObject;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
+
+import java.util.Optional;
 
 
 public class EntityScriptObject extends AbstractScriptObject<Entity> {
@@ -78,5 +86,29 @@ public class EntityScriptObject extends AbstractScriptObject<Entity> {
     @Override
     public String getArgtypeString() {
         return "Entity";
+    }
+
+    @Override
+    public Optional<ArgumentType<?>> getCommandArgumentType(CommandBuildContext ctx) {
+        return Optional.of(EntityArgument.entity());
+    }
+
+    @Override
+    public Optional<LuaTable> parseCommand(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script) {
+        try {
+            return Optional.of(
+                    provideTable(
+                            EntityArgument.getEntity(cmdCtx, argName),
+                            script
+                    )
+            );
+        } catch (CommandSyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Optional<SuggestionProvider<CommandSourceStack>> suggest() {
+        return Optional.empty();
     }
 }

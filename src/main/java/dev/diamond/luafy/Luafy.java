@@ -51,6 +51,7 @@ public class Luafy implements ModInitializer {
 		ScriptPlugins.registerAll();
 		ScriptEnums.registerAll();
 		ScriptObjects.registerAll();
+		ScriptArgtypes.registerAll();
 		ScriptEvents.registerAll();
 		ScriptEvents.applyEvents();
 		AutodocGenerators.registerAll();

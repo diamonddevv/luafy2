@@ -1,10 +1,16 @@
 package dev.diamond.luafy.script.object.game.entity;
 
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 import dev.diamond.luafy.autodoc.Argtypes;
 import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.script.object.AbstractScriptObject;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.world.item.ItemStack;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
@@ -72,5 +78,29 @@ public class PlayerScriptObject extends AbstractScriptObject<ServerPlayer> {
     @Override
     public String getArgtypeString() {
         return "Player";
+    }
+
+    @Override
+    public Optional<ArgumentType<?>> getCommandArgumentType(CommandBuildContext ctx) {
+        return Optional.of(EntityArgument.player());
+    }
+
+    @Override
+    public Optional<LuaTable> parseCommand(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script) {
+        try {
+            return Optional.of(
+                    provideTable(
+                            EntityArgument.getPlayer(cmdCtx, argName),
+                            script
+                    )
+            );
+        } catch (CommandSyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Optional<SuggestionProvider<CommandSourceStack>> suggest() {
+        return Optional.empty();
     }
 }

@@ -1,13 +1,22 @@
 package dev.diamond.luafy.script.object;
 
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 import dev.diamond.luafy.autodoc.Argtypes;
+import dev.diamond.luafy.command.StringListSuggestionProvider;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.script.LuaScript;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.IdentifierArgument;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
+
+import java.util.Optional;
 
 public class ModScriptObject extends AbstractScriptObject<ModContainer> {
 
@@ -37,6 +46,31 @@ public class ModScriptObject extends AbstractScriptObject<ModContainer> {
     @Override
     public String getArgtypeString() {
         return "Mod";
+    }
+
+    @Override
+    public Optional<ArgumentType<?>> getCommandArgumentType(CommandBuildContext ctx) {
+        return Optional.of(StringArgumentType.word());
+    }
+
+    @Override
+    public Optional<LuaTable> parseCommand(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script) {
+        return Optional.of(
+                provideTable(FabricLoader.getInstance().getModContainer(
+                        StringArgumentType.getString(cmdCtx, argName)
+                ).orElseThrow(), script)
+        );
+    }
+
+    @Override
+    public Optional<SuggestionProvider<CommandSourceStack>> suggest() {
+        return Optional.of(new StringListSuggestionProvider(FabricLoader
+                .getInstance()
+                .getAllMods()
+                .stream()
+                .map(mod -> mod.getMetadata().getId())
+                .toList()
+        ));
     }
 }
 

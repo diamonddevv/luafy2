@@ -1,5 +1,8 @@
 package dev.diamond.luafy.script.object.game;
 
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.serialization.JsonOps;
 import dev.diamond.luafy.autodoc.Argtypes;
 import dev.diamond.luafy.autodoc.FunctionListBuilder;
@@ -9,7 +12,9 @@ import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.script.enumeration.TextComponentColor;
 import dev.diamond.luafy.script.object.AbstractScriptObject;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.ComponentArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.FontDescription;
@@ -24,6 +29,7 @@ import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class TextComponentScriptObject extends AbstractScriptObject<MutableComponent> {
 
@@ -194,5 +200,24 @@ public class TextComponentScriptObject extends AbstractScriptObject<MutableCompo
     @Override
     public String getArgtypeString() {
         return "TextComponent";
+    }
+
+    @Override
+    public Optional<ArgumentType<?>> getCommandArgumentType(CommandBuildContext ctx) {
+        return Optional.of(ComponentArgument.textComponent(ctx));
+    }
+
+    @Override
+    public Optional<LuaTable> parseCommand(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script) {
+        return Optional.of(
+                provideTable(
+                        (MutableComponent) ComponentArgument.getRawComponent(cmdCtx, argName), script
+                )
+        );
+    }
+
+    @Override
+    public Optional<SuggestionProvider<CommandSourceStack>> suggest() {
+        return Optional.empty();
     }
 }

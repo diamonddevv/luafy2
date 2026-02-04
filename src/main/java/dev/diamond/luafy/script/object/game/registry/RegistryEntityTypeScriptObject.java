@@ -1,12 +1,19 @@
 package dev.diamond.luafy.script.object.game.registry;
 
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 import dev.diamond.luafy.autodoc.Argtypes;
+import dev.diamond.luafy.command.RegistrySuggestionProvider;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.lua.MetamethodImpl;
 import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.script.object.AbstractScriptObject;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.IdentifierArgument;
+import net.minecraft.commands.synchronization.SuggestionProviders;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -18,6 +25,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
+
+import java.util.Optional;
 
 public class RegistryEntityTypeScriptObject extends AbstractScriptObject<EntityType<?>> {
 
@@ -77,5 +86,27 @@ public class RegistryEntityTypeScriptObject extends AbstractScriptObject<EntityT
     @Override
     public String getArgtypeString() {
         return "EntityType";
+    }
+
+    @Override
+    public Optional<ArgumentType<?>> getCommandArgumentType(CommandBuildContext ctx) {
+        return Optional.of(IdentifierArgument.id());
+    }
+
+    @Override
+    public Optional<LuaTable> parseCommand(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script) {
+        return Optional.of(
+                provideTable(
+                        BuiltInRegistries.ENTITY_TYPE.getValue(
+                                IdentifierArgument.getId(cmdCtx, argName)
+                        ),
+                        script
+                )
+        );
+    }
+
+    @Override
+    public Optional<SuggestionProvider<CommandSourceStack>> suggest() {
+        return Optional.of(new RegistrySuggestionProvider<>(BuiltInRegistries.ENTITY_TYPE));
     }
 }

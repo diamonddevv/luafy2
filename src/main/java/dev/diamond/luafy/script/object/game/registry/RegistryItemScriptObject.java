@@ -1,18 +1,26 @@
 package dev.diamond.luafy.script.object.game.registry;
 
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 import dev.diamond.luafy.autodoc.Argtypes;
+import dev.diamond.luafy.command.RegistrySuggestionProvider;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.lua.MetamethodNames;
 import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.script.object.AbstractScriptObject;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.IdentifierArgument;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
+
+import java.util.Optional;
 
 
 public class RegistryItemScriptObject extends AbstractScriptObject<Item> {
@@ -50,5 +58,27 @@ public class RegistryItemScriptObject extends AbstractScriptObject<Item> {
     @Override
     public String getArgtypeString() {
         return "Item";
+    }
+
+    @Override
+    public Optional<ArgumentType<?>> getCommandArgumentType(CommandBuildContext ctx) {
+        return Optional.of(IdentifierArgument.id());
+    }
+
+    @Override
+    public Optional<LuaTable> parseCommand(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script) {
+        return Optional.of(
+                provideTable(
+                        BuiltInRegistries.ITEM.getValue(
+                                IdentifierArgument.getId(cmdCtx, argName)
+                        ),
+                        script
+                )
+        );
+    }
+
+    @Override
+    public Optional<SuggestionProvider<CommandSourceStack>> suggest() {
+        return Optional.of(new RegistrySuggestionProvider<>(BuiltInRegistries.ITEM));
     }
 }

@@ -1,10 +1,16 @@
 package dev.diamond.luafy.script.object.game.entity;
 
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 import dev.diamond.luafy.autodoc.Argtypes;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.script.object.AbstractScriptObject;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.inventory.SlotRanges;
 import net.minecraft.world.item.ItemStack;
@@ -145,5 +151,37 @@ public class LivingEntityScriptObject extends AbstractScriptObject<LivingEntity>
     @Override
     public String getArgtypeString() {
         return "LivingEntity";
+    }
+
+    @Override
+    public Optional<ArgumentType<?>> getCommandArgumentType(CommandBuildContext ctx) {
+        return Optional.of(EntityArgument.entity());
+    }
+
+    @Override
+    public Optional<LuaTable> parseCommand(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script) {
+        Entity entity;
+        try {
+            entity = EntityArgument.getEntity(cmdCtx, argName);
+        } catch (CommandSyntaxException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (entity instanceof LivingEntity living) {
+
+            return Optional.of(
+                    provideTable(
+                            living,
+                            script
+                    )
+            );
+        } else {
+            throw new RuntimeException("Entity selected was not LivingEntity!");
+        }
+    }
+
+    @Override
+    public Optional<SuggestionProvider<CommandSourceStack>> suggest() {
+        return Optional.empty();
     }
 }

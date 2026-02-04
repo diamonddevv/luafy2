@@ -1,14 +1,19 @@
 package dev.diamond.luafy.script.object;
 
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 import dev.diamond.luafy.autodoc.Argtypes;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.lua.MetamethodImpl;
 import dev.diamond.luafy.lua.MetamethodNames;
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.script.ScriptExecutionResult;
+import net.minecraft.commands.CommandBuildContext;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import net.minecraft.commands.CommandSourceStack;
@@ -87,6 +92,21 @@ public class ScriptResultScriptObject extends AbstractScriptObject<Future<Script
     @Override
     public String getArgtypeString() {
         return "ScriptResult";
+    }
+
+    @Override
+    public Optional<ArgumentType<?>> getCommandArgumentType(CommandBuildContext ctx) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<LuaTable> parseCommand(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<SuggestionProvider<CommandSourceStack>> suggest() {
+        return Optional.empty();
     }
 
     private static abstract class DummyFutureLuaScriptResultWrapper implements Future<ScriptExecutionResult> {}

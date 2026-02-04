@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import net.minecraft.commands.CommandSourceStack;
 
-public abstract class AbstractScriptObject<T> implements SimpleAutodocumentable, Argtype {
+public abstract class AbstractScriptObject<T> implements SimpleAutodocumentable, Argtype<LuaTable, T> {
     private final String desc;
     private final Consumer<ScriptObjectDocBuilder> docBuilder;
     private ScriptObjectDocBuilder docs;
