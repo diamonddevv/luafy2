@@ -2,23 +2,19 @@ package dev.diamond.luafy.autodoc.generator;
 
 import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.autodoc.ArglistBuilder;
-import dev.diamond.luafy.autodoc.Argtypes;
+import dev.diamond.luafy.script.type.Argtypes;
 import dev.diamond.luafy.autodoc.FunctionDocInfo;
-import dev.diamond.luafy.autodoc.FunctionListBuilder;
 import dev.diamond.luafy.registry.LuafyRegistries;
 import dev.diamond.luafy.script.ApiScriptPlugin;
-import dev.diamond.luafy.script.LuaScript;
-import dev.diamond.luafy.script.api.AbstractScriptApi;
-import dev.diamond.luafy.script.enumeration.ScriptEnum;
+import dev.diamond.luafy.script.type.enumeration.ScriptEnum;
 import dev.diamond.luafy.script.event.ScriptEvent;
-import dev.diamond.luafy.script.object.AbstractScriptObject;
+import dev.diamond.luafy.script.type.object.AbstractScriptObject;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.Identifier;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 
 public abstract class AbstractAutodocGenerator {
     public final String fileExtension;

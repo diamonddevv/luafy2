@@ -1,16 +1,14 @@
 package dev.diamond.luafy.registry;
 
 import dev.diamond.luafy.Luafy;
-import dev.diamond.luafy.autodoc.Argtypes;
+import dev.diamond.luafy.script.type.Argtypes;
 import dev.diamond.luafy.script.event.ScriptEvent;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
-import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
 

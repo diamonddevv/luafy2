@@ -7,13 +7,11 @@ import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.script.LuaScript;
 import net.minecraft.resources.Identifier;
-import dev.diamond.luafy.autodoc.Argtypes;
+import dev.diamond.luafy.script.type.Argtypes;
 import dev.diamond.luafy.lua.MetamethodImpl;
 import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
-
-import java.util.function.Function;
 
 public class LuafyApi extends AbstractScriptApi {
     public LuafyApi(LuaScript script) {

@@ -1,6 +1,7 @@
 package dev.diamond.luafy.autodoc;
 
 import dev.diamond.luafy.lua.ScriptFunction;
+import dev.diamond.luafy.script.type.Argtype;
 import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.Varargs;

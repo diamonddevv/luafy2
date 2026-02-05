@@ -1,9 +1,8 @@
 package dev.diamond.luafy.script.api;
 
-import dev.diamond.luafy.autodoc.Argtypes;
+import dev.diamond.luafy.script.type.Argtypes;
 import dev.diamond.luafy.autodoc.ScriptApiBuilder;
 import dev.diamond.luafy.lua.LuaTableBuilder;
-import dev.diamond.luafy.lua.MetamethodImpl;
 import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.script.LuaScript;
 import net.fabricmc.loader.api.FabricLoader;

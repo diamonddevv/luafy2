@@ -1,10 +1,10 @@
 package dev.diamond.luafy.registry;
 
 import dev.diamond.luafy.Luafy;
-import dev.diamond.luafy.script.enumeration.Note;
-import dev.diamond.luafy.script.enumeration.Instrument;
-import dev.diamond.luafy.script.enumeration.ScriptEnum;
-import dev.diamond.luafy.script.enumeration.TextComponentColor;
+import dev.diamond.luafy.script.type.enumeration.Note;
+import dev.diamond.luafy.script.type.enumeration.Instrument;
+import dev.diamond.luafy.script.type.enumeration.ScriptEnum;
+import dev.diamond.luafy.script.type.enumeration.TextComponentColor;
 import net.minecraft.core.Registry;
 
 public class ScriptEnums {

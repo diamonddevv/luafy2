@@ -1,5 +1,7 @@
 package dev.diamond.luafy.autodoc;
 
+import dev.diamond.luafy.script.type.Argtype;
+
 import java.util.ArrayList;
 
 public class ArglistBuilder {

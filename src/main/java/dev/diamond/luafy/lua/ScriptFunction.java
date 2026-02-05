@@ -1,9 +1,8 @@
 package dev.diamond.luafy.lua;
 
-import com.mojang.datafixers.util.Either;
 import dev.diamond.luafy.script.LuaScript;
-import dev.diamond.luafy.script.enumeration.ScriptEnum;
-import dev.diamond.luafy.script.object.AbstractScriptObject;
+import dev.diamond.luafy.script.type.enumeration.ScriptEnum;
+import dev.diamond.luafy.script.type.object.AbstractScriptObject;
 import net.minecraft.commands.CommandSourceStack;
 import org.luaj.vm2.*;
 

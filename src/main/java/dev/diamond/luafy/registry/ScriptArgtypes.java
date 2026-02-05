@@ -1,7 +1,7 @@
 package dev.diamond.luafy.registry;
 
 import dev.diamond.luafy.Luafy;
-import dev.diamond.luafy.autodoc.Argtypes;
+import dev.diamond.luafy.script.type.Argtypes;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 

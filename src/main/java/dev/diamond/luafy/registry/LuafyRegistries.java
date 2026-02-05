@@ -1,16 +1,15 @@
 package dev.diamond.luafy.registry;
 
 import dev.diamond.luafy.Luafy;
-import dev.diamond.luafy.autodoc.Argtype;
+import dev.diamond.luafy.script.type.Argtype;
 import dev.diamond.luafy.autodoc.generator.AbstractAutodocGenerator;
-import dev.diamond.luafy.script.enumeration.ScriptEnum;
+import dev.diamond.luafy.script.type.enumeration.ScriptEnum;
 import dev.diamond.luafy.script.event.ScriptEvent;
 import dev.diamond.luafy.script.ScriptPlugin;
-import dev.diamond.luafy.script.object.AbstractScriptObject;
+import dev.diamond.luafy.script.type.object.AbstractScriptObject;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import org.luaj.vm2.LuaValue;
 
 public class LuafyRegistries {
 

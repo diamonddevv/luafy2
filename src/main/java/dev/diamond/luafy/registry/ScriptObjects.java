@@ -1,15 +1,18 @@
 package dev.diamond.luafy.registry;
 
 import dev.diamond.luafy.Luafy;
-import dev.diamond.luafy.script.object.*;
-import dev.diamond.luafy.script.object.game.registry.RegistryBlockScriptObject;
-import dev.diamond.luafy.script.object.game.registry.RegistryEntityTypeScriptObject;
-import dev.diamond.luafy.script.object.game.registry.RegistryItemScriptObject;
-import dev.diamond.luafy.script.object.game.ItemStackScriptObject;
-import dev.diamond.luafy.script.object.game.TextComponentScriptObject;
-import dev.diamond.luafy.script.object.game.entity.EntityScriptObject;
-import dev.diamond.luafy.script.object.game.entity.LivingEntityScriptObject;
-import dev.diamond.luafy.script.object.game.entity.PlayerScriptObject;
+import dev.diamond.luafy.script.type.object.AbstractScriptObject;
+import dev.diamond.luafy.script.type.object.ModScriptObject;
+import dev.diamond.luafy.script.type.object.ScriptResultScriptObject;
+import dev.diamond.luafy.script.type.object.Vec3dScriptObject;
+import dev.diamond.luafy.script.type.object.game.registry.RegistryBlockScriptObject;
+import dev.diamond.luafy.script.type.object.game.registry.RegistryEntityTypeScriptObject;
+import dev.diamond.luafy.script.type.object.game.registry.RegistryItemScriptObject;
+import dev.diamond.luafy.script.type.object.game.ItemStackScriptObject;
+import dev.diamond.luafy.script.type.object.game.TextComponentScriptObject;
+import dev.diamond.luafy.script.type.object.game.entity.EntityScriptObject;
+import dev.diamond.luafy.script.type.object.game.entity.LivingEntityScriptObject;
+import dev.diamond.luafy.script.type.object.game.entity.PlayerScriptObject;
 import net.minecraft.core.Registry;
 
 public class ScriptObjects {

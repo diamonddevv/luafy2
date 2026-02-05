@@ -1,7 +1,7 @@
 package dev.diamond.luafy.lua;
 
 import dev.diamond.luafy.script.LuaScript;
-import dev.diamond.luafy.script.object.AbstractScriptObject;
+import dev.diamond.luafy.script.type.object.AbstractScriptObject;
 import net.minecraft.nbt.*;
 import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaTable;
