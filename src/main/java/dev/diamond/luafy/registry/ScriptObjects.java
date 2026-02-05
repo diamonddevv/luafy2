@@ -14,6 +14,7 @@ import dev.diamond.luafy.script.type.object.game.entity.EntityScriptObject;
 import dev.diamond.luafy.script.type.object.game.entity.LivingEntityScriptObject;
 import dev.diamond.luafy.script.type.object.game.entity.PlayerScriptObject;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
 
 public class ScriptObjects {
 
@@ -37,22 +38,27 @@ public class ScriptObjects {
     public static TextComponentScriptObject TEXT_COMPONENT = new TextComponentScriptObject();
 
     public static void registerAll() {
-        Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("vec3d"), VEC3D);
-        Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("mod"), MOD);
-        Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("script_result"), SCRIPT_RESULT);
+        register(Luafy.id("vec3d"), VEC3D);
+        register(Luafy.id("mod"), MOD);
+        register(Luafy.id("script_result"), SCRIPT_RESULT);
 
-        Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("entity"), ENTITY);
-        Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("living_entity"), LIVING_ENTITY);
-        Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("player"), PLAYER);
+        register(Luafy.id("entity"), ENTITY);
+        register(Luafy.id("living_entity"), LIVING_ENTITY);
+        register(Luafy.id("player"), PLAYER);
 
-        Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("registry_block"), REGISTRY_BLOCK);
-        Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("registry_item"), REGISTRY_ITEM);
-        Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("registry_entity_type"), REGISTRY_ENTITY_TYPE);
+        register(Luafy.id("registry_block"), REGISTRY_BLOCK);
+        register(Luafy.id("registry_item"), REGISTRY_ITEM);
+        register(Luafy.id("registry_entity_type"), REGISTRY_ENTITY_TYPE);
 
-        Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("item_stack"), ITEM_STACK);
-        Registry.register(LuafyRegistries.SCRIPT_OBJECTS, Luafy.id("text_component"), TEXT_COMPONENT);
+        register(Luafy.id("item_stack"), ITEM_STACK);
+        register(Luafy.id("text_component"), TEXT_COMPONENT);
 
         // this has to be deferred so that objects can reference each other in their docs
         AbstractScriptObject.buildAllDocs();
+    }
+
+    public static void register(Identifier id, AbstractScriptObject<?> obj) {
+        Registry.register(LuafyRegistries.SCRIPT_OBJECTS, id, obj);
+        Registry.register(LuafyRegistries.ARGTYPES, id, obj);
     }
 }

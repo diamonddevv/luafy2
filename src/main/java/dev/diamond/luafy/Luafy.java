@@ -49,9 +49,10 @@ public class Luafy implements ModInitializer {
 		ResourceManagerHelperImpl.get(PackType.SERVER_DATA).registerReloadListener(SCRIPT_EVENT_RESOURCE_LOADER);
 
 		ScriptPlugins.registerAll();
+		ScriptArgtypes.registerAll();
 		ScriptEnums.registerAll();
 		ScriptObjects.registerAll();
-		ScriptArgtypes.registerAll();
+		StringAliases.registerAll();
 		ScriptEvents.registerAll();
 		ScriptEvents.applyEvents();
 		AutodocGenerators.registerAll();

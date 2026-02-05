@@ -92,7 +92,7 @@ public class RegistryEntityTypeScriptObject extends AbstractScriptObject<EntityT
     }
 
     @Override
-    public Optional<LuaTable> parseCommand(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script) {
+    public Optional<LuaTable> parseCommandToLua(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script) {
         return Optional.of(
                 provideTable(
                         BuiltInRegistries.ENTITY_TYPE.getValue(
@@ -105,6 +105,6 @@ public class RegistryEntityTypeScriptObject extends AbstractScriptObject<EntityT
 
     @Override
     public Optional<SuggestionProvider<CommandSourceStack>> suggest() {
-        return Optional.of(new RegistrySuggestionProvider<>(BuiltInRegistries.ENTITY_TYPE));
+        return Optional.of(new RegistrySuggestionProvider<>(Registries.ENTITY_TYPE));
     }
 }

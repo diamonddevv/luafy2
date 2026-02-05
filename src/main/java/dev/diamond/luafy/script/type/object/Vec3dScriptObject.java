@@ -56,7 +56,7 @@ public class Vec3dScriptObject extends AbstractScriptObject<Vec3> {
     }
 
     @Override
-    public Optional<LuaTable> parseCommand(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script) {
+    public Optional<LuaTable> parseCommandToLua(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script) {
         return Optional.of(
                 provideTable(Vec3Argument.getVec3(cmdCtx, argName), script)
         );

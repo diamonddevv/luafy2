@@ -159,7 +159,7 @@ public class LivingEntityScriptObject extends AbstractScriptObject<LivingEntity>
     }
 
     @Override
-    public Optional<LuaTable> parseCommand(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script) {
+    public Optional<LuaTable> parseCommandToLua(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script) {
         Entity entity;
         try {
             entity = EntityArgument.getEntity(cmdCtx, argName);

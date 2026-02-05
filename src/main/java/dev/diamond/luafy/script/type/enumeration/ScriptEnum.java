@@ -11,6 +11,7 @@ import dev.diamond.luafy.script.type.Argtype;
 import dev.diamond.luafy.script.type.Argtypes;
 import dev.diamond.luafy.autodoc.SimpleAutodocumentable;
 import dev.diamond.luafy.script.LuaScript;
+import dev.diamond.luafy.script.type.StringAlias;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import org.luaj.vm2.LuaString;
@@ -22,7 +23,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-public class ScriptEnum<E extends Enum<E>> implements SimpleAutodocumentable, Argtype<LuaString, String> {
+public class ScriptEnum<E extends Enum<E>> extends StringAlias<E> implements SimpleAutodocumentable {
 
     private final Class<E> enumClass;
 
@@ -58,14 +59,20 @@ public class ScriptEnum<E extends Enum<E>> implements SimpleAutodocumentable, Ar
         return getEnumName();
     }
 
+
     @Override
-    public Optional<ArgumentType<?>> getCommandArgumentType(CommandBuildContext ctx) {
-        return Optional.of(StringArgumentType.word());
+    public E parse(String s, LuaScript script) {
+        return fromKey(s);
     }
 
     @Override
-    public Optional<LuaString> parseCommand(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script) {
-        return Argtypes.STRING.parseCommand(cmdCtx, argName, script);
+    public String serialise(E e, LuaScript script) {
+        return toKey(e);
+    }
+
+    @Override
+    public Optional<LuaString> parseCommandToLua(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script) {
+        return Argtypes.STRING.parseCommandToLua(cmdCtx, argName, script);
     }
 
     @Override

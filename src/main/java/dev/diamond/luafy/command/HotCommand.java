@@ -29,8 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
-import static net.minecraft.commands.Commands.argument;
-import static net.minecraft.commands.Commands.literal;
+import static net.minecraft.commands.Commands.*;
 
 public class HotCommand {
 
@@ -52,7 +51,7 @@ public class HotCommand {
 
             for (CommandArgumentBean arg : bean.args) {
 
-                Argtype<?, ?> argtype = LuafyRegistries.SERIALIZABLE_ARGTYPES.getValue(arg.argType);
+                Argtype<?, ?> argtype = LuafyRegistries.ARGTYPES.getValue(arg.argType);
 
                 if (argtype == null) {
                     throw new RuntimeException("Argtype " + arg.argType + " was not in the registry!");
@@ -87,7 +86,7 @@ public class HotCommand {
                 var table = new LuaTableBuilder();
                 for (CommandArgumentBean arg : bean.args) {
 
-                    Argtype<?, ?> argtype = LuafyRegistries.SERIALIZABLE_ARGTYPES.getValue(arg.argType);
+                    Argtype<?, ?> argtype = LuafyRegistries.ARGTYPES.getValue(arg.argType);
 
                     if (argtype == null) {
                         ctx.getSource().sendSystemMessage(
@@ -96,7 +95,7 @@ public class HotCommand {
                         return 0;
                     }
 
-                    Optional<LuaValue> value = (Optional<LuaValue>) argtype.parseCommand(ctx, arg.argument, script);
+                    Optional<LuaValue> value = (Optional<LuaValue>) argtype.parseCommandToLua(ctx, arg.argument, script);
 
 
                     if (value.isPresent()) {
@@ -135,7 +134,13 @@ public class HotCommand {
                 last = args.get(i).then(last);
             }
 
-            var branch = literal(bean.root).then(last);
+            var branch = literal(bean.root).requires(stack -> {
+                if (bean.nonOpsCanRun) {
+                    return LEVEL_ALL.check(stack.permissions());
+                } else {
+                    return LEVEL_GAMEMASTERS.check(stack.permissions());
+                }
+            }).then(last);
 
             // register
             dispatcher.register(branch);

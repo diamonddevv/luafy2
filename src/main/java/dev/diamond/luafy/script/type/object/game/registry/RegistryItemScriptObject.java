@@ -14,6 +14,7 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.IdentifierArgument;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -66,7 +67,7 @@ public class RegistryItemScriptObject extends AbstractScriptObject<Item> {
     }
 
     @Override
-    public Optional<LuaTable> parseCommand(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script) {
+    public Optional<LuaTable> parseCommandToLua(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script) {
         return Optional.of(
                 provideTable(
                         BuiltInRegistries.ITEM.getValue(
@@ -79,6 +80,6 @@ public class RegistryItemScriptObject extends AbstractScriptObject<Item> {
 
     @Override
     public Optional<SuggestionProvider<CommandSourceStack>> suggest() {
-        return Optional.of(new RegistrySuggestionProvider<>(BuiltInRegistries.ITEM));
+        return Optional.of(new RegistrySuggestionProvider<>(Registries.ITEM));
     }
 }

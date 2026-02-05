@@ -6,6 +6,7 @@ import dev.diamond.luafy.script.type.Argtypes;
 import dev.diamond.luafy.autodoc.FunctionDocInfo;
 import dev.diamond.luafy.registry.LuafyRegistries;
 import dev.diamond.luafy.script.ApiScriptPlugin;
+import dev.diamond.luafy.script.type.StringAlias;
 import dev.diamond.luafy.script.type.enumeration.ScriptEnum;
 import dev.diamond.luafy.script.event.ScriptEvent;
 import dev.diamond.luafy.script.type.object.AbstractScriptObject;
@@ -24,6 +25,8 @@ public abstract class AbstractAutodocGenerator {
     private static final String REGION_SCRIPT_API = "Script Api";
     private static final String REGION_SCRIPT_EVENT = "Script Event";
     private static final String REGION_DEFAULT_OVERRIDES = "Default Overrides";
+    private static final String REGION_STRING_ALIASES = "String Aliases";
+    private static final String REGION_ALL_TYPES = "All Types Index";
 
     public AbstractAutodocGenerator(String fileExtension) {
         this.fileExtension = fileExtension;
@@ -38,6 +41,7 @@ public abstract class AbstractAutodocGenerator {
     public abstract void startRegion(StringBuilder doc, String regionTitle);
     public abstract void endRegion(StringBuilder doc, String regionTitle);
     public abstract void addExtraOverriddenFunction(StringBuilder doc, FunctionDocInfo function);
+    public abstract void addStringAlias(StringBuilder doc, StringAlias<?> alias);
 
     public String buildOutput(File file) {
         Luafy.LOGGER.info("Generating autodoc (Generator class: '{}')..", this.getClass().getSimpleName());
@@ -63,6 +67,14 @@ public abstract class AbstractAutodocGenerator {
         Luafy.LOGGER.info("Added default override functions.");
         endRegion(doc, REGION_DEFAULT_OVERRIDES);
 
+        startRegion(doc, REGION_STRING_ALIASES);
+        LuafyRegistries.STRING_ALIASES.forEach(obj -> {
+            Identifier id = LuafyRegistries.STRING_ALIASES.getKey(obj);
+            assert id != null;
+            addStringAlias(doc, obj);
+            Luafy.LOGGER.info("Added string alias {}", id);
+        });
+        endRegion(doc, REGION_STRING_ALIASES);
 
         startRegion(doc, REGION_SCRIPT_ENUM);
         LuafyRegistries.SCRIPT_ENUMS.forEach(obj -> {
@@ -104,6 +116,15 @@ public abstract class AbstractAutodocGenerator {
             Luafy.LOGGER.info("Added event {}", id);
         });
         endRegion(doc, REGION_SCRIPT_EVENT);
+
+        startRegion(doc, REGION_ALL_TYPES);
+        LuafyRegistries.ARGTYPES.forEach(obj -> {
+            Identifier id = LuafyRegistries.ARGTYPES.getKey(obj);
+            assert id != null;
+            addComment(doc, obj.getArgtypeString() + " - " + id);
+            // dont log anything since it should all be there anyway
+        });
+        endRegion(doc, REGION_ALL_TYPES);
 
 
         // write file

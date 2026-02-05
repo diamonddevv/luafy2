@@ -1,6 +1,7 @@
 package dev.diamond.luafy.lua;
 
 import dev.diamond.luafy.script.LuaScript;
+import dev.diamond.luafy.script.type.StringAlias;
 import dev.diamond.luafy.script.type.enumeration.ScriptEnum;
 import dev.diamond.luafy.script.type.object.AbstractScriptObject;
 import net.minecraft.commands.CommandSourceStack;
@@ -89,6 +90,10 @@ public interface ScriptFunction extends Function<Varargs, LuaValue> {
             return ts;
         }
 
+        public <T> T getStringAlias(LuaValue val, StringAlias<T> alias, LuaScript script) {
+            return alias.parse(getString(val), script);
+        }
+
         // nexts, no def
 
         public LuaTable nextTable() {
@@ -131,6 +136,10 @@ public interface ScriptFunction extends Function<Varargs, LuaValue> {
             return getArray(next(), getter);
         }
 
+        public <T> T nextStringAlias(StringAlias<T> alias, LuaScript script) {
+            return getStringAlias(next(), alias, script);
+        }
+
         // nexts with defs
 
         public LuaTable nextTable(LuaTable def) {
@@ -171,6 +180,10 @@ public interface ScriptFunction extends Function<Varargs, LuaValue> {
 
         public <T> ArrayList<T> nextArray(Function<LuaValue, T> getter, ArrayList<T> def) {
             return optionalVal(next(), def, val -> getArray(val, getter));
+        }
+
+        public <T> T nextStringAlias(StringAlias<T> alias, T def, LuaScript script) {
+            return optionalVal(next(), def, val -> getStringAlias(val, alias, script));
         }
 
 

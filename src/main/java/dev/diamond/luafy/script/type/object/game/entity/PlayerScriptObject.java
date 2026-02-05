@@ -86,7 +86,7 @@ public class PlayerScriptObject extends AbstractScriptObject<ServerPlayer> {
     }
 
     @Override
-    public Optional<LuaTable> parseCommand(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script) {
+    public Optional<LuaTable> parseCommandToLua(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script) {
         try {
             return Optional.of(
                     provideTable(

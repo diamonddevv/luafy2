@@ -15,7 +15,7 @@ import java.util.function.BiFunction;
 public interface Argtype<T extends LuaValue, S> {
     String getArgtypeString();
     Optional<ArgumentType<?>> getCommandArgumentType(CommandBuildContext ctx);
-    Optional<T> parseCommand(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script);
+    Optional<T> parseCommandToLua(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script);
     Optional<SuggestionProvider<CommandSourceStack>> suggest();
 
     static <T extends LuaValue, S> Argtype<T, S> of(String arg, @Nullable ArgumentType<S> commandArgumentType, @Nullable BiFunction<CommandContext<?>, String, T> parser, @Nullable SuggestionProvider<CommandSourceStack> suggestionProvider) {
@@ -31,7 +31,7 @@ public interface Argtype<T extends LuaValue, S> {
             }
 
             @Override
-            public Optional<T> parseCommand(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script) {
+            public Optional<T> parseCommandToLua(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script) {
                 if (parser == null) return Optional.empty();
                 return Optional.ofNullable(parser.apply(cmdCtx, argName));
             }

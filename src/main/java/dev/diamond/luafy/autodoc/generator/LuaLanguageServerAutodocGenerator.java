@@ -5,6 +5,7 @@ import dev.diamond.luafy.autodoc.FunctionDocInfo;
 import dev.diamond.luafy.autodoc.ScriptApiBuilder;
 import dev.diamond.luafy.registry.LuafyRegistries;
 import dev.diamond.luafy.script.ApiScriptPlugin;
+import dev.diamond.luafy.script.type.StringAlias;
 import dev.diamond.luafy.script.type.enumeration.ScriptEnum;
 import dev.diamond.luafy.script.event.ScriptEvent;
 import dev.diamond.luafy.script.type.object.AbstractScriptObject;
@@ -158,7 +159,7 @@ public class LuaLanguageServerAutodocGenerator extends AbstractAutodocGenerator 
 
     @Override
     public void endRegion(StringBuilder doc, String regionTitle) {
-        doc.append("--#endregion\n\n");
+        doc.append("\n--#endregion\n\n");
     }
 
     @Override
@@ -183,5 +184,10 @@ public class LuaLanguageServerAutodocGenerator extends AbstractAutodocGenerator 
             }
         }
         doc.append(") end\n\n");
+    }
+
+    @Override
+    public void addStringAlias(StringBuilder doc, StringAlias<?> alias) {
+        doc.append("---@alias ").append(alias.getArgtypeString()).append(" string\n");
     }
 }

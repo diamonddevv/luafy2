@@ -2,7 +2,7 @@
 
 --#region Information
 -- GENERATED AUTODOC
--- Generated: 2026-02-04T12:26:49.916698700
+-- Generated: 2026-02-05T14:40:12.080874
 -- Luafy Version: 2.0.0
 -- Format: Lua LS library file
 --#endregion
@@ -17,6 +17,25 @@ ctx = {}
 ---@param namespace string | nil Namespace of datapack to load from. Leave blank to use default Lua require behaviour, which probably won't work.
 ---@return table
 function require(modname, namespace) end
+
+
+--#endregion
+
+--#region String Aliases
+
+---@alias Note string
+---@alias Instrument string
+---@alias TextComponentColor string
+---@alias Identifier string
+---@alias ArgtypeIdentifier string
+---@alias ScriptEventIdentifier string
+---@alias ItemIdentifier string
+---@alias BlockIdentifier string
+---@alias EntityTypeIdentifier string
+---@alias BiomeIdentifier string
+---@alias DimensionIdentifier string
+---@alias EnchantmentIdentifier string
+---@alias StatusEffectIdentifier string
 
 --#endregion
 
@@ -91,6 +110,7 @@ TextComponentColor = {
 	YELLOW = "YELLOW",
 	DARK_GRAY = "DARK_GRAY",
 }
+
 
 --#endregion
 
@@ -360,6 +380,7 @@ function TextComponent.strikethrough(flag) end
 function TextComponent.obfuscated(flag) end
 
 
+
 --#endregion
 
 --#region Script Api
@@ -542,6 +563,7 @@ function nbtstorage.read(id) end
 ---@return nil
 function nbtstorage.write(id, table) end
 
+
 --#endregion
 
 --#region Script Event
@@ -560,5 +582,42 @@ function nbtstorage.write(id, table) end
 -- 	entity: LivingEntity -> Living Entity that died.
 -- 	attacker: Entity | nil -> Entity that killed this one.
 -- 
+
+--#endregion
+
+--#region All Types Index
+
+-- nil - luaj:nil
+-- boolean - luaj:boolean
+-- number - luaj:number
+-- string - luaj:string
+-- any - luaj:any
+-- integer - luaj:integer
+-- table - luaj:table
+-- Note - luafy:note
+-- Instrument - luafy:instrument
+-- TextComponentColor - luafy:text_component_color
+-- Vec3d - luafy:vec3d
+-- Mod - luafy:mod
+-- ScriptResult - luafy:script_result
+-- Entity - luafy:entity
+-- LivingEntity - luafy:living_entity
+-- Player - luafy:player
+-- Block - luafy:registry_block
+-- Item - luafy:registry_item
+-- EntityType - luafy:registry_entity_type
+-- ItemStack - luafy:item_stack
+-- TextComponent - luafy:text_component
+-- Identifier - luafy:identifier
+-- ArgtypeIdentifier - luafy:argtype_identifier
+-- ScriptEventIdentifier - luafy:script_event_identifier
+-- ItemIdentifier - luafy:item_identifier
+-- BlockIdentifier - luafy:block_identifier
+-- EntityTypeIdentifier - luafy:entity_type_identifier
+-- BiomeIdentifier - luafy:biome_identifier
+-- DimensionIdentifier - luafy:dimension_identifier
+-- EnchantmentIdentifier - luafy:enchantment_identifier
+-- StatusEffectIdentifier - luafy:effect_identifier
+
 --#endregion
 

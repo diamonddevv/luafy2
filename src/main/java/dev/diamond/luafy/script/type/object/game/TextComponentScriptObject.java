@@ -208,7 +208,7 @@ public class TextComponentScriptObject extends AbstractScriptObject<MutableCompo
     }
 
     @Override
-    public Optional<LuaTable> parseCommand(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script) {
+    public Optional<LuaTable> parseCommandToLua(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script) {
         return Optional.of(
                 provideTable(
                         (MutableComponent) ComponentArgument.getRawComponent(cmdCtx, argName), script

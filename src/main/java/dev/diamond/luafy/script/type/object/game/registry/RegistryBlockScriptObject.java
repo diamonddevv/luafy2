@@ -11,6 +11,7 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.IdentifierArgument;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
 import org.luaj.vm2.LuaTable;
 
@@ -45,7 +46,7 @@ public class RegistryBlockScriptObject extends AbstractScriptObject<Block> {
     }
 
     @Override
-    public Optional<LuaTable> parseCommand(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script) {
+    public Optional<LuaTable> parseCommandToLua(CommandContext<CommandSourceStack> cmdCtx, String argName, LuaScript script) {
         return Optional.of(
                 provideTable(
                         BuiltInRegistries.BLOCK.getValue(
@@ -58,6 +59,6 @@ public class RegistryBlockScriptObject extends AbstractScriptObject<Block> {
 
     @Override
     public Optional<SuggestionProvider<CommandSourceStack>> suggest() {
-        return Optional.of(new RegistrySuggestionProvider<>(BuiltInRegistries.BLOCK));
+        return Optional.of(new RegistrySuggestionProvider<>(Registries.BLOCK));
     }
 }

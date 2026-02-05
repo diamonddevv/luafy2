@@ -6,6 +6,7 @@ import dev.diamond.luafy.script.type.enumeration.Instrument;
 import dev.diamond.luafy.script.type.enumeration.ScriptEnum;
 import dev.diamond.luafy.script.type.enumeration.TextComponentColor;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
 
 public class ScriptEnums {
 
@@ -14,8 +15,14 @@ public class ScriptEnums {
     public static ScriptEnum<TextComponentColor> TEXT_COMPONENT_COLOR = new ScriptEnum<>(TextComponentColor.class);
 
     public static void registerAll() {
-        Registry.register(LuafyRegistries.SCRIPT_ENUMS, Luafy.id("note"), NOTE);
-        Registry.register(LuafyRegistries.SCRIPT_ENUMS, Luafy.id("instrument"), INSTRUMENT);
-        Registry.register(LuafyRegistries.SCRIPT_ENUMS, Luafy.id("text_component_color"), TEXT_COMPONENT_COLOR);
+        register(Luafy.id("note"), NOTE);
+        register(Luafy.id("instrument"), INSTRUMENT);
+        register(Luafy.id("text_component_color"), TEXT_COMPONENT_COLOR);
+    }
+
+    public static void register(Identifier id, ScriptEnum<?> scriptEnum) {
+        Registry.register(LuafyRegistries.SCRIPT_ENUMS, id, scriptEnum);
+        Registry.register(LuafyRegistries.STRING_ALIASES, id, scriptEnum);
+        Registry.register(LuafyRegistries.ARGTYPES, id, scriptEnum);
     }
 }
