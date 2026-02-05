@@ -1,14 +1,10 @@
-package dev.diamond.luafy.autodoc;
+package dev.diamond.luafy.script.type;
 
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.datafixers.util.Either;
 import org.luaj.vm2.*;
-
-import java.util.List;
-import java.util.Optional;
 
 public class Argtypes {
 

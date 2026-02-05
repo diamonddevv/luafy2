@@ -1,4 +1,4 @@
-package dev.diamond.luafy.autodoc;
+package dev.diamond.luafy.script.type;
 
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;

@@ -1,6 +1,6 @@
 package dev.diamond.luafy.script.api;
 
-import dev.diamond.luafy.autodoc.Argtypes;
+import dev.diamond.luafy.script.type.Argtypes;
 import dev.diamond.luafy.autodoc.ScriptApiBuilder;
 import dev.diamond.luafy.script.LuaScript;
 import org.luaj.vm2.LuaValue;

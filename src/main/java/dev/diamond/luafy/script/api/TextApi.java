@@ -2,7 +2,7 @@ package dev.diamond.luafy.script.api;
 
 import dev.diamond.luafy.autodoc.ScriptApiBuilder;
 import dev.diamond.luafy.script.LuaScript;
-import dev.diamond.luafy.script.object.game.TextComponentScriptObject;
+import dev.diamond.luafy.script.type.object.game.TextComponentScriptObject;
 
 public class TextApi extends AbstractScriptApi {
     public TextApi(LuaScript script) {

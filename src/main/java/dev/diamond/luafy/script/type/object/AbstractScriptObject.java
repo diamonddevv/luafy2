@@ -1,8 +1,8 @@
-package dev.diamond.luafy.script.object;
+package dev.diamond.luafy.script.type.object;
 
 import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.autodoc.ArglistBuilder;
-import dev.diamond.luafy.autodoc.Argtype;
+import dev.diamond.luafy.script.type.Argtype;
 import dev.diamond.luafy.autodoc.SimpleAutodocumentable;
 import dev.diamond.luafy.autodoc.FunctionDocInfo;
 import dev.diamond.luafy.registry.LuafyRegistries;

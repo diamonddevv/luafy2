@@ -1,4 +1,4 @@
-package dev.diamond.luafy.script.enumeration;
+package dev.diamond.luafy.script.type.enumeration;
 
 public enum Note {
     G_FLAT_LOW(0),

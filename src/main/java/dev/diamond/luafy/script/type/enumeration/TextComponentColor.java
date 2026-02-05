@@ -1,4 +1,4 @@
-package dev.diamond.luafy.script.enumeration;
+package dev.diamond.luafy.script.type.enumeration;
 
 import net.minecraft.ChatFormatting;
 

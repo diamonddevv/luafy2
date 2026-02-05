@@ -1,14 +1,14 @@
-package dev.diamond.luafy.script.object.game.entity;
+package dev.diamond.luafy.script.type.object.game.entity;
 
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
-import dev.diamond.luafy.autodoc.Argtypes;
+import dev.diamond.luafy.script.type.Argtypes;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.registry.ScriptObjects;
 import dev.diamond.luafy.script.LuaScript;
-import dev.diamond.luafy.script.object.AbstractScriptObject;
+import dev.diamond.luafy.script.type.object.AbstractScriptObject;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.world.entity.SlotAccess;

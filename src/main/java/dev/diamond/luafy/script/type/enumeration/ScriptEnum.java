@@ -1,4 +1,4 @@
-package dev.diamond.luafy.script.enumeration;
+package dev.diamond.luafy.script.type.enumeration;
 
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -7,14 +7,12 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import dev.diamond.luafy.autodoc.Argtype;
-import dev.diamond.luafy.autodoc.Argtypes;
+import dev.diamond.luafy.script.type.Argtype;
+import dev.diamond.luafy.script.type.Argtypes;
 import dev.diamond.luafy.autodoc.SimpleAutodocumentable;
-import dev.diamond.luafy.registry.LuafyRegistries;
 import dev.diamond.luafy.script.LuaScript;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.resources.Identifier;
 import org.luaj.vm2.LuaString;
 
 import java.util.Arrays;
