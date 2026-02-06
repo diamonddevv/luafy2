@@ -3,7 +3,7 @@ package dev.diamond.luafy.script.type.object.game.registry;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
-import dev.diamond.luafy.command.RegistrySuggestionProvider;
+import dev.diamond.luafy.command.RegistryKeySuggestionProvider;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.script.LuaScript;
 import dev.diamond.luafy.script.type.object.AbstractScriptObject;
@@ -59,6 +59,6 @@ public class RegistryBlockScriptObject extends AbstractScriptObject<Block> {
 
     @Override
     public Optional<SuggestionProvider<CommandSourceStack>> suggest() {
-        return Optional.of(new RegistrySuggestionProvider<>(Registries.BLOCK));
+        return Optional.of(new RegistryKeySuggestionProvider<>(Registries.BLOCK));
     }
 }

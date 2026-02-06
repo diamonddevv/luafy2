@@ -18,7 +18,7 @@ public abstract class StringAlias<T> implements Argtype<LuaString, T> {
 
     @Override
     public Optional<ArgumentType<?>> getCommandArgumentType(CommandBuildContext ctx) {
-        return Optional.of(StringArgumentType.word());
+        return Optional.of(StringArgumentType.string());
     }
 
     @Override

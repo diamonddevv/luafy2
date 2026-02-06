@@ -2,10 +2,7 @@ package dev.diamond.luafy.registry;
 
 import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.script.event.ScriptEvent;
-import dev.diamond.luafy.script.type.Argtype;
-import dev.diamond.luafy.script.type.IdentifierStringAlias;
-import dev.diamond.luafy.script.type.RegistryIdentifierStringAlias;
-import dev.diamond.luafy.script.type.StringAlias;
+import dev.diamond.luafy.script.type.*;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -21,16 +18,16 @@ public class StringAliases {
 
     public static final IdentifierStringAlias IDENTIFIER = new IdentifierStringAlias();
 
-    public static final RegistryIdentifierStringAlias<Argtype<?, ?>> REGISTRY_ARGTYPE = new RegistryIdentifierStringAlias<>(LuafyRegistries.SERIALIZABLE_ARGTYPES_KEY, "Argtype");
-    public static final RegistryIdentifierStringAlias<ScriptEvent<?>> REGISTRY_SCRIPT_EVENT = new RegistryIdentifierStringAlias<>(LuafyRegistries.SCRIPT_EVENTS_KEY, "ScriptEvent");
+    public static final RegistryIdentifierStringAlias<Argtype<?, ?>> REGISTRY_ARGTYPE = new RegistryIdentifierStringAlias<>(LuafyRegistries.ARGTYPES, "Argtype");
+    public static final RegistryIdentifierStringAlias<ScriptEvent<?>> REGISTRY_SCRIPT_EVENT = new RegistryIdentifierStringAlias<>(LuafyRegistries.SCRIPT_EVENTS, "ScriptEvent");
 
-    public static final RegistryIdentifierStringAlias<Item> REGISTRY_ITEM = new RegistryIdentifierStringAlias<>(Registries.ITEM, "Item");
-    public static final RegistryIdentifierStringAlias<Block> REGISTRY_BLOCK = new RegistryIdentifierStringAlias<>(Registries.BLOCK, "Block");
-    public static final RegistryIdentifierStringAlias<EntityType<?>> REGISTRY_ENTITY_TYPE = new RegistryIdentifierStringAlias<>(Registries.ENTITY_TYPE, "EntityType");
-    public static final RegistryIdentifierStringAlias<Biome> REGISTRY_BIOME = new RegistryIdentifierStringAlias<>(Registries.BIOME, "Biome");
-    public static final RegistryIdentifierStringAlias<Level> REGISTRY_DIMENSION = new RegistryIdentifierStringAlias<>(Registries.DIMENSION, "Dimension");
-    public static final RegistryIdentifierStringAlias<Enchantment> REGISTRY_ENCHANTMENT = new RegistryIdentifierStringAlias<>(Registries.ENCHANTMENT, "Enchantment");
-    public static final RegistryIdentifierStringAlias<MobEffect> REGISTRY_EFFECT = new RegistryIdentifierStringAlias<>(Registries.MOB_EFFECT, "StatusEffect");
+    public static final RegistryKeyIdentifierStringAlias<Item> REGISTRY_ITEM = new RegistryKeyIdentifierStringAlias<>(Registries.ITEM, "Item");
+    public static final RegistryKeyIdentifierStringAlias<Block> REGISTRY_BLOCK = new RegistryKeyIdentifierStringAlias<>(Registries.BLOCK, "Block");
+    public static final RegistryKeyIdentifierStringAlias<EntityType<?>> REGISTRY_ENTITY_TYPE = new RegistryKeyIdentifierStringAlias<>(Registries.ENTITY_TYPE, "EntityType");
+    public static final RegistryKeyIdentifierStringAlias<Biome> REGISTRY_BIOME = new RegistryKeyIdentifierStringAlias<>(Registries.BIOME, "Biome");
+    public static final RegistryKeyIdentifierStringAlias<Level> REGISTRY_DIMENSION = new RegistryKeyIdentifierStringAlias<>(Registries.DIMENSION, "Dimension");
+    public static final RegistryKeyIdentifierStringAlias<Enchantment> REGISTRY_ENCHANTMENT = new RegistryKeyIdentifierStringAlias<>(Registries.ENCHANTMENT, "Enchantment");
+    public static final RegistryKeyIdentifierStringAlias<MobEffect> REGISTRY_EFFECT = new RegistryKeyIdentifierStringAlias<>(Registries.MOB_EFFECT, "StatusEffect");
 
 
     public static void registerAll() {

@@ -4,7 +4,7 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import dev.diamond.luafy.script.type.Argtypes;
-import dev.diamond.luafy.command.RegistrySuggestionProvider;
+import dev.diamond.luafy.command.RegistryKeySuggestionProvider;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.lua.MetamethodImpl;
 import dev.diamond.luafy.registry.ScriptObjects;
@@ -105,6 +105,6 @@ public class RegistryEntityTypeScriptObject extends AbstractScriptObject<EntityT
 
     @Override
     public Optional<SuggestionProvider<CommandSourceStack>> suggest() {
-        return Optional.of(new RegistrySuggestionProvider<>(Registries.ENTITY_TYPE));
+        return Optional.of(new RegistryKeySuggestionProvider<>(Registries.ENTITY_TYPE));
     }
 }

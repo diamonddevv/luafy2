@@ -2,7 +2,6 @@ package dev.diamond.luafy.script.type;
 
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import dev.diamond.luafy.command.RegistryKeySuggestionProvider;
-import dev.diamond.luafy.command.RegistrySuggestionProvider;
 import dev.diamond.luafy.script.LuaScript;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
@@ -12,12 +11,12 @@ import net.minecraft.resources.ResourceKey;
 import java.util.Objects;
 import java.util.Optional;
 
-public class RegistryIdentifierStringAlias<T> extends StringAlias<T> {
+public class RegistryKeyIdentifierStringAlias<T> extends StringAlias<T> {
 
-    private final Registry<T> registry;
+    private final ResourceKey<Registry<T>> registry;
     private final String identifierType;
 
-    public RegistryIdentifierStringAlias(Registry<T> registry, String identifierType) {
+    public RegistryKeyIdentifierStringAlias(ResourceKey<Registry<T>> registry, String identifierType) {
         this.registry = registry;
         this.identifierType = identifierType;
     }
@@ -29,16 +28,16 @@ public class RegistryIdentifierStringAlias<T> extends StringAlias<T> {
 
     @Override
     public Optional<SuggestionProvider<CommandSourceStack>> suggest() {
-        return Optional.of(new RegistrySuggestionProvider<>(this.registry));
+        return Optional.of(new RegistryKeySuggestionProvider<>(this.registry));
     }
 
     @Override
     public T parse(String s, LuaScript script) {
-        return registry.getValue(Identifier.parse(s));
+        return script.getRegistry(registry).getValue(Identifier.parse(s));
     }
 
     @Override
     public String serialise(T t, LuaScript script) {
-        return Objects.requireNonNull(registry.getKey(t)).toString();
+        return Objects.requireNonNull(script.getRegistry(registry).getKey(t)).toString();
     }
 }

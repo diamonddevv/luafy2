@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceKey;
 public class LuafyRegistries {
 
     public static ResourceKey<Registry<ScriptPlugin>> SCRIPT_PLUGINS_KEY;
-    public static ResourceKey<Registry<Argtype<?, ?>>> SERIALIZABLE_ARGTYPES_KEY;
+    public static ResourceKey<Registry<Argtype<?, ?>>> ARGTYPES_KEY;
     public static ResourceKey<Registry<ScriptEvent<?>>> SCRIPT_EVENTS_KEY;
     public static ResourceKey<Registry<AbstractScriptObject<?>>> SCRIPT_OBJECTS_KEY;
     public static ResourceKey<Registry<StringAlias<?>>> STRING_ALIASES_KEY;
@@ -41,8 +41,8 @@ public class LuafyRegistries {
         SCRIPT_PLUGINS_KEY = of("script_plugins");
         SCRIPT_PLUGINS = create(SCRIPT_PLUGINS_KEY);
 
-        SERIALIZABLE_ARGTYPES_KEY = of("serializable_argtypes");
-        ARGTYPES = create(SERIALIZABLE_ARGTYPES_KEY);
+        ARGTYPES_KEY = of("serializable_argtypes");
+        ARGTYPES = create(ARGTYPES_KEY);
 
         SCRIPT_EVENTS_KEY = of("script_events");
         SCRIPT_EVENTS = create(SCRIPT_EVENTS_KEY);
