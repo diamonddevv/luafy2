@@ -2,7 +2,7 @@
 
 --#region Information
 -- GENERATED AUTODOC
--- Generated: 2026-02-06T12:35:35.079254700
+-- Generated: 2026-03-02T20:11:48.109650600
 -- Luafy Version: 2.0.0
 -- Format: Lua LS library file
 --#endregion
@@ -581,6 +581,12 @@ function nbtstorage.write(id, table) end
 -- luafy:entity_dies | Executes after an entity dies.;
 -- 	entity: LivingEntity -> Living Entity that died.
 -- 	attacker: Entity | nil -> Entity that killed this one.
+-- 
+-- luafy:player_joins_server | Executes when a player joins the server.;
+-- 	player: Player -> Player that joined.
+-- 
+-- luafy:player_leaves_server | Executes when a player joins the server.;
+-- 	player: Player -> Player that left.
 -- 
 
 --#endregion

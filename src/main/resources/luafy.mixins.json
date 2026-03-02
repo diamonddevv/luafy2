@@ -3,6 +3,7 @@
     "package": "dev.diamond.luafy.mixin",
     "compatibilityLevel": "JAVA_21",
     "mixins": [
+        "CommandBlockMixin",
         "CommandSourceStackAccessor"
     ],
     "injectors": {

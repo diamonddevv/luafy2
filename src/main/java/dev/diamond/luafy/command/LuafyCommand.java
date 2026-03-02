@@ -10,6 +10,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.autodoc.SimpleAutodocumentable;
 import dev.diamond.luafy.autodoc.generator.AbstractAutodocGenerator;
+import dev.diamond.luafy.holder.HolderItem;
 import dev.diamond.luafy.lua.LuaTableBuilder;
 import dev.diamond.luafy.lua.MetamethodImpl;
 import dev.diamond.luafy.registry.LuafyRegistries;
@@ -90,6 +91,9 @@ public class LuafyCommand {
                                                           )
                                                   )
                                   )
+                  ).then(
+                          literal("holder")
+                                  .executes(LuafyCommand::giveHolderItem)
                   )
         );
     }
@@ -210,6 +214,15 @@ public class LuafyCommand {
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }
+        }
+        return 1;
+    }
+
+
+    private static int giveHolderItem(CommandContext<CommandSourceStack> ctx) {
+        // proof of concept
+        if (ctx.getSource().isPlayer()) {
+            ctx.getSource().getPlayer().addItem(HolderItem.getItem(ctx.getSource().getLevel()));
         }
         return 1;
     }

@@ -4,9 +4,11 @@ import dev.diamond.luafy.Luafy;
 import dev.diamond.luafy.script.type.Argtypes;
 import dev.diamond.luafy.script.event.ScriptEvent;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.Registry;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import org.luaj.vm2.LuaValue;
@@ -52,6 +54,18 @@ public class ScriptEvents {
 
     });
 
+    public static ScriptEvent<ServerPlayer> PLAYER_JOINS_SERVER = new ScriptEvent<>("Executes when a player joins the server.", b -> {
+        b.add("player", ScriptObjects.PLAYER, "Player that joined.");
+    }, (b, ctx, script) -> {
+        b.add("player", ScriptObjects.PLAYER.provideTable(ctx, script));
+    });
+
+    public static ScriptEvent<ServerPlayer> PLAYER_LEAVES_SERVER = new ScriptEvent<>("Executes when a player joins the server.", b -> {
+        b.add("player", ScriptObjects.PLAYER, "Player that left.");
+    }, (b, ctx, script) -> {
+        b.add("player", ScriptObjects.PLAYER.provideTable(ctx, script));
+    });
+
 
 
     public static void registerAll() {
@@ -59,6 +73,8 @@ public class ScriptEvents {
         Registry.register(LuafyRegistries.SCRIPT_EVENTS, Luafy.id("tick"), TICK);
         Registry.register(LuafyRegistries.SCRIPT_EVENTS, Luafy.id("entity_takes_damage"), ENTITY_TAKES_DAMAGE);
         Registry.register(LuafyRegistries.SCRIPT_EVENTS, Luafy.id("entity_dies"), ENTITY_DIES);
+        Registry.register(LuafyRegistries.SCRIPT_EVENTS, Luafy.id("player_joins_server"), PLAYER_JOINS_SERVER);
+        Registry.register(LuafyRegistries.SCRIPT_EVENTS, Luafy.id("player_leaves_server"), PLAYER_LEAVES_SERVER);
     }
 
 
@@ -86,11 +102,16 @@ public class ScriptEvents {
             ENTITY_DIES.trigger(e.level().getServer().createCommandSourceStack(), new ScriptEvents.EntityDies(e, src));
         });
 
-
+        // join/leave server
+        ServerPlayerEvents.JOIN.register(player -> {
+            PLAYER_JOINS_SERVER.trigger(player.level().getServer().createCommandSourceStack(), player);
+        });
+        ServerPlayerEvents.LEAVE.register(player -> {
+            PLAYER_JOINS_SERVER.trigger(player.level().getServer().createCommandSourceStack(), player);
+        });
 
     }
 
     public record EntityTakesDamage(LivingEntity e, DamageSource src, float damageTaken, boolean blocked) {}
     public record EntityDies(LivingEntity e, DamageSource src) {}
-
 }
