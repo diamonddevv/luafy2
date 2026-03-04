@@ -3,6 +3,7 @@ package dev.diamond.luafy;
 import dev.diamond.luafy.autodoc.generator.AbstractAutodocGenerator;
 import dev.diamond.luafy.command.LuafyCommand;
 import dev.diamond.luafy.command.HotCommand;
+import dev.diamond.luafy.holder.ScriptHolderBlockItem;
 import dev.diamond.luafy.registry.*;
 import dev.diamond.luafy.resource.ScriptEventResourceLoader;
 import dev.diamond.luafy.script.ScriptManager;
@@ -56,6 +57,9 @@ public class Luafy implements ModInitializer {
 		ScriptEvents.registerAll();
 		ScriptEvents.applyEvents();
 		AutodocGenerators.registerAll();
+
+		//
+		ScriptHolderBlockItem.registerHolderBlockStuff();
 
 
 		// generate LuaLS autodoc

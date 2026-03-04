@@ -1,0 +1,37 @@
+{
+    "type": "minecraft:multi_action",
+    "title": {
+        "translate": "luafy.dialog.modify_script_holder.title",
+        "fallback": "Modify Script Holder"
+    },
+    "body": {
+        "type": "minecraft:plain_message",
+        "contents": {
+            "translate": "luafy.dialog.modify_script_holder.body",
+            "fallback": "Set Script for Script Holder"
+        }
+    },
+    "inputs": [
+        {
+            "type": "minecraft:text",
+            "key": "id",
+            "label": {
+                "translate": "luafy.dialog.modify_script_holder.id_label",
+                "fallback": "Script Id"
+            }
+        }
+    ],
+    "actions": [
+        {
+            "label": {
+                "translate": "luafy.dialog.button.confirm",
+                "fallback": "Confirm"
+            },
+            "width": 100,
+            "action": {
+                "type": "minecraft:dynamic/custom",
+                "id": "luafy:modify_script_holder"
+            }
+        }
+    ]
+}

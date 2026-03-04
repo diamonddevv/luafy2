@@ -3,8 +3,9 @@
     "package": "dev.diamond.luafy.mixin",
     "compatibilityLevel": "JAVA_21",
     "mixins": [
-        "CommandBlockMixin",
-        "CommandSourceStackAccessor"
+        "BlockItemMixin",
+        "CommandSourceStackAccessor",
+        "MinecraftServerMixin"
     ],
     "injectors": {
         "defaultRequire": 1
