@@ -8,10 +8,10 @@
 		"DiamondDev"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://diamonddevv.github.io/",
+		"sources": "https://github.com/diamonddevv/luafy2"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/luafy/icon.png",
 	"environment": "*",
 	"entrypoints": {
@@ -30,8 +30,8 @@
 		}
 	],
 	"depends": {
-		"fabricloader": ">=0.18.4",
-		"minecraft": "~1.21.11",
+		"fabricloader": ">=0.20.1",
+		"minecraft": "~26.3",
 		"java": ">=21",
 		"fabric-api": "*"
 	}

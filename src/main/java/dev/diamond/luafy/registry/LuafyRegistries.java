@@ -31,7 +31,7 @@ public class LuafyRegistries {
     public static Registry<AbstractAutodocGenerator> AUTODOC_GENERATORS;
 
     private static <T> Registry<T> create(ResourceKey<Registry<T>> key) {
-        return FabricRegistryBuilder.createSimple(key).buildAndRegister();
+        return FabricRegistryBuilder.create(key).buildAndRegister();
     }
     private static <T> ResourceKey<Registry<T>> of(String path) {
         return ResourceKey.createRegistryKey(Luafy.id(path));

@@ -5,6 +5,8 @@ import dev.diamond.luafy.autodoc.ScriptApiBuilder;
 import dev.diamond.luafy.script.LuaScript;
 import org.luaj.vm2.LuaValue;
 
+import java.net.http.HttpRequest;
+
 public class WebApi extends AbstractScriptApi {
     public WebApi(LuaScript script) {
         super("web", script);

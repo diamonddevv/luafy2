@@ -91,9 +91,6 @@ public class LuafyCommand {
                                                           )
                                                   )
                                   )
-                  ).then(
-                          literal("holder")
-                                  .executes(LuafyCommand::giveHolderItem)
                   )
         );
     }

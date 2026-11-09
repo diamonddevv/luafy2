@@ -2,7 +2,7 @@
 
 --#region Information
 -- GENERATED AUTODOC
--- Generated: 2026-11-09T22:27:51.171290400
+-- Generated: 2026-11-09T22:48:42.367764700
 -- Luafy Version: 2.0.0
 -- Format: Lua LS library file
 --#endregion
@@ -426,7 +426,7 @@ local registry = {}
 ---@return Item
 function registry.item(id) end
 
---- Fetches an block type from the registry.
+--- Fetches a block type from the registry.
 ---@param id string Identifier of the block type.
 ---@return Block
 function registry.block(id) end

@@ -89,7 +89,7 @@ public class MinecraftApi extends AbstractScriptApi {
                 world.getServer().execute(() -> { // exec on main thread
                     if (particle)
                         world.sendParticles(ParticleTypes.NOTE, pos.x(), pos.y() + 0.7, pos.z(), 1, (double)idx / 24.0, 0.0, 0.0, 0);
-                    world.playSeededSound(null, pos.x(), pos.y(), pos.z(), instrument.getInstrument().getSoundEvent(), SoundSource.RECORDS, 3.0F, pitch, world.random.nextLong());
+                    world.playSeededSound(null, pos.x(), pos.y(), pos.z(), instrument.getInstrument().getSoundEvent(), SoundSource.RECORDS, 3.0F, pitch, world.getRandom().nextLong());
                 });
 
                 return LuaValue.NIL;
@@ -186,7 +186,7 @@ public class MinecraftApi extends AbstractScriptApi {
                 Identifier id = Identifier.parse(args.nextString());
                 Block block = BuiltInRegistries.BLOCK.getValue(id);
                 return LuaTableBuilder.provide(ScriptObjects.REGISTRY_BLOCK, block, script);
-            }, "Fetches an block type from the registry.", args -> {
+            }, "Fetches a block type from the registry.", args -> {
                 args.add("id", Argtypes.STRING, "Identifier of the block type.");
             }, ScriptObjects.REGISTRY_BLOCK);
 
