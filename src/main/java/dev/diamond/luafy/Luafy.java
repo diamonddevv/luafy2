@@ -58,13 +58,12 @@ public class Luafy implements ModInitializer {
 		ScriptEvents.applyEvents();
 		AutodocGenerators.registerAll();
 
-		//
-		ScriptHolderBlockItem.registerHolderBlockStuff();
+		// this is not nearly functional yet, so keep it unused
+		// ScriptHolderBlockItem.registerHolderBlockStuff();
 
 
 		// generate LuaLS autodoc
 		AutodocGenerators.LUA_LS.buildOutput(FabricLoaderImpl.INSTANCE.isDevelopmentEnvironment() ? new File(DEV_ENV_DOC_OUTPUT_FILEPATH) : AbstractAutodocGenerator.getDefaultFile(AutodocGenerators.LUA_LS));
-
 	}
 
 	public static Identifier id(String path) {
