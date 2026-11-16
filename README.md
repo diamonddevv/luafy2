@@ -37,8 +37,7 @@ this mod uses the FiguraMC implementation of Lua.
 
 
 # licensing
-luafy is placed under the **CC0-1.0** license, meaning you can basically do whatever you
-like with it. _(this is not legal advice)_
+luafy is placed under the **MIT** license.
 
 if you use it in anything, credit is not required but very much appreciated!
 (also, feel free to let me know! id love to see what people do with this!)
